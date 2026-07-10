@@ -392,13 +392,10 @@ mq_rshift1(uint32_t x)
  * this function computes: x * y / R mod q
  * Operands must be in the 0..q-1 range.
  */
-uint64_t mq_montymul_calls = 0;
-
 static inline uint32_t
 mq_montymul(uint32_t x, uint32_t y)
 {
 	uint32_t z, w;
-	mq_montymul_calls++;  /* Count calls */
 	/*
 	 * We compute x*y + k*q with a value of k chosen so that the 16
 	 * low bits of the result are 0. We can then shift the value.

@@ -1,3 +1,7 @@
+#ifdef __linux__
+#define _GNU_SOURCE  /* must precede any system header so glibc exposes syscall()/SYS_getrandom via <unistd.h> */
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -10,7 +14,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #ifdef __linux__
-#define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/syscall.h>
 #elif __NetBSD__

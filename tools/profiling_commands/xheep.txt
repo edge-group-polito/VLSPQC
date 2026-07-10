@@ -1,0 +1,15 @@
+# includes
+#include "core_v_mini_mcu.h"
+#include "csr.h"
+
+# init
+unsigned cycles;
+CSR_CLEAR_BITS(CSR_REG_MCOUNTINHIBIT, 0x1);
+CSR_WRITE(CSR_REG_MCYCLE, 0);
+
+# before
+CSR_WRITE(CSR_REG_MCYCLE, 0);
+
+# after
+CSR_READ(CSR_REG_MCYCLE, &cycles);
+printf("Cycles: %d\n", cycles);

@@ -10,9 +10,6 @@
 #include "address.h"
 #include "params.h"
 
-/* Global counter for how many times chain_lengths() is called. */
-//unsigned long long chain_lengths_call_count = 0;
-
 // TODO clarify address expectations, and make them more uniform.
 // TODO i.e. do we expect types to be set already?
 // TODO and do we expect modifications or copies?
@@ -89,7 +86,6 @@ static void wots_checksum(unsigned int *csum_base_w,
 /* Takes a message and derives the matching chain lengths. */
 void chain_lengths(unsigned int *lengths, const unsigned char *msg)
 {
-    //chain_lengths_call_count++;
     base_w(lengths, SPX_WOTS_LEN1, msg);
     wots_checksum(lengths + SPX_WOTS_LEN1, lengths);
 }

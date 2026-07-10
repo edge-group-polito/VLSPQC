@@ -1,18 +1,16 @@
-/////////////////////////////////////////////////////////////////////////////////////
-//                                                                                 //
-// Auth: Alessandra Dolmeta, Valeria Piscopo - Politecnico di Torino               //
-// Date: September 2024                                                            //
-// Desc: Entry point for testing the FALCON implementation using input and output  //
-//       test vector coming from NIST                                              //
-//                                                                                 //
-/////////////////////////////////////////////////////////////////////////////////////
-
+///////////////////////////////////////////////////////////////////////////////////////
+//                                                                                   //
+// Auth: Alessandra Dolmeta, Valeria Piscopo                                         //
+// @ EDGE group, at VLSI-LAB, Politecnico di Torino                                  //
+// Date: July 2026                                                                   //
+// Desc: falcon-512 KAT test entry point                                             //
+//                                                                                   //
+///////////////////////////////////////////////////////////////////////////////////////
 
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <inttypes.h>
 
 #include "api.h"
 #include "test_vectors_512.h"
@@ -41,7 +39,6 @@
 
 // Global variables
 uint8_t keypair_rnd[CRYPTO_BYTES];
-extern uint64_t mq_montymul_calls;
 
 
 #if PRINT_VECT
@@ -188,7 +185,6 @@ int main(void)
 
     }
 
-    printf("mq_montymul() calls: %" PRIu64 "\n", mq_montymul_calls);
     printf("Test Successful\n");
 
     return 0;

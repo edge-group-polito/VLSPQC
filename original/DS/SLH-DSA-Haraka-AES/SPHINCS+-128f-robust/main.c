@@ -1,7 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
-// Desc: Entry point for testing the SPHINCS+ implementation using deterministic     //
-//       local inputs.                                                               //
+// Auth: Alessandra Dolmeta, Valeria Piscopo                                         //
+// @ EDGE group, at VLSI-LAB, Politecnico di Torino                                  //
+// Date: July 2026                                                                   //
+// Desc: SPHINCS+-128f-robust KAT test entry point                                   //
 //                                                                                   //
 ///////////////////////////////////////////////////////////////////////////////////////
 

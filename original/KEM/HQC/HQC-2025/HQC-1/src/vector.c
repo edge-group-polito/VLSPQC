@@ -280,25 +280,21 @@ void vect_print(const uint64_t *v, const uint32_t size) {
         uint8_t tmp[VEC_K_SIZE_BYTES] = {0};
         memcpy(tmp, v, VEC_K_SIZE_BYTES);
         for (uint32_t i = 0; i < VEC_K_SIZE_BYTES; ++i) {
-            printf("%02x", tmp[i]);
         }
     } else if (size == VEC_N_SIZE_BYTES) {
         uint8_t tmp[VEC_N_SIZE_BYTES] = {0};
         memcpy(tmp, v, VEC_N_SIZE_BYTES);
         for (uint32_t i = 0; i < VEC_N_SIZE_BYTES; ++i) {
-            printf("%02x", tmp[i]);
         }
     } else if (size == VEC_N1N2_SIZE_BYTES) {
         uint8_t tmp[VEC_N1N2_SIZE_BYTES] = {0};
         memcpy(tmp, v, VEC_N1N2_SIZE_BYTES);
         for (uint32_t i = 0; i < VEC_N1N2_SIZE_BYTES; ++i) {
-            printf("%02x", tmp[i]);
         }
     } else if (size == VEC_N1_SIZE_BYTES) {
         uint8_t tmp[VEC_N1_SIZE_BYTES] = {0};
         memcpy(tmp, v, VEC_N1_SIZE_BYTES);
         for (uint32_t i = 0; i < VEC_N1_SIZE_BYTES; ++i) {
-            printf("%02x", tmp[i]);
         }
     }
 }
