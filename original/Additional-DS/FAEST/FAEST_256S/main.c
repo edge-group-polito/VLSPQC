@@ -1,0 +1,93 @@
+///////////////////////////////////////////////////////////////////////////////////////
+//                                                                                   //
+// Auth: Alessandra Dolmeta, Valeria Piscopo                                         //
+// @ EDGE group, at VLSI-LAB, Politecnico di Torino                                  //
+// Date: July 2026                                                                   //
+// Desc: FAEST_256S KAT test entry point                                             //
+//                                                                                   //
+///////////////////////////////////////////////////////////////////////////////////////
+
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "rng.h"
+#include "api.h"
+#include "test_vectors_256S.h"
+
+#define PERF_CNT_CYCLES 0
+
+#if PERF_CNT_CYCLES
+#endif /* PERF_CNT_CYCLES */
+
+#define TEST_KEY  1
+#define TEST_SIGN    1
+#define TEST_SIGN_OPEN  1
+
+int main(void)
+{
+#if PERF_CNT_CYCLES
+#endif /* PERF_CNT_CYCLES */
+
+    uint8_t pk[CRYPTO_PUBLICKEYBYTES];
+    uint8_t sk[CRYPTO_SECRETKEYBYTES];
+    uint8_t m[MLEN_KAT];
+    uint8_t sm[MLEN_KAT + CRYPTO_BYTES];
+    uint8_t m1[MLEN_KAT + CRYPTO_BYTES];
+    unsigned long long smlen, mlen1;
+    int fails = 0;
+
+    for (int i = 0; i < N_KAT; i++) {
+        printf("=== KAT %d/%d ===\n", i + 1, N_KAT);
+        memcpy(m, TVEC_IN_M_SIGN[i], MLEN_KAT);
+
+        randombytes_init(TVEC_SEED[i], NULL, 256);
+        { uint8_t _skip[MLEN_KAT]; randombytes(_skip, MLEN_KAT); } /* advance past the msg draw the generator made before keygen */
+
+        /* always called: advances the shared CSPRNG/DRBG stream so sign() lines up */
+        #if PERF_CNT_CYCLES
+        #endif /* PERF_CNT_CYCLES */
+        crypto_sign_keypair(pk, sk);
+        #if PERF_CNT_CYCLES
+        #endif /* PERF_CNT_CYCLES */
+#if TEST_KEY
+        if (memcmp(pk, TVEC_OUT_PK[i], CRYPTO_PUBLICKEYBYTES)) { printf("[%d] ERROR: PK mismatch\n", i); fails++; }
+        if (memcmp(sk, TVEC_OUT_SK[i], CRYPTO_SECRETKEYBYTES)) { printf("[%d] ERROR: SK mismatch\n", i); fails++; }
+#else
+        memcpy(pk, TVEC_OUT_PK[i], CRYPTO_PUBLICKEYBYTES);
+        memcpy(sk, TVEC_OUT_SK[i], CRYPTO_SECRETKEYBYTES);
+#endif /* TEST_KEY */
+
+#if TEST_SIGN
+        #if PERF_CNT_CYCLES
+        #endif /* PERF_CNT_CYCLES */
+        crypto_sign(sm, &smlen, m, MLEN_KAT, sk);
+        #if PERF_CNT_CYCLES
+        #endif /* PERF_CNT_CYCLES */
+        if (smlen != TVEC_IN_SM_SIGN_LEN[i] || memcmp(sm, TVEC_IN_SM_SIGN[i], TVEC_IN_SM_SIGN_LEN[i])) {
+            printf("[%d] ERROR: SM mismatch\n", i); fails++;
+        }
+#else
+        memcpy(sm, TVEC_IN_SM_SIGN[i], TVEC_IN_SM_SIGN_LEN[i]);
+        smlen = TVEC_IN_SM_SIGN_LEN[i];
+#endif /* TEST_SIGN */
+
+#if TEST_SIGN_OPEN
+        #if PERF_CNT_CYCLES
+        #endif /* PERF_CNT_CYCLES */
+        crypto_sign_open(m1, &mlen1, sm, smlen, pk);
+        #if PERF_CNT_CYCLES
+        #endif /* PERF_CNT_CYCLES */
+        if (mlen1 != MLEN_KAT || memcmp(m1, TVEC_IN_M_SIGN[i], MLEN_KAT)) { printf("[%d] ERROR: M mismatch\n", i); fails++; }
+#endif /* TEST_SIGN_OPEN */
+    }
+
+    if (fails == 0) {
+        printf("Test Successful (%d KAT vector(s))\n", N_KAT);
+    } else {
+        printf("Test FAILED: %d mismatch(es)\n", fails);
+    }
+
+    return fails != 0;
+}

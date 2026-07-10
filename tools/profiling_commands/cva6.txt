@@ -1,0 +1,14 @@
+# includes
+#include "inc/uart.h"
+#include "encoding.h"
+
+# init
+int cycles;
+clear_csr(mcountinhibit, 1);
+
+# before
+write_csr(mcycle, 0);
+
+# after
+cycles = read_csr(mcycle);
+printf("Cycles: %d\n", cycles);

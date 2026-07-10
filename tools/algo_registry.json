@@ -1,0 +1,1480 @@
+{
+  "_comment": "Single source of truth for the static/FPGA KAT test generator (gen_static_test.py). Each shape corresponds to one of the distinct crypto API calling conventions found across the PQC families in this repo (see kat/gen/main_*.c). Adding a family means adding a shape renderer (if new) in gen_static_test.py plus variant entries here.",
+  "shapes": {
+    "kem_derand": {
+      "type": "KEM",
+      "description": "keypair_derand(pk,sk,coins), enc_derand(ct,ss,pk,coins), dec(ss,ct,sk). Used by ML-KEM."
+    },
+    "ds_derand_ctx": {
+      "type": "DS",
+      "description": "keypair(pk,sk,seed), sign(sm,&smlen,m,mlen,ctx,ctxlen,sk,rnd), open(m,&mlen,sm,smlen,ctx,ctxlen,pk). Used by ML-DSA."
+    },
+    "ds_derand_rnd": {
+      "type": "DS",
+      "description": "keypair(pk,sk,rnd), sign(sm,&smlen,m,mlen,sk,rnd), open(m,&mlen,sm,smlen,pk). Used by SLH-DSA (all 4 sub-families)."
+    },
+    "ds_derand_seed": {
+      "type": "DS",
+      "description": "keypair(pk,sk,seed), sign(sm,&smlen,m,mlen,sk) [no rnd -- signing is fully deterministic], open(m,&mlen,sm,smlen,pk). Used by XMSS/LMS/HSS, each pinned to one parameter set via a dedicated src_dir (see original/Stateful-DS/{XMSS,LMS,HSS}/<VARIANT>/) -- their real APIs are runtime-parametrized (see original/Stateful-DS/README.md), unlike every other DS family here."
+    },
+    "ds_derand_rnd_nonce": {
+      "type": "DS",
+      "description": "keypair(pk,sk,rnd), sign(sm,&smlen,m,mlen,sk,nonce,rnd), open(m,&mlen,sm,smlen,pk). Used by Falcon (extra nonce vs ds_derand_rnd)."
+    },
+    "ds_drbg_cross": {
+      "type": "DS",
+      "description": "No derand API. Reseed CROSS's own csprng_initialize(&platform_csprng_state, seed, 48, CSPRNG_DOMAIN_SEP_CONST) then keypair(pk,sk)/sign(sm,&smlen,m,mlen,sk)/open(m,&mlen,sm,smlen,pk). keypair is always called (even with RUN_KEYGEN=0) to keep the CSPRNG stream position correct for sign."
+    },
+    "ds_drbg_less": {
+      "type": "DS",
+      "description": "No derand API. Reseed LESS's own initialize_csprng(&platform_csprng_state, seed, 48) then keypair/sign/open, same signatures as ds_drbg_cross. keypair always called for the same CSPRNG-advance reason."
+    },
+    "ds_drbg_hawk": {
+      "type": "DS",
+      "description": "No derand API. Reseed via randombytes_init(seed, NULL, 256), skip the mlen bytes the generator drew for the message, then keypair/sign/open. Unlike CROSS/LESS, keypair is only called when RUN_KEYGEN=1 -- matches kat/gen/main_hawk.c exactly, including its RUN_KEYGEN=0 CSPRNG-desync caveat (see tools/README.md). Shared verbatim by HAWK and FAEST (main_faest.c is the same shape: FAEST's rand_bytes() forwards straight to the reseeded NIST DRBG, no internal CSPRNG object of its own)."
+    },
+    "kem_prng_reseed": {
+      "type": "KEM",
+      "description": "No explicit seed params. Reseed via prng_init(seed,NULL,48,0) then keypair(pk,sk)/enc(ct,ss,pk)/dec(ss,ct,sk). Used by HQC-2025. Same RUN_KEYGEN=0 desync caveat as ds_drbg_hawk."
+    },
+    "aead_direct": {
+      "type": "AEAD",
+      "description": "No keygen, no derand/coins: crypto_aead_encrypt(c,&clen,m,mlen,ad,adlen,NULL,npub,k), crypto_aead_decrypt(m,&mlen,NULL,c,clen,ad,adlen,npub,k). Key/nonce/ad/plaintext are all fixed-length per variant and taken directly from the .rsp -- deterministic by construction, no RNG replay needed. Used by ASCON's AEAD variants (ascon128v12, ascon128av12, ascon80pqv12). RUN_ENCAPS/RUN_DECAPS gate encrypt/decrypt (no keygen flag)."
+    },
+    "hash_direct": {
+      "type": "HASH",
+      "description": "Single call, no key/nonce/AD, no RUN_* flag: crypto_hash(out,in,inlen). Used by ASCON's hash/XOF variants (asconhashv12, asconhashav12, asconxofv12, asconxofav12)."
+    }
+  },
+  "families": {
+    "mlkem": {
+      "shape": "kem_derand",
+      "variants": [
+        "ml-kem-512",
+        "ml-kem-768",
+        "ml-kem-1024"
+      ]
+    },
+    "mldsa": {
+      "shape": "ds_derand_ctx",
+      "variants": [
+        "ML-DSA-2",
+        "ML-DSA-3",
+        "ML-DSA-5"
+      ]
+    },
+    "falcon": {
+      "shape": "ds_derand_rnd_nonce",
+      "variants": [
+        "falcon-512",
+        "falcon-1024"
+      ]
+    },
+    "hawk": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "hawk-256",
+        "hawk-512",
+        "hawk-1024"
+      ]
+    },
+    "less": {
+      "shape": "ds_drbg_less",
+      "variants": [
+        "LESS_252_45",
+        "LESS_252_68",
+        "LESS_252_192",
+        "LESS_400_102",
+        "LESS_400_220",
+        "LESS_548_137",
+        "LESS_548_345"
+      ]
+    },
+    "cross": {
+      "shape": "ds_drbg_cross",
+      "variants": [
+        "CROSS_1_RSDP_b",
+        "CROSS_1_RSDP_f",
+        "CROSS_1_RSDP_s",
+        "CROSS_1_RSDPG_b",
+        "CROSS_1_RSDPG_f",
+        "CROSS_1_RSDPG_s",
+        "CROSS_3_RSDP_b",
+        "CROSS_3_RSDP_f",
+        "CROSS_3_RSDP_s",
+        "CROSS_3_RSDPG_b",
+        "CROSS_3_RSDPG_f",
+        "CROSS_3_RSDPG_s",
+        "CROSS_5_RSDP_b",
+        "CROSS_5_RSDP_f",
+        "CROSS_5_RSDP_s",
+        "CROSS_5_RSDPG_b",
+        "CROSS_5_RSDPG_f",
+        "CROSS_5_RSDPG_s"
+      ]
+    },
+    "faest": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "FAEST_128F",
+        "FAEST_128S",
+        "FAEST_192F",
+        "FAEST_192S",
+        "FAEST_256F",
+        "FAEST_256S",
+        "FAEST_EM_128F",
+        "FAEST_EM_128S",
+        "FAEST_EM_192F",
+        "FAEST_EM_192S",
+        "FAEST_EM_256F",
+        "FAEST_EM_256S"
+      ]
+    },
+    "slhdsa": {
+      "shape": "ds_derand_rnd",
+      "variants": [
+        "SPHINCSp128fsimple",
+        "SPHINCSp128frobust",
+        "SPHINCSp192fsimple",
+        "SPHINCSp192frobust",
+        "SPHINCSp256fsimple",
+        "SPHINCSp256frobust",
+        "SPHINCSp128ssimple",
+        "SPHINCSp192ssimple",
+        "SPHINCSp256ssimple"
+      ]
+    },
+    "slhdsa-haraka": {
+      "shape": "ds_derand_rnd",
+      "variants": [
+        "HARAKAp128fsimple",
+        "HARAKAp128frobust",
+        "HARAKAp192fsimple",
+        "HARAKAp192frobust",
+        "HARAKAp256fsimple",
+        "HARAKAp256frobust"
+      ]
+    },
+    "slhdsa-haraka-aes": {
+      "shape": "ds_derand_rnd",
+      "variants": [
+        "HARAKAAESp128fsimple",
+        "HARAKAAESp128frobust",
+        "HARAKAAESp192fsimple",
+        "HARAKAAESp192frobust",
+        "HARAKAAESp256fsimple",
+        "HARAKAAESp256frobust"
+      ]
+    },
+    "slhdsa-sha2": {
+      "shape": "ds_derand_rnd",
+      "variants": [
+        "SHA2p128fsimple",
+        "SHA2p128frobust",
+        "SHA2p192fsimple",
+        "SHA2p192frobust",
+        "SHA2p256fsimple",
+        "SHA2p256frobust",
+        "SHA2p128ssimple",
+        "SHA2p192ssimple",
+        "SHA2p256ssimple"
+      ]
+    },
+    "hqc2025": {
+      "shape": "kem_prng_reseed",
+      "variants": [
+        "HQC2025_1",
+        "HQC2025_3",
+        "HQC2025_5"
+      ]
+    },
+    "xmss": {
+      "shape": "ds_derand_seed",
+      "variants": [
+        "XMSS-SHA2_10_256"
+      ]
+    },
+    "lms": {
+      "shape": "ds_derand_seed",
+      "variants": [
+        "LMS_H10_W8"
+      ]
+    },
+    "hss": {
+      "shape": "ds_derand_seed",
+      "variants": [
+        "HSS_L2_H5_W8"
+      ]
+    },
+    "ascon-aead": {
+      "shape": "aead_direct",
+      "variants": [
+        "ascon128v12",
+        "ascon128av12",
+        "ascon80pqv12"
+      ]
+    },
+    "ascon-hash": {
+      "shape": "hash_direct",
+      "variants": [
+        "asconhashv12",
+        "asconhashav12",
+        "asconxofv12",
+        "asconxofav12"
+      ]
+    }
+  },
+  "variants": {
+    "ml-kem-512": {
+      "family": "mlkem",
+      "shape": "kem_derand",
+      "src_dir": "original/KEM/ML-KEM/ml-kem-512/src",
+      "include_dir": "original/KEM/ML-KEM/ml-kem-512/include",
+      "rsp_path": "kat/rsp/KEM/ML-KEM/ml-kem-512.rsp",
+      "gen_target": "gen-ml-kem-512",
+      "vec_suffix": "512",
+      "main_headers": [
+        "kem.h"
+      ]
+    },
+    "ml-kem-768": {
+      "family": "mlkem",
+      "shape": "kem_derand",
+      "src_dir": "original/KEM/ML-KEM/ml-kem-768/src",
+      "include_dir": "original/KEM/ML-KEM/ml-kem-768/include",
+      "rsp_path": "kat/rsp/KEM/ML-KEM/ml-kem-768.rsp",
+      "gen_target": "gen-ml-kem-768",
+      "vec_suffix": "768",
+      "main_headers": [
+        "kem.h"
+      ]
+    },
+    "ml-kem-1024": {
+      "family": "mlkem",
+      "shape": "kem_derand",
+      "src_dir": "original/KEM/ML-KEM/ml-kem-1024/src",
+      "include_dir": "original/KEM/ML-KEM/ml-kem-1024/include",
+      "rsp_path": "kat/rsp/KEM/ML-KEM/ml-kem-1024.rsp",
+      "gen_target": "gen-ml-kem-1024",
+      "vec_suffix": "1024",
+      "main_headers": [
+        "kem.h"
+      ]
+    },
+    "ML-DSA-2": {
+      "family": "mldsa",
+      "shape": "ds_derand_ctx",
+      "src_dir": "original/DS/ML-DSA/ML-DSA-2/src",
+      "include_dir": "original/DS/ML-DSA/ML-DSA-2/include",
+      "rsp_path": "kat/rsp/DS/ML-DSA/ML-DSA-2.rsp",
+      "gen_target": "gen-ML-DSA-2",
+      "vec_suffix": "2",
+      "main_headers": [
+        "api.h",
+        "params.h",
+        "sign.h"
+      ]
+    },
+    "ML-DSA-3": {
+      "family": "mldsa",
+      "shape": "ds_derand_ctx",
+      "src_dir": "original/DS/ML-DSA/ML-DSA-3/src",
+      "include_dir": "original/DS/ML-DSA/ML-DSA-3/include",
+      "rsp_path": "kat/rsp/DS/ML-DSA/ML-DSA-3.rsp",
+      "gen_target": "gen-ML-DSA-3",
+      "vec_suffix": "3",
+      "main_headers": [
+        "api.h",
+        "params.h",
+        "sign.h"
+      ]
+    },
+    "ML-DSA-5": {
+      "family": "mldsa",
+      "shape": "ds_derand_ctx",
+      "src_dir": "original/DS/ML-DSA/ML-DSA-5/src",
+      "include_dir": "original/DS/ML-DSA/ML-DSA-5/include",
+      "rsp_path": "kat/rsp/DS/ML-DSA/ML-DSA-5.rsp",
+      "gen_target": "gen-ML-DSA-5",
+      "vec_suffix": "5",
+      "main_headers": [
+        "api.h",
+        "params.h",
+        "sign.h"
+      ]
+    },
+    "falcon-512": {
+      "family": "falcon",
+      "shape": "ds_derand_rnd_nonce",
+      "src_dir": "original/DS/FALCON/falcon-512/src",
+      "include_dir": "original/DS/FALCON/falcon-512/include",
+      "rsp_path": "kat/rsp/DS/FALCON/falcon-512.rsp",
+      "gen_target": "gen-falcon-512",
+      "vec_suffix": "512",
+      "main_headers": [
+        "api.h"
+      ]
+    },
+    "falcon-1024": {
+      "family": "falcon",
+      "shape": "ds_derand_rnd_nonce",
+      "src_dir": "original/DS/FALCON/falcon-1024/src",
+      "include_dir": "original/DS/FALCON/falcon-1024/include",
+      "rsp_path": "kat/rsp/DS/FALCON/falcon-1024.rsp",
+      "gen_target": "gen-falcon-1024",
+      "vec_suffix": "1024",
+      "main_headers": [
+        "api.h"
+      ]
+    },
+    "hawk-256": {
+      "family": "hawk",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/HAWK/hawk-256/src",
+      "include_dir": "original/Additional-DS/HAWK/hawk-256/include",
+      "rsp_path": "kat/rsp/Additional-DS/HAWK/hawk-256.rsp",
+      "gen_target": "gen-hawk-256",
+      "vec_suffix": "256",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "hawk-512": {
+      "family": "hawk",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/HAWK/hawk-512/src",
+      "include_dir": "original/Additional-DS/HAWK/hawk-512/include",
+      "rsp_path": "kat/rsp/Additional-DS/HAWK/hawk-512.rsp",
+      "gen_target": "gen-hawk-512",
+      "vec_suffix": "512",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "hawk-1024": {
+      "family": "hawk",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/HAWK/hawk-1024/src",
+      "include_dir": "original/Additional-DS/HAWK/hawk-1024/include",
+      "rsp_path": "kat/rsp/Additional-DS/HAWK/hawk-1024.rsp",
+      "gen_target": "gen-hawk-1024",
+      "vec_suffix": "1024",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "LESS_252_45": {
+      "family": "less",
+      "shape": "ds_drbg_less",
+      "src_dir": "original/Additional-DS/LESS/LESS_252_45/src",
+      "include_dir": "original/Additional-DS/LESS/LESS_252_45/include",
+      "rsp_path": "kat/rsp/Additional-DS/LESS/LESS_252_45.rsp",
+      "gen_target": "gen-LESS_252_45",
+      "vec_suffix": "252_45",
+      "main_headers": [
+        "api.h",
+        "parameters.h",
+        "sha3.h"
+      ]
+    },
+    "LESS_252_68": {
+      "family": "less",
+      "shape": "ds_drbg_less",
+      "src_dir": "original/Additional-DS/LESS/LESS_252_68/src",
+      "include_dir": "original/Additional-DS/LESS/LESS_252_68/include",
+      "rsp_path": "kat/rsp/Additional-DS/LESS/LESS_252_68.rsp",
+      "gen_target": "gen-LESS_252_68",
+      "vec_suffix": "252_68",
+      "main_headers": [
+        "api.h",
+        "parameters.h",
+        "sha3.h"
+      ]
+    },
+    "LESS_252_192": {
+      "family": "less",
+      "shape": "ds_drbg_less",
+      "src_dir": "original/Additional-DS/LESS/LESS_252_192/src",
+      "include_dir": "original/Additional-DS/LESS/LESS_252_192/include",
+      "rsp_path": "kat/rsp/Additional-DS/LESS/LESS_252_192.rsp",
+      "gen_target": "gen-LESS_252_192",
+      "vec_suffix": "252_192",
+      "main_headers": [
+        "api.h",
+        "parameters.h",
+        "sha3.h"
+      ]
+    },
+    "LESS_400_102": {
+      "family": "less",
+      "shape": "ds_drbg_less",
+      "src_dir": "original/Additional-DS/LESS/LESS_400_102/src",
+      "include_dir": "original/Additional-DS/LESS/LESS_400_102/include",
+      "rsp_path": "kat/rsp/Additional-DS/LESS/LESS_400_102.rsp",
+      "gen_target": "gen-LESS_400_102",
+      "vec_suffix": "400_102",
+      "main_headers": [
+        "api.h",
+        "parameters.h",
+        "sha3.h"
+      ]
+    },
+    "LESS_400_220": {
+      "family": "less",
+      "shape": "ds_drbg_less",
+      "src_dir": "original/Additional-DS/LESS/LESS_400_220/src",
+      "include_dir": "original/Additional-DS/LESS/LESS_400_220/include",
+      "rsp_path": "kat/rsp/Additional-DS/LESS/LESS_400_220.rsp",
+      "gen_target": "gen-LESS_400_220",
+      "vec_suffix": "400_220",
+      "main_headers": [
+        "api.h",
+        "parameters.h",
+        "sha3.h"
+      ]
+    },
+    "LESS_548_137": {
+      "family": "less",
+      "shape": "ds_drbg_less",
+      "src_dir": "original/Additional-DS/LESS/LESS_548_137/src",
+      "include_dir": "original/Additional-DS/LESS/LESS_548_137/include",
+      "rsp_path": "kat/rsp/Additional-DS/LESS/LESS_548_137.rsp",
+      "gen_target": "gen-LESS_548_137",
+      "vec_suffix": "548_137",
+      "main_headers": [
+        "api.h",
+        "parameters.h",
+        "sha3.h"
+      ]
+    },
+    "LESS_548_345": {
+      "family": "less",
+      "shape": "ds_drbg_less",
+      "src_dir": "original/Additional-DS/LESS/LESS_548_345/src",
+      "include_dir": "original/Additional-DS/LESS/LESS_548_345/include",
+      "rsp_path": "kat/rsp/Additional-DS/LESS/LESS_548_345.rsp",
+      "gen_target": "gen-LESS_548_345",
+      "vec_suffix": "548_345",
+      "main_headers": [
+        "api.h",
+        "parameters.h",
+        "sha3.h"
+      ]
+    },
+    "CROSS_1_RSDP_b": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_1_RSDP_b/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_1_RSDP_b/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_1_RSDP_b.rsp",
+      "gen_target": "gen-CROSS_1_RSDP_b",
+      "vec_suffix": "CROSS_1_RSDP_b",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_1_RSDP_f": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_1_RSDP_f/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_1_RSDP_f/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_1_RSDP_f.rsp",
+      "gen_target": "gen-CROSS_1_RSDP_f",
+      "vec_suffix": "CROSS_1_RSDP_f",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_1_RSDP_s": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_1_RSDP_s/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_1_RSDP_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_1_RSDP_s.rsp",
+      "gen_target": "gen-CROSS_1_RSDP_s",
+      "vec_suffix": "CROSS_1_RSDP_s",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_1_RSDPG_b": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_1_RSDPG_b/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_1_RSDPG_b/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_1_RSDPG_b.rsp",
+      "gen_target": "gen-CROSS_1_RSDPG_b",
+      "vec_suffix": "CROSS_1_RSDPG_b",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_1_RSDPG_f": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_1_RSDPG_f/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_1_RSDPG_f/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_1_RSDPG_f.rsp",
+      "gen_target": "gen-CROSS_1_RSDPG_f",
+      "vec_suffix": "CROSS_1_RSDPG_f",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_1_RSDPG_s": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_1_RSDPG_s/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_1_RSDPG_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_1_RSDPG_s.rsp",
+      "gen_target": "gen-CROSS_1_RSDPG_s",
+      "vec_suffix": "CROSS_1_RSDPG_s",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_3_RSDP_b": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_3_RSDP_b/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_3_RSDP_b/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_3_RSDP_b.rsp",
+      "gen_target": "gen-CROSS_3_RSDP_b",
+      "vec_suffix": "CROSS_3_RSDP_b",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_3_RSDP_f": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_3_RSDP_f/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_3_RSDP_f/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_3_RSDP_f.rsp",
+      "gen_target": "gen-CROSS_3_RSDP_f",
+      "vec_suffix": "CROSS_3_RSDP_f",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_3_RSDP_s": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_3_RSDP_s/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_3_RSDP_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_3_RSDP_s.rsp",
+      "gen_target": "gen-CROSS_3_RSDP_s",
+      "vec_suffix": "CROSS_3_RSDP_s",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_3_RSDPG_b": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_3_RSDPG_b/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_3_RSDPG_b/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_3_RSDPG_b.rsp",
+      "gen_target": "gen-CROSS_3_RSDPG_b",
+      "vec_suffix": "CROSS_3_RSDPG_b",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_3_RSDPG_f": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_3_RSDPG_f/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_3_RSDPG_f/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_3_RSDPG_f.rsp",
+      "gen_target": "gen-CROSS_3_RSDPG_f",
+      "vec_suffix": "CROSS_3_RSDPG_f",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_3_RSDPG_s": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_3_RSDPG_s/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_3_RSDPG_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_3_RSDPG_s.rsp",
+      "gen_target": "gen-CROSS_3_RSDPG_s",
+      "vec_suffix": "CROSS_3_RSDPG_s",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_5_RSDP_b": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_5_RSDP_b/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_5_RSDP_b/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_5_RSDP_b.rsp",
+      "gen_target": "gen-CROSS_5_RSDP_b",
+      "vec_suffix": "CROSS_5_RSDP_b",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_5_RSDP_f": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_5_RSDP_f/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_5_RSDP_f/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_5_RSDP_f.rsp",
+      "gen_target": "gen-CROSS_5_RSDP_f",
+      "vec_suffix": "CROSS_5_RSDP_f",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_5_RSDP_s": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_5_RSDP_s/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_5_RSDP_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_5_RSDP_s.rsp",
+      "gen_target": "gen-CROSS_5_RSDP_s",
+      "vec_suffix": "CROSS_5_RSDP_s",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_5_RSDPG_b": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_5_RSDPG_b/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_5_RSDPG_b/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_5_RSDPG_b.rsp",
+      "gen_target": "gen-CROSS_5_RSDPG_b",
+      "vec_suffix": "CROSS_5_RSDPG_b",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_5_RSDPG_f": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_5_RSDPG_f/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_5_RSDPG_f/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_5_RSDPG_f.rsp",
+      "gen_target": "gen-CROSS_5_RSDPG_f",
+      "vec_suffix": "CROSS_5_RSDPG_f",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "CROSS_5_RSDPG_s": {
+      "family": "cross",
+      "shape": "ds_drbg_cross",
+      "src_dir": "original/Additional-DS/CROSS/CROSS_5_RSDPG_s/src",
+      "include_dir": "original/Additional-DS/CROSS/CROSS_5_RSDPG_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/CROSS/CROSS_5_RSDPG_s.rsp",
+      "gen_target": "gen-CROSS_5_RSDPG_s",
+      "vec_suffix": "CROSS_5_RSDPG_s",
+      "main_headers": [
+        "api.h",
+        "csprng_hash.h",
+        "parameters.h"
+      ]
+    },
+    "FAEST_128F": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_128F/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_128F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_128F.rsp",
+      "gen_target": "gen-FAEST_128F",
+      "vec_suffix": "128F",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_128S": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_128S/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_128S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_128S.rsp",
+      "gen_target": "gen-FAEST_128S",
+      "vec_suffix": "128S",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_192F": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_192F/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_192F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_192F.rsp",
+      "gen_target": "gen-FAEST_192F",
+      "vec_suffix": "192F",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_192S": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_192S/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_192S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_192S.rsp",
+      "gen_target": "gen-FAEST_192S",
+      "vec_suffix": "192S",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_256F": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_256F/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_256F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_256F.rsp",
+      "gen_target": "gen-FAEST_256F",
+      "vec_suffix": "256F",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_256S": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_256S/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_256S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_256S.rsp",
+      "gen_target": "gen-FAEST_256S",
+      "vec_suffix": "256S",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_EM_128F": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_EM_128F/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_EM_128F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_128F.rsp",
+      "gen_target": "gen-FAEST_EM_128F",
+      "vec_suffix": "EM_128F",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_EM_128S": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_EM_128S/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_EM_128S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_128S.rsp",
+      "gen_target": "gen-FAEST_EM_128S",
+      "vec_suffix": "EM_128S",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_EM_192F": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_EM_192F/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_EM_192F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_192F.rsp",
+      "gen_target": "gen-FAEST_EM_192F",
+      "vec_suffix": "EM_192F",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_EM_192S": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_EM_192S/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_EM_192S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_192S.rsp",
+      "gen_target": "gen-FAEST_EM_192S",
+      "vec_suffix": "EM_192S",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_EM_256F": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_EM_256F/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_EM_256F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_256F.rsp",
+      "gen_target": "gen-FAEST_EM_256F",
+      "vec_suffix": "EM_256F",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "FAEST_EM_256S": {
+      "family": "faest",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/FAEST/FAEST_EM_256S/src",
+      "include_dir": "original/Additional-DS/FAEST/FAEST_EM_256S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_256S.rsp",
+      "gen_target": "gen-FAEST_EM_256S",
+      "vec_suffix": "EM_256S",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST/common/src",
+        "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "SPHINCSp128fsimple": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-128f-simple/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-128f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-128f-simple.rsp",
+      "gen_target": "gen-SPHINCSp128fsimple",
+      "vec_suffix": "SPHINCSp128fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp128frobust": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-128f-robust/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-128f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-128f-robust.rsp",
+      "gen_target": "gen-SPHINCSp128frobust",
+      "vec_suffix": "SPHINCSp128frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp192fsimple": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-192f-simple/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-192f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-192f-simple.rsp",
+      "gen_target": "gen-SPHINCSp192fsimple",
+      "vec_suffix": "SPHINCSp192fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp192frobust": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-192f-robust/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-192f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-192f-robust.rsp",
+      "gen_target": "gen-SPHINCSp192frobust",
+      "vec_suffix": "SPHINCSp192frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp256fsimple": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-256f-simple/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-256f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-256f-simple.rsp",
+      "gen_target": "gen-SPHINCSp256fsimple",
+      "vec_suffix": "SPHINCSp256fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp256frobust": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-256f-robust/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-256f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-256f-robust.rsp",
+      "gen_target": "gen-SPHINCSp256frobust",
+      "vec_suffix": "SPHINCSp256frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp128ssimple": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-128s-simple/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-128s-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-128s-simple.rsp",
+      "gen_target": "gen-SPHINCSp128ssimple",
+      "vec_suffix": "SPHINCSp128ssimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp192ssimple": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-192s-simple/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-192s-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-192s-simple.rsp",
+      "gen_target": "gen-SPHINCSp192ssimple",
+      "vec_suffix": "SPHINCSp192ssimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SPHINCSp256ssimple": {
+      "family": "slhdsa",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA/SPHINCS+-256s-simple/src",
+      "include_dir": "original/DS/SLH-DSA/SPHINCS+-256s-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA/SPHINCS+-256s-simple.rsp",
+      "gen_target": "gen-SPHINCSp256ssimple",
+      "vec_suffix": "SPHINCSp256ssimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HARAKAp128fsimple": {
+      "family": "slhdsa-haraka",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-128f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-128f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka/SPHINCS+-128f-simple.rsp",
+      "gen_target": "gen-HARAKAp128fsimple",
+      "vec_suffix": "HARAKAp128fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HARAKAp128frobust": {
+      "family": "slhdsa-haraka",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-128f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-128f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka/SPHINCS+-128f-robust.rsp",
+      "gen_target": "gen-HARAKAp128frobust",
+      "vec_suffix": "HARAKAp128frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HARAKAp192fsimple": {
+      "family": "slhdsa-haraka",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-192f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-192f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka/SPHINCS+-192f-simple.rsp",
+      "gen_target": "gen-HARAKAp192fsimple",
+      "vec_suffix": "HARAKAp192fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HARAKAp192frobust": {
+      "family": "slhdsa-haraka",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-192f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-192f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka/SPHINCS+-192f-robust.rsp",
+      "gen_target": "gen-HARAKAp192frobust",
+      "vec_suffix": "HARAKAp192frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HARAKAp256fsimple": {
+      "family": "slhdsa-haraka",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-256f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-256f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka/SPHINCS+-256f-simple.rsp",
+      "gen_target": "gen-HARAKAp256fsimple",
+      "vec_suffix": "HARAKAp256fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HARAKAp256frobust": {
+      "family": "slhdsa-haraka",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-256f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka/SPHINCS+-256f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka/SPHINCS+-256f-robust.rsp",
+      "gen_target": "gen-HARAKAp256frobust",
+      "vec_suffix": "HARAKAp256frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HARAKAAESp128fsimple": {
+      "family": "slhdsa-haraka-aes",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-128f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-128f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka-AES/SPHINCS+-128f-simple.rsp",
+      "gen_target": "gen-HARAKAAESp128fsimple",
+      "vec_suffix": "HARAKAAESp128fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ],
+      "requires_riscv": true
+    },
+    "HARAKAAESp128frobust": {
+      "family": "slhdsa-haraka-aes",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-128f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-128f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka-AES/SPHINCS+-128f-robust.rsp",
+      "gen_target": "gen-HARAKAAESp128frobust",
+      "vec_suffix": "HARAKAAESp128frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ],
+      "requires_riscv": true
+    },
+    "HARAKAAESp192fsimple": {
+      "family": "slhdsa-haraka-aes",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-192f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-192f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka-AES/SPHINCS+-192f-simple.rsp",
+      "gen_target": "gen-HARAKAAESp192fsimple",
+      "vec_suffix": "HARAKAAESp192fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ],
+      "requires_riscv": true
+    },
+    "HARAKAAESp192frobust": {
+      "family": "slhdsa-haraka-aes",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-192f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-192f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka-AES/SPHINCS+-192f-robust.rsp",
+      "gen_target": "gen-HARAKAAESp192frobust",
+      "vec_suffix": "HARAKAAESp192frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ],
+      "requires_riscv": true
+    },
+    "HARAKAAESp256fsimple": {
+      "family": "slhdsa-haraka-aes",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-256f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-256f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka-AES/SPHINCS+-256f-simple.rsp",
+      "gen_target": "gen-HARAKAAESp256fsimple",
+      "vec_suffix": "HARAKAAESp256fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ],
+      "requires_riscv": true
+    },
+    "HARAKAAESp256frobust": {
+      "family": "slhdsa-haraka-aes",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-256f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-Haraka-AES/SPHINCS+-256f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-Haraka-AES/SPHINCS+-256f-robust.rsp",
+      "gen_target": "gen-HARAKAAESp256frobust",
+      "vec_suffix": "HARAKAAESp256frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ],
+      "requires_riscv": true
+    },
+    "SHA2p128fsimple": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-128f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-128f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-128f-simple.rsp",
+      "gen_target": "gen-SHA2p128fsimple",
+      "vec_suffix": "SHA2p128fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p128frobust": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-128f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-128f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-128f-robust.rsp",
+      "gen_target": "gen-SHA2p128frobust",
+      "vec_suffix": "SHA2p128frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p192fsimple": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-192f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-192f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-192f-simple.rsp",
+      "gen_target": "gen-SHA2p192fsimple",
+      "vec_suffix": "SHA2p192fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p192frobust": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-192f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-192f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-192f-robust.rsp",
+      "gen_target": "gen-SHA2p192frobust",
+      "vec_suffix": "SHA2p192frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p256fsimple": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-256f-simple/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-256f-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-256f-simple.rsp",
+      "gen_target": "gen-SHA2p256fsimple",
+      "vec_suffix": "SHA2p256fsimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p256frobust": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-256f-robust/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-256f-robust/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-256f-robust.rsp",
+      "gen_target": "gen-SHA2p256frobust",
+      "vec_suffix": "SHA2p256frobust",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p128ssimple": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-128s-simple/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-128s-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-128s-simple.rsp",
+      "gen_target": "gen-SHA2p128ssimple",
+      "vec_suffix": "SHA2p128ssimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p192ssimple": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-192s-simple/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-192s-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-192s-simple.rsp",
+      "gen_target": "gen-SHA2p192ssimple",
+      "vec_suffix": "SHA2p192ssimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "SHA2p256ssimple": {
+      "family": "slhdsa-sha2",
+      "shape": "ds_derand_rnd",
+      "src_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-256s-simple/src",
+      "include_dir": "original/DS/SLH-DSA-SHA2/SPHINCS+-256s-simple/include",
+      "rsp_path": "kat/rsp/DS/SLH-DSA-SHA2/SPHINCS+-256s-simple.rsp",
+      "gen_target": "gen-SHA2p256ssimple",
+      "vec_suffix": "SHA2p256ssimple",
+      "main_headers": [
+        "api.h",
+        "params.h"
+      ]
+    },
+    "HQC2025_1": {
+      "family": "hqc2025",
+      "shape": "kem_prng_reseed",
+      "src_dir": "original/KEM/HQC/HQC-2025/HQC-1/src",
+      "include_dir": "original/KEM/HQC/HQC-2025/HQC-1/include",
+      "rsp_path": "kat/rsp/KEM/HQC/HQC-2025/HQC-1.rsp",
+      "gen_target": "gen-HQC2025_1",
+      "vec_suffix": "1",
+      "main_headers": [
+        "api.h",
+        "symmetric.h"
+      ]
+    },
+    "HQC2025_3": {
+      "family": "hqc2025",
+      "shape": "kem_prng_reseed",
+      "src_dir": "original/KEM/HQC/HQC-2025/HQC-3/src",
+      "include_dir": "original/KEM/HQC/HQC-2025/HQC-3/include",
+      "rsp_path": "kat/rsp/KEM/HQC/HQC-2025/HQC-3.rsp",
+      "gen_target": "gen-HQC2025_3",
+      "vec_suffix": "3",
+      "main_headers": [
+        "api.h",
+        "symmetric.h"
+      ]
+    },
+    "HQC2025_5": {
+      "family": "hqc2025",
+      "shape": "kem_prng_reseed",
+      "src_dir": "original/KEM/HQC/HQC-2025/HQC-5/src",
+      "include_dir": "original/KEM/HQC/HQC-2025/HQC-5/include",
+      "rsp_path": "kat/rsp/KEM/HQC/HQC-2025/HQC-5.rsp",
+      "gen_target": "gen-HQC2025_5",
+      "vec_suffix": "5",
+      "main_headers": [
+        "api.h",
+        "symmetric.h"
+      ]
+    },
+    "XMSS-SHA2_10_256": {
+      "family": "xmss",
+      "shape": "ds_derand_seed",
+      "src_dir": "original/Stateful-DS/XMSS/XMSS-SHA2_10_256/src",
+      "include_dir": "original/Stateful-DS/XMSS/XMSS-SHA2_10_256/include",
+      "rsp_path": "kat/rsp/Stateful-DS/XMSS/XMSS-SHA2_10_256.rsp",
+      "gen_target": "gen-xmss",
+      "vec_suffix": "XMSS_SHA2_10_256",
+      "main_headers": [
+        "api.h"
+      ]
+    },
+    "LMS_H10_W8": {
+      "family": "lms",
+      "shape": "ds_derand_seed",
+      "src_dir": "original/Stateful-DS/LMS/LMS_H10_W8/src",
+      "include_dir": "original/Stateful-DS/LMS/LMS_H10_W8/include",
+      "rsp_path": "kat/rsp/Stateful-DS/LMS/lms_default.rsp",
+      "gen_target": "gen-lms",
+      "vec_suffix": "LMS_H10_W8",
+      "main_headers": [
+        "api.h"
+      ]
+    },
+    "HSS_L2_H5_W8": {
+      "family": "hss",
+      "shape": "ds_derand_seed",
+      "src_dir": "original/Stateful-DS/HSS/HSS_L2_H5_W8/src",
+      "include_dir": "original/Stateful-DS/HSS/HSS_L2_H5_W8/include",
+      "rsp_path": "kat/rsp/Stateful-DS/HSS/hss_default.rsp",
+      "gen_target": "gen-hss",
+      "vec_suffix": "HSS_L2_H5_W8",
+      "main_headers": [
+        "api.h"
+      ]
+    },
+    "ascon128v12": {
+      "family": "ascon-aead",
+      "shape": "aead_direct",
+      "src_dir": "original/Symmetric/ASCON/ascon128v12/src",
+      "include_dir": "original/Symmetric/ASCON/ascon128v12/include",
+      "rsp_path": "kat/rsp/Symmetric/ASCON/ascon128v12.rsp",
+      "gen_target": "gen-ascon128v12",
+      "vec_suffix": "ascon128v12",
+      "main_headers": [
+        "crypto_aead.h"
+      ]
+    },
+    "ascon128av12": {
+      "family": "ascon-aead",
+      "shape": "aead_direct",
+      "src_dir": "original/Symmetric/ASCON/ascon128av12/src",
+      "include_dir": "original/Symmetric/ASCON/ascon128av12/include",
+      "rsp_path": "kat/rsp/Symmetric/ASCON/ascon128av12.rsp",
+      "gen_target": "gen-ascon128av12",
+      "vec_suffix": "ascon128av12",
+      "main_headers": [
+        "crypto_aead.h"
+      ]
+    },
+    "ascon80pqv12": {
+      "family": "ascon-aead",
+      "shape": "aead_direct",
+      "src_dir": "original/Symmetric/ASCON/ascon80pqv12/src",
+      "include_dir": "original/Symmetric/ASCON/ascon80pqv12/include",
+      "rsp_path": "kat/rsp/Symmetric/ASCON/ascon80pqv12.rsp",
+      "gen_target": "gen-ascon80pqv12",
+      "vec_suffix": "ascon80pqv12",
+      "main_headers": [
+        "crypto_aead.h"
+      ]
+    },
+    "asconhashv12": {
+      "family": "ascon-hash",
+      "shape": "hash_direct",
+      "src_dir": "original/Symmetric/ASCON/asconhashv12/src",
+      "include_dir": "original/Symmetric/ASCON/asconhashv12/include",
+      "rsp_path": "kat/rsp/Symmetric/ASCON/asconhashv12.rsp",
+      "gen_target": "gen-asconhashv12",
+      "vec_suffix": "asconhashv12",
+      "main_headers": [
+        "crypto_hash.h"
+      ]
+    },
+    "asconhashav12": {
+      "family": "ascon-hash",
+      "shape": "hash_direct",
+      "src_dir": "original/Symmetric/ASCON/asconhashav12/src",
+      "include_dir": "original/Symmetric/ASCON/asconhashav12/include",
+      "rsp_path": "kat/rsp/Symmetric/ASCON/asconhashav12.rsp",
+      "gen_target": "gen-asconhashav12",
+      "vec_suffix": "asconhashav12",
+      "main_headers": [
+        "crypto_hash.h"
+      ]
+    },
+    "asconxofv12": {
+      "family": "ascon-hash",
+      "shape": "hash_direct",
+      "src_dir": "original/Symmetric/ASCON/asconxofv12/src",
+      "include_dir": "original/Symmetric/ASCON/asconxofv12/include",
+      "rsp_path": "kat/rsp/Symmetric/ASCON/asconxofv12.rsp",
+      "gen_target": "gen-asconxofv12",
+      "vec_suffix": "asconxofv12",
+      "main_headers": [
+        "crypto_hash.h"
+      ]
+    },
+    "asconxofav12": {
+      "family": "ascon-hash",
+      "shape": "hash_direct",
+      "src_dir": "original/Symmetric/ASCON/asconxofav12/src",
+      "include_dir": "original/Symmetric/ASCON/asconxofav12/include",
+      "rsp_path": "kat/rsp/Symmetric/ASCON/asconxofav12.rsp",
+      "gen_target": "gen-asconxofav12",
+      "vec_suffix": "asconxofav12",
+      "main_headers": [
+        "crypto_hash.h"
+      ]
+    }
+  },
+  "_unsupported_families_todo": []
+}

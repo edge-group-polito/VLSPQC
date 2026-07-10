@@ -10,31 +10,6 @@
 #include "address.h"
 #include "params.h"
 
-#include <stdio.h>
-#include <stdint.h>
-
-/* Helpers: keep these in the same C file for quick debug. */
-static void dump_bytes_hex(const char *label, const unsigned char *buf, size_t len)
-{
-    printf("%s (len=%zu):", label, len);
-    for (size_t i = 0; i < len; i++) {
-        if ((i % 16) == 0) printf("\n  ");
-        printf("%02x ", buf[i]);
-    }
-    printf("\n");
-}
-
-static void dump_u32_array(const char *label, const unsigned int *a, size_t len)
-{
-    printf("%s (len=%zu):", label, len);
-    for (size_t i = 0; i < len; i++) {
-        if ((i % 16) == 0) printf("\n  ");
-        printf("%u ", a[i]);
-    }
-    printf("\n");
-}
-
-
 // TODO clarify address expectations, and make them more uniform.
 // TODO i.e. do we expect types to be set already?
 // TODO and do we expect modifications or copies?
@@ -114,45 +89,6 @@ void chain_lengths(unsigned int *lengths, const unsigned char *msg)
     base_w(lengths, SPX_WOTS_LEN1, msg);
     wots_checksum(lengths + SPX_WOTS_LEN1, lengths);
 }
-
-
-//void chain_lengths(unsigned int *lengths, const unsigned char *msg)
-//{
-//    /* NOTE: msg is a pointer. You must provide the real message length in bytes.
-//       For SPHINCS+, this is typically SPX_N for the message digest chunk used by WOTS.
-//       If your implementation uses a different constant, replace SPX_N accordingly. */
-//    const size_t msg_len_bytes = (size_t)SPX_N;
-//
-//    printf("\n=== chain_lengths() ===\n");
-//    printf("lengths ptr = %p\n", (void*)lengths);
-//    printf("msg ptr     = %p\n", (const void*)msg);
-//
-//    printf("Dimensions:\n");
-//    printf("  SPX_WOTS_LEN1 = %u\n", (unsigned)SPX_WOTS_LEN1);
-//    printf("  SPX_WOTS_LEN2 = %u\n", (unsigned)SPX_WOTS_LEN2);
-//    printf("  SPX_WOTS_LEN  = %u\n", (unsigned)SPX_WOTS_LEN);
-//
-//    dump_bytes_hex("msg", msg, msg_len_bytes);
-//
-//    /* Print initial contents if you want (often uninitialized). */
-//    /* dump_u32_array("lengths (BEFORE base_w)", lengths, SPX_WOTS_LEN); */
-//
-//    printf("\n-- calling base_w(lengths, SPX_WOTS_LEN1, msg) --\n");
-//    base_w(lengths, SPX_WOTS_LEN1, msg);
-//    dump_u32_array("lengths[0..LEN1-1] after base_w", lengths, SPX_WOTS_LEN1);
-//
-//    printf("\n-- calling wots_checksum(lengths + SPX_WOTS_LEN1, lengths) --\n");
-//    wots_checksum(lengths + SPX_WOTS_LEN1, lengths);
-//    dump_u32_array("lengths[LEN1..LEN-1] after wots_checksum",
-//                   lengths + SPX_WOTS_LEN1, SPX_WOTS_LEN2);
-//
-//    /* This is the “return value” of chain_lengths: it writes SPX_WOTS_LEN words into *lengths. */
-//    dump_u32_array("chain_lengths output (full lengths[0..LEN-1])",
-//                   lengths, SPX_WOTS_LEN);
-//
-//    printf("=== end chain_lengths() ===\n");
-//}
-
 
 /**
  * Takes a WOTS signature and an n-byte message, computes a WOTS public key.

@@ -115,7 +115,6 @@ int crypto_sign_signature_internal(uint8_t *sig,
   unpack_sk(rho, tr, key, &t0, &s1, &s2, sk);
 
   /* Compute mu = CRH(tr, pre, msg) */
-  /* Debug print */
   shake256_init(&state);
   shake256_absorb(&state, tr, TRBYTES);
   shake256_absorb(&state, pre, prelen);

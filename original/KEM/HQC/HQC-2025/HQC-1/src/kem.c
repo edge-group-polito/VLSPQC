@@ -15,16 +15,6 @@
 
 #include <stdio.h>
 
-
-static void print_hex(const char *label, const uint8_t *data, size_t len) {
-    printf("%s (%zu bytes): ", label, len);
-    for (size_t i = 0; i < len; i++) {
-        printf("%02X", data[i]);
-        if ((i + 1) % 16 == 0) printf("\n    "); // wrap every 16 bytes
-    }
-    printf("\n");
-}
-
 /**
  * @brief Generates a keypair for the KEM (Key Encapsulation Mechanism) scheme.
  *

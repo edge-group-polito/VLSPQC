@@ -1,12 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
-// Auth: Alessandra Dolmeta, Valeria Piscopo - Politecnico di Torino                 //
-// Date: September 2025                                                              //
-// Desc: Entry point for testing the ML-DSA implementation using input and output    //
-//       test vector coming from NIST                                                //
+// Auth: Alessandra Dolmeta, Valeria Piscopo                                         //
+// @ EDGE group, at VLSI-LAB, Politecnico di Torino                                  //
+// Date: July 2026                                                                   //
+// Desc: ML-DSA-3 KAT test entry point                                               //
 //                                                                                   //
 ///////////////////////////////////////////////////////////////////////////////////////
-
 
 #include <stddef.h>
 #include <stdint.h>

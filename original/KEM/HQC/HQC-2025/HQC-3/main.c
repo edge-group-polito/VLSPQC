@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
-// Auth: Alessandra Dolmeta, Valeria Piscopo - Politecnico di Torino                 //
-// Date: September 2025                                                              //
-// Desc: Entry point for testing the HQC implementation using input and output       //
-//       test vector coming from NIST                                                //
+// Auth: Alessandra Dolmeta, Valeria Piscopo                                         //
+// @ EDGE group, at VLSI-LAB, Politecnico di Torino                                  //
+// Date: July 2026                                                                   //
+// Desc: HQC-3 KAT test entry point                                                  //
 //                                                                                   //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -116,8 +116,8 @@ int main(void)
             printVect("pk", pk, CRYPTO_PUBLICKEYBYTES);
             printVect("sk", sk, CRYPTO_SECRETKEYBYTES);
             printVect("ct", ct, CRYPTO_CIPHERTEXTBYTES);
-            printVect("key_a", key_a, CRYPTO_BYTES);
-            printVect("key_b", key_b, CRYPTO_BYTES);
+            printVect("ss", ss, CRYPTO_BYTES);
+            printVect("ss1", ss1, CRYPTO_BYTES);
             printf("\n");
     #endif 
 
