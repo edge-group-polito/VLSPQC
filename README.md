@@ -223,3 +223,5 @@ This repository follows the licensing terms of the respective reference implemen
 
 - Alessandra Dolmeta    - alessandra.dolmeta@polito.it
 - Valeria Piscopo       - valeria.piscopo@polito.it
+
+In collaboration with: Behnam Farnaghinejad (behnam.farnaghinejad@polito.it, DAUIN, Politecnico di Torino)
