@@ -41,6 +41,24 @@ This repository contains the reference implementation of [LESS](https://www.less
 - **FAEST**    [FAEST](https://faest.info/)  
 This repository contains a port of the [FAEST](https://faest.info/) reference implementation, a signature scheme built on the VOLE-in-the-head zero-knowledge proof paradigm with security based on AES and SHA-3. FAEST was selected by NIST to move forward to the [third round](https://csrc.nist.gov/projects/pqc-dig-sig) of the Additional Digital Signature Schemes standardization process.
 
+- **UOV**    [pqov](https://github.com/pqov/pqov)  
+This repository contains a port of the [pqov](https://github.com/pqov/pqov) reference implementation of Unbalanced Oil and Vinegar (UOV), a multivariate signature scheme whose security relies on the hardness of solving systems of quadratic equations. UOV was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+
+- **MAYO**    [MAYO-C](https://github.com/PQCMayo/MAYO-C)  
+This repository contains a port of the [MAYO-C](https://github.com/PQCMayo/MAYO-C) reference implementation of MAYO, a multivariate signature scheme built as a variant of UOV whose security likewise relies on the hardness of solving systems of quadratic equations. MAYO was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+
+- **QR-UOV**    [QR-UOV round 2](https://github.com/qruov/round2)  
+This repository contains a port of the QR-UOV round-2 reference implementation, a multivariate signature scheme built as a structured (quotient-ring) variant of UOV, trading a larger public key for a smaller secret key relative to plain UOV. QR-UOV was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+
+- **SNOVA**    [SNOVA reference implementation](https://github.com/SNOVA-project/SNOVA)  
+This repository contains a port of the SNOVA reference implementation, a multivariate signature scheme built over a noncommutative ring, trading a larger signature for smaller keys relative to plain UOV. SNOVA was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+
+- **SDitH**    [SDitH reference implementation](https://github.com/sdith/sdith)  
+This repository contains a port of the SDitH (Syndrome Decoding in the Head) reference implementation, an MPC-in-the-Head code-based signature scheme with two sharing strategies (Hypercube and Threshold). SDitH was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+
+- **SQIsign**    [the-sqisign](https://github.com/SQIsign/the-sqisign)  
+This repository contains a port of the-sqisign reference implementation, an isogeny-based signature scheme over quaternion algebras (Short Quaternion and Isogeny Signature). SQIsign was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+
 - **XMSS / LMS / HSS**  
 This repository contains implementations of the stateful hash-based signature schemes [XMSS](https://datatracker.ietf.org/doc/html/rfc8391) (RFC 8391) and [LMS/HSS](https://datatracker.ietf.org/doc/html/rfc8554) (RFC 8554), both approved by NIST in [SP 800-208](https://csrc.nist.gov/projects/stateful-hash-based-signatures) for stateful hash-based signatures.
 
@@ -53,7 +71,7 @@ Algorithms are organized by standardization status:
 |----------|--------------|----------------------|
 | `original/DS/` | Standardized digital signatures: ML-DSA, SLH-DSA ×4, FALCON | Yes |
 | `original/KEM/` | Standardized KEMs: ML-KEM, HQC (HQC-2025 only) | Yes |
-| `original/Additional-DS/` | Non-standardized candidate signatures: CROSS, HAWK, LESS, FAEST | No — `test-additional-ds` |
+| `original/Additional-DS/` | Non-standardized candidate signatures: CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign | No — `test-additional-ds` |
 | `original/Stateful-DS/` | NIST SP 800-208 stateful hash-based signatures: XMSS, LMS, HSS | No — `test-stateful-ds` |
 | `original/Symmetric/` | ASCON (lightweight AEAD + hash/XOF) — not PQC at all | No — `test-ascon` |
 
@@ -80,7 +98,7 @@ subfolder's own README:
 | Where | What's there |
 |-------|--------------|
 | [`original/DS/README.md`](original/DS/README.md) | Standardized DS families/variants, per-family `make` targets, `.rsp` fields, algorithm notes (FALCON/ML-DSA/SLH-DSA) |
-| [`original/Additional-DS/README.md`](original/Additional-DS/README.md) | Non-standardized DS families (CROSS/HAWK/LESS/FAEST) |
+| [`original/Additional-DS/README.md`](original/Additional-DS/README.md) | Non-standardized DS families (CROSS/HAWK/LESS/FAEST/UOV/MAYO/QRUOV/SNOVA/SDitH/SQIsign) |
 | [`original/Stateful-DS/README.md`](original/Stateful-DS/README.md) | Stateful hash-based signatures (XMSS/LMS/HSS, NIST SP 800-208) |
 | [`original/KEM/README.md`](original/KEM/README.md) | KEM families/variants, per-family `make` targets, KEM-specific `.rsp` fields, algorithm notes (ML-KEM/HQC) |
 | [`original/Symmetric/ASCON/README.md`](original/Symmetric/ASCON/README.md) | ASCON AEAD + hash/XOF variants, `.rsp` fields, `make` targets |
@@ -132,7 +150,7 @@ make test-mlkem
 make test-ml-kem-512
 
 # Non-standardized / separate-category algorithms -- NOT part of test-all
-make test-additional-ds   # CROSS, HAWK, LESS, FAEST
+make test-additional-ds   # CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign
 make test-stateful-ds     # XMSS, LMS, HSS (default variant each)
 make test-ascon           # ASCON AEAD + hash/XOF (not PQC)
 

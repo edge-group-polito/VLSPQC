@@ -31,7 +31,7 @@
     },
     "ds_drbg_hawk": {
       "type": "DS",
-      "description": "No derand API. Reseed via randombytes_init(seed, NULL, 256), skip the mlen bytes the generator drew for the message, then keypair/sign/open. Unlike CROSS/LESS, keypair is only called when RUN_KEYGEN=1 -- matches kat/gen/main_hawk.c exactly, including its RUN_KEYGEN=0 CSPRNG-desync caveat (see tools/README.md). Shared verbatim by HAWK and FAEST (main_faest.c is the same shape: FAEST's rand_bytes() forwards straight to the reseeded NIST DRBG, no internal CSPRNG object of its own)."
+      "description": "No derand API. Reseed via randombytes_init(seed, NULL, 256), skip the mlen bytes the generator drew for the message, then keypair/sign/open. Unlike CROSS/LESS, keypair is only called when RUN_KEYGEN=1 -- matches kat/gen/main_hawk.c exactly, including its RUN_KEYGEN=0 CSPRNG-desync caveat (see tools/README.md). Shared verbatim by HAWK, FAEST, UOV, MAYO, QRUOV, SNOVA, and SDitH (main_faest.c/main_uov.c/main_mayo.c/main_qruov.c/main_snova.c/main_sdith.c are the same shape: FAEST's rand_bytes(), pqov's randombytes(), MAYO-C's randombytes(), QR-UOV's randombytes(), SNOVA's randombytes(), and SDitH's randombytes() all forward straight to the reseeded NIST DRBG, no internal CSPRNG object of their own; main_mayo.c differs only in using size_t instead of unsigned long long for smlen/mlen, matching MAYO's own api.h; main_sdith.c uses unsigned long long like main_hawk.c, matching SDitH's own api.h in both Hypercube_Variant and Threshold_Variant)."
     },
     "kem_prng_reseed": {
       "type": "KEM",
@@ -128,6 +128,127 @@
         "FAEST_EM_192S",
         "FAEST_EM_256F",
         "FAEST_EM_256S"
+      ]
+    },
+    "uov": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "UOV_Ip",
+        "UOV_Ip_pkc",
+        "UOV_Ip_pkc_skc",
+        "UOV_Is",
+        "UOV_Is_pkc",
+        "UOV_Is_pkc_skc",
+        "UOV_III",
+        "UOV_III_pkc",
+        "UOV_III_pkc_skc",
+        "UOV_V",
+        "UOV_V_pkc",
+        "UOV_V_pkc_skc"
+      ]
+    },
+    "mayo": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "MAYO_1",
+        "MAYO_2",
+        "MAYO_3",
+        "MAYO_5"
+      ]
+    },
+    "qruov": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "QRUOV_1_q7L10v740m100_a",
+        "QRUOV_1_q7L10v740m100_s",
+        "QRUOV_1_q31L3v165m60_a",
+        "QRUOV_1_q31L3v165m60_s",
+        "QRUOV_1_q31L10v600m70_a",
+        "QRUOV_1_q31L10v600m70_s",
+        "QRUOV_1_q127L3v156m54_a",
+        "QRUOV_1_q127L3v156m54_s",
+        "QRUOV_3_q7L10v1100m140_a",
+        "QRUOV_3_q7L10v1100m140_s",
+        "QRUOV_3_q31L3v246m87_a",
+        "QRUOV_3_q31L3v246m87_s",
+        "QRUOV_3_q31L10v890m100_a",
+        "QRUOV_3_q31L10v890m100_s",
+        "QRUOV_3_q127L3v228m78_a",
+        "QRUOV_3_q127L3v228m78_s",
+        "QRUOV_5_q7L10v1490m190_a",
+        "QRUOV_5_q7L10v1490m190_s",
+        "QRUOV_5_q31L3v324m114_a",
+        "QRUOV_5_q31L3v324m114_s",
+        "QRUOV_5_q31L10v1120m120_a",
+        "QRUOV_5_q31L10v1120m120_s",
+        "QRUOV_5_q127L3v306m105_a",
+        "QRUOV_5_q127L3v306m105_s"
+      ]
+    },
+    "snova": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "SNOVA_28_5_19_4_AES",
+        "SNOVA_28_5_19_4",
+        "SNOVA_24_5_16_4_AES",
+        "SNOVA_24_5_16_4",
+        "SNOVA_48_17_16_2_AES",
+        "SNOVA_48_17_16_2",
+        "SNOVA_48_16_19_2_AES",
+        "SNOVA_48_16_19_2",
+        "SNOVA_28_4_16_4x5_AES",
+        "SNOVA_28_4_16_4x5",
+        "SNOVA_28_4_19_4x5_AES",
+        "SNOVA_28_4_19_4x5",
+        "SNOVA_40_7_19_4_AES",
+        "SNOVA_40_7_19_4",
+        "SNOVA_37_8_16_4_AES",
+        "SNOVA_37_8_16_4",
+        "SNOVA_72_25_16_2_AES",
+        "SNOVA_72_25_16_2",
+        "SNOVA_72_24_19_2_AES",
+        "SNOVA_72_24_19_2",
+        "SNOVA_38_5_16_4x5_AES",
+        "SNOVA_38_5_16_4x5",
+        "SNOVA_38_5_19_4x5_AES",
+        "SNOVA_38_5_19_4x5",
+        "SNOVA_50_9_19_4_AES",
+        "SNOVA_50_9_19_4",
+        "SNOVA_60_10_16_4_AES",
+        "SNOVA_60_10_16_4",
+        "SNOVA_97_33_16_2_AES",
+        "SNOVA_97_33_16_2",
+        "SNOVA_96_32_19_2_AES",
+        "SNOVA_96_32_19_2",
+        "SNOVA_52_6_16_4x6_AES",
+        "SNOVA_52_6_16_4x6",
+        "SNOVA_52_6_19_4x6_AES",
+        "SNOVA_52_6_19_4x6"
+      ]
+    },
+    "sdith": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "sdith_hypercube_cat1_gf256",
+        "sdith_hypercube_cat1_p251",
+        "sdith_hypercube_cat3_gf256",
+        "sdith_hypercube_cat3_p251",
+        "sdith_hypercube_cat5_gf256",
+        "sdith_hypercube_cat5_p251",
+        "sdith_threshold_cat1_gf256",
+        "sdith_threshold_cat1_p251",
+        "sdith_threshold_cat3_gf256",
+        "sdith_threshold_cat3_p251",
+        "sdith_threshold_cat5_gf256",
+        "sdith_threshold_cat5_p251"
+      ]
+    },
+    "sqisign": {
+      "shape": "ds_drbg_hawk",
+      "variants": [
+        "sqisign_lvl1",
+        "sqisign_lvl3",
+        "sqisign_lvl5"
       ]
     },
     "slhdsa": {
@@ -918,6 +1039,1433 @@
       "extra_dirs": [
         "original/Additional-DS/FAEST/common/src",
         "original/Additional-DS/FAEST/common/include"
+      ]
+    },
+    "UOV_Ip": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_Ip/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_Ip.rsp",
+      "gen_target": "gen-UOV_Ip",
+      "vec_suffix": "Ip",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_Ip_pkc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_Ip_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_Ip_pkc.rsp",
+      "gen_target": "gen-UOV_Ip_pkc",
+      "vec_suffix": "Ip_pkc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_Ip_pkc_skc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_Ip_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_Ip_pkc_skc.rsp",
+      "gen_target": "gen-UOV_Ip_pkc_skc",
+      "vec_suffix": "Ip_pkc_skc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_Is": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_Is/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_Is.rsp",
+      "gen_target": "gen-UOV_Is",
+      "vec_suffix": "Is",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_Is_pkc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_Is_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_Is_pkc.rsp",
+      "gen_target": "gen-UOV_Is_pkc",
+      "vec_suffix": "Is_pkc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_Is_pkc_skc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_Is_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_Is_pkc_skc.rsp",
+      "gen_target": "gen-UOV_Is_pkc_skc",
+      "vec_suffix": "Is_pkc_skc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_III": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_III/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_III.rsp",
+      "gen_target": "gen-UOV_III",
+      "vec_suffix": "III",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_III_pkc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_III_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_III_pkc.rsp",
+      "gen_target": "gen-UOV_III_pkc",
+      "vec_suffix": "III_pkc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_III_pkc_skc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_III_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_III_pkc_skc.rsp",
+      "gen_target": "gen-UOV_III_pkc_skc",
+      "vec_suffix": "III_pkc_skc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_V": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_V/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_V.rsp",
+      "gen_target": "gen-UOV_V",
+      "vec_suffix": "V",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_V_pkc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_V_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_V_pkc.rsp",
+      "gen_target": "gen-UOV_V_pkc",
+      "vec_suffix": "V_pkc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "UOV_V_pkc_skc": {
+      "family": "uov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/UOV/common/src",
+      "include_dir": "original/Additional-DS/UOV/UOV_V_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV/UOV_V_pkc_skc.rsp",
+      "gen_target": "gen-UOV_V_pkc_skc",
+      "vec_suffix": "V_pkc_skc",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV/common/include"
+      ]
+    },
+    "MAYO_1": {
+      "family": "mayo",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/MAYO/common/src",
+      "include_dir": "original/Additional-DS/MAYO/MAYO_1/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO/MAYO_1.rsp",
+      "gen_target": "gen-MAYO_1",
+      "vec_suffix": "1",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO/common/include",
+        "original/Additional-DS/MAYO/MAYO_1/src"
+      ]
+    },
+    "MAYO_2": {
+      "family": "mayo",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/MAYO/common/src",
+      "include_dir": "original/Additional-DS/MAYO/MAYO_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO/MAYO_2.rsp",
+      "gen_target": "gen-MAYO_2",
+      "vec_suffix": "2",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO/common/include",
+        "original/Additional-DS/MAYO/MAYO_2/src"
+      ]
+    },
+    "MAYO_3": {
+      "family": "mayo",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/MAYO/common/src",
+      "include_dir": "original/Additional-DS/MAYO/MAYO_3/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO/MAYO_3.rsp",
+      "gen_target": "gen-MAYO_3",
+      "vec_suffix": "3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO/common/include",
+        "original/Additional-DS/MAYO/MAYO_3/src"
+      ]
+    },
+    "MAYO_5": {
+      "family": "mayo",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/MAYO/common/src",
+      "include_dir": "original/Additional-DS/MAYO/MAYO_5/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO/MAYO_5.rsp",
+      "gen_target": "gen-MAYO_5",
+      "vec_suffix": "5",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO/common/include",
+        "original/Additional-DS/MAYO/MAYO_5/src"
+      ]
+    },
+    "QRUOV_1_q7L10v740m100_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q7L10v740m100_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q7L10v740m100_a.rsp",
+      "gen_target": "gen-QRUOV_1_q7L10v740m100_a",
+      "vec_suffix": "1_q7L10v740m100_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_1_q7L10v740m100_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q7L10v740m100_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q7L10v740m100_s.rsp",
+      "gen_target": "gen-QRUOV_1_q7L10v740m100_s",
+      "vec_suffix": "1_q7L10v740m100_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_1_q31L3v165m60_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q31L3v165m60_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q31L3v165m60_a.rsp",
+      "gen_target": "gen-QRUOV_1_q31L3v165m60_a",
+      "vec_suffix": "1_q31L3v165m60_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_1_q31L3v165m60_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q31L3v165m60_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q31L3v165m60_s.rsp",
+      "gen_target": "gen-QRUOV_1_q31L3v165m60_s",
+      "vec_suffix": "1_q31L3v165m60_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_1_q31L10v600m70_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q31L10v600m70_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q31L10v600m70_a.rsp",
+      "gen_target": "gen-QRUOV_1_q31L10v600m70_a",
+      "vec_suffix": "1_q31L10v600m70_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_1_q31L10v600m70_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q31L10v600m70_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q31L10v600m70_s.rsp",
+      "gen_target": "gen-QRUOV_1_q31L10v600m70_s",
+      "vec_suffix": "1_q31L10v600m70_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_1_q127L3v156m54_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q127L3v156m54_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q127L3v156m54_a.rsp",
+      "gen_target": "gen-QRUOV_1_q127L3v156m54_a",
+      "vec_suffix": "1_q127L3v156m54_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_1_q127L3v156m54_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_1_q127L3v156m54_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_1_q127L3v156m54_s.rsp",
+      "gen_target": "gen-QRUOV_1_q127L3v156m54_s",
+      "vec_suffix": "1_q127L3v156m54_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q7L10v1100m140_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q7L10v1100m140_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q7L10v1100m140_a.rsp",
+      "gen_target": "gen-QRUOV_3_q7L10v1100m140_a",
+      "vec_suffix": "3_q7L10v1100m140_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q7L10v1100m140_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q7L10v1100m140_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q7L10v1100m140_s.rsp",
+      "gen_target": "gen-QRUOV_3_q7L10v1100m140_s",
+      "vec_suffix": "3_q7L10v1100m140_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q31L3v246m87_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q31L3v246m87_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q31L3v246m87_a.rsp",
+      "gen_target": "gen-QRUOV_3_q31L3v246m87_a",
+      "vec_suffix": "3_q31L3v246m87_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q31L3v246m87_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q31L3v246m87_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q31L3v246m87_s.rsp",
+      "gen_target": "gen-QRUOV_3_q31L3v246m87_s",
+      "vec_suffix": "3_q31L3v246m87_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q31L10v890m100_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q31L10v890m100_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q31L10v890m100_a.rsp",
+      "gen_target": "gen-QRUOV_3_q31L10v890m100_a",
+      "vec_suffix": "3_q31L10v890m100_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q31L10v890m100_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q31L10v890m100_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q31L10v890m100_s.rsp",
+      "gen_target": "gen-QRUOV_3_q31L10v890m100_s",
+      "vec_suffix": "3_q31L10v890m100_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q127L3v228m78_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q127L3v228m78_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q127L3v228m78_a.rsp",
+      "gen_target": "gen-QRUOV_3_q127L3v228m78_a",
+      "vec_suffix": "3_q127L3v228m78_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_3_q127L3v228m78_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_3_q127L3v228m78_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_3_q127L3v228m78_s.rsp",
+      "gen_target": "gen-QRUOV_3_q127L3v228m78_s",
+      "vec_suffix": "3_q127L3v228m78_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q7L10v1490m190_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q7L10v1490m190_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q7L10v1490m190_a.rsp",
+      "gen_target": "gen-QRUOV_5_q7L10v1490m190_a",
+      "vec_suffix": "5_q7L10v1490m190_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q7L10v1490m190_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q7L10v1490m190_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q7L10v1490m190_s.rsp",
+      "gen_target": "gen-QRUOV_5_q7L10v1490m190_s",
+      "vec_suffix": "5_q7L10v1490m190_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q31L3v324m114_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q31L3v324m114_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q31L3v324m114_a.rsp",
+      "gen_target": "gen-QRUOV_5_q31L3v324m114_a",
+      "vec_suffix": "5_q31L3v324m114_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q31L3v324m114_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q31L3v324m114_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q31L3v324m114_s.rsp",
+      "gen_target": "gen-QRUOV_5_q31L3v324m114_s",
+      "vec_suffix": "5_q31L3v324m114_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q31L10v1120m120_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q31L10v1120m120_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q31L10v1120m120_a.rsp",
+      "gen_target": "gen-QRUOV_5_q31L10v1120m120_a",
+      "vec_suffix": "5_q31L10v1120m120_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q31L10v1120m120_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q31L10v1120m120_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q31L10v1120m120_s.rsp",
+      "gen_target": "gen-QRUOV_5_q31L10v1120m120_s",
+      "vec_suffix": "5_q31L10v1120m120_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q127L3v306m105_a": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q127L3v306m105_a/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q127L3v306m105_a.rsp",
+      "gen_target": "gen-QRUOV_5_q127L3v306m105_a",
+      "vec_suffix": "5_q127L3v306m105_a",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "QRUOV_5_q127L3v306m105_s": {
+      "family": "qruov",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/QRUOV/common/src",
+      "include_dir": "original/Additional-DS/QRUOV/QRUOV_5_q127L3v306m105_s/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV/QRUOV_5_q127L3v306m105_s.rsp",
+      "gen_target": "gen-QRUOV_5_q127L3v306m105_s",
+      "vec_suffix": "5_q127L3v306m105_s",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV/common/include"
+      ]
+    },
+    "SNOVA_28_5_19_4_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_28_5_19_4_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_28_5_19_4_AES.rsp",
+      "gen_target": "gen-SNOVA_28_5_19_4_AES",
+      "vec_suffix": "28_5_19_4_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_28_5_19_4": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_28_5_19_4/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_28_5_19_4.rsp",
+      "gen_target": "gen-SNOVA_28_5_19_4",
+      "vec_suffix": "28_5_19_4",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_24_5_16_4_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_24_5_16_4_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_24_5_16_4_AES.rsp",
+      "gen_target": "gen-SNOVA_24_5_16_4_AES",
+      "vec_suffix": "24_5_16_4_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_24_5_16_4": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_24_5_16_4/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_24_5_16_4.rsp",
+      "gen_target": "gen-SNOVA_24_5_16_4",
+      "vec_suffix": "24_5_16_4",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_48_17_16_2_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_48_17_16_2_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_48_17_16_2_AES.rsp",
+      "gen_target": "gen-SNOVA_48_17_16_2_AES",
+      "vec_suffix": "48_17_16_2_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_48_17_16_2": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_48_17_16_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_48_17_16_2.rsp",
+      "gen_target": "gen-SNOVA_48_17_16_2",
+      "vec_suffix": "48_17_16_2",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_48_16_19_2_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_48_16_19_2_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_48_16_19_2_AES.rsp",
+      "gen_target": "gen-SNOVA_48_16_19_2_AES",
+      "vec_suffix": "48_16_19_2_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_48_16_19_2": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_48_16_19_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_48_16_19_2.rsp",
+      "gen_target": "gen-SNOVA_48_16_19_2",
+      "vec_suffix": "48_16_19_2",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_28_4_16_4x5_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_28_4_16_4x5_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_28_4_16_4x5_AES.rsp",
+      "gen_target": "gen-SNOVA_28_4_16_4x5_AES",
+      "vec_suffix": "28_4_16_4x5_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_28_4_16_4x5": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_28_4_16_4x5/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_28_4_16_4x5.rsp",
+      "gen_target": "gen-SNOVA_28_4_16_4x5",
+      "vec_suffix": "28_4_16_4x5",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_28_4_19_4x5_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_28_4_19_4x5_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_28_4_19_4x5_AES.rsp",
+      "gen_target": "gen-SNOVA_28_4_19_4x5_AES",
+      "vec_suffix": "28_4_19_4x5_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_28_4_19_4x5": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_28_4_19_4x5/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_28_4_19_4x5.rsp",
+      "gen_target": "gen-SNOVA_28_4_19_4x5",
+      "vec_suffix": "28_4_19_4x5",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_40_7_19_4_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_40_7_19_4_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_40_7_19_4_AES.rsp",
+      "gen_target": "gen-SNOVA_40_7_19_4_AES",
+      "vec_suffix": "40_7_19_4_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_40_7_19_4": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_40_7_19_4/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_40_7_19_4.rsp",
+      "gen_target": "gen-SNOVA_40_7_19_4",
+      "vec_suffix": "40_7_19_4",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_37_8_16_4_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_37_8_16_4_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_37_8_16_4_AES.rsp",
+      "gen_target": "gen-SNOVA_37_8_16_4_AES",
+      "vec_suffix": "37_8_16_4_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_37_8_16_4": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_37_8_16_4/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_37_8_16_4.rsp",
+      "gen_target": "gen-SNOVA_37_8_16_4",
+      "vec_suffix": "37_8_16_4",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_72_25_16_2_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_72_25_16_2_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_72_25_16_2_AES.rsp",
+      "gen_target": "gen-SNOVA_72_25_16_2_AES",
+      "vec_suffix": "72_25_16_2_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_72_25_16_2": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_72_25_16_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_72_25_16_2.rsp",
+      "gen_target": "gen-SNOVA_72_25_16_2",
+      "vec_suffix": "72_25_16_2",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_72_24_19_2_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_72_24_19_2_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_72_24_19_2_AES.rsp",
+      "gen_target": "gen-SNOVA_72_24_19_2_AES",
+      "vec_suffix": "72_24_19_2_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_72_24_19_2": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_72_24_19_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_72_24_19_2.rsp",
+      "gen_target": "gen-SNOVA_72_24_19_2",
+      "vec_suffix": "72_24_19_2",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_38_5_16_4x5_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_38_5_16_4x5_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_38_5_16_4x5_AES.rsp",
+      "gen_target": "gen-SNOVA_38_5_16_4x5_AES",
+      "vec_suffix": "38_5_16_4x5_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_38_5_16_4x5": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_38_5_16_4x5/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_38_5_16_4x5.rsp",
+      "gen_target": "gen-SNOVA_38_5_16_4x5",
+      "vec_suffix": "38_5_16_4x5",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_38_5_19_4x5_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_38_5_19_4x5_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_38_5_19_4x5_AES.rsp",
+      "gen_target": "gen-SNOVA_38_5_19_4x5_AES",
+      "vec_suffix": "38_5_19_4x5_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_38_5_19_4x5": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_38_5_19_4x5/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_38_5_19_4x5.rsp",
+      "gen_target": "gen-SNOVA_38_5_19_4x5",
+      "vec_suffix": "38_5_19_4x5",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_50_9_19_4_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_50_9_19_4_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_50_9_19_4_AES.rsp",
+      "gen_target": "gen-SNOVA_50_9_19_4_AES",
+      "vec_suffix": "50_9_19_4_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_50_9_19_4": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_50_9_19_4/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_50_9_19_4.rsp",
+      "gen_target": "gen-SNOVA_50_9_19_4",
+      "vec_suffix": "50_9_19_4",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_60_10_16_4_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_60_10_16_4_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_60_10_16_4_AES.rsp",
+      "gen_target": "gen-SNOVA_60_10_16_4_AES",
+      "vec_suffix": "60_10_16_4_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_60_10_16_4": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_60_10_16_4/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_60_10_16_4.rsp",
+      "gen_target": "gen-SNOVA_60_10_16_4",
+      "vec_suffix": "60_10_16_4",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_97_33_16_2_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_97_33_16_2_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_97_33_16_2_AES.rsp",
+      "gen_target": "gen-SNOVA_97_33_16_2_AES",
+      "vec_suffix": "97_33_16_2_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_97_33_16_2": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_97_33_16_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_97_33_16_2.rsp",
+      "gen_target": "gen-SNOVA_97_33_16_2",
+      "vec_suffix": "97_33_16_2",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_96_32_19_2_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_96_32_19_2_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_96_32_19_2_AES.rsp",
+      "gen_target": "gen-SNOVA_96_32_19_2_AES",
+      "vec_suffix": "96_32_19_2_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_96_32_19_2": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_96_32_19_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_96_32_19_2.rsp",
+      "gen_target": "gen-SNOVA_96_32_19_2",
+      "vec_suffix": "96_32_19_2",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_52_6_16_4x6_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_52_6_16_4x6_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_52_6_16_4x6_AES.rsp",
+      "gen_target": "gen-SNOVA_52_6_16_4x6_AES",
+      "vec_suffix": "52_6_16_4x6_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_52_6_16_4x6": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_52_6_16_4x6/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_52_6_16_4x6.rsp",
+      "gen_target": "gen-SNOVA_52_6_16_4x6",
+      "vec_suffix": "52_6_16_4x6",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_52_6_19_4x6_AES": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_52_6_19_4x6_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_52_6_19_4x6_AES.rsp",
+      "gen_target": "gen-SNOVA_52_6_19_4x6_AES",
+      "vec_suffix": "52_6_19_4x6_AES",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "SNOVA_52_6_19_4x6": {
+      "family": "snova",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SNOVA/common/src",
+      "include_dir": "original/Additional-DS/SNOVA/SNOVA_52_6_19_4x6/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA/SNOVA_52_6_19_4x6.rsp",
+      "gen_target": "gen-SNOVA_52_6_19_4x6",
+      "vec_suffix": "52_6_19_4x6",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA/common/include"
+      ]
+    },
+    "sdith_hypercube_cat1_gf256": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat1_gf256/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat1_gf256/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_hypercube_cat1_gf256.rsp",
+      "gen_target": "gen-sdith_hypercube_cat1_gf256",
+      "vec_suffix": "hypercube_cat1_gf256",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_hypercube_cat1_p251": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat1_p251/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat1_p251/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_hypercube_cat1_p251.rsp",
+      "gen_target": "gen-sdith_hypercube_cat1_p251",
+      "vec_suffix": "hypercube_cat1_p251",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_hypercube_cat3_gf256": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat3_gf256/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat3_gf256/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_hypercube_cat3_gf256.rsp",
+      "gen_target": "gen-sdith_hypercube_cat3_gf256",
+      "vec_suffix": "hypercube_cat3_gf256",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_hypercube_cat3_p251": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat3_p251/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat3_p251/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_hypercube_cat3_p251.rsp",
+      "gen_target": "gen-sdith_hypercube_cat3_p251",
+      "vec_suffix": "hypercube_cat3_p251",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_hypercube_cat5_gf256": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat5_gf256/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat5_gf256/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_hypercube_cat5_gf256.rsp",
+      "gen_target": "gen-sdith_hypercube_cat5_gf256",
+      "vec_suffix": "hypercube_cat5_gf256",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_hypercube_cat5_p251": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat5_p251/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_hypercube_cat5_p251/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_hypercube_cat5_p251.rsp",
+      "gen_target": "gen-sdith_hypercube_cat5_p251",
+      "vec_suffix": "hypercube_cat5_p251",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_threshold_cat1_gf256": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_threshold_cat1_gf256/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_threshold_cat1_gf256/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_threshold_cat1_gf256.rsp",
+      "gen_target": "gen-sdith_threshold_cat1_gf256",
+      "vec_suffix": "threshold_cat1_gf256",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_threshold_cat1_p251": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_threshold_cat1_p251/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_threshold_cat1_p251/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_threshold_cat1_p251.rsp",
+      "gen_target": "gen-sdith_threshold_cat1_p251",
+      "vec_suffix": "threshold_cat1_p251",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_threshold_cat3_gf256": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_threshold_cat3_gf256/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_threshold_cat3_gf256/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_threshold_cat3_gf256.rsp",
+      "gen_target": "gen-sdith_threshold_cat3_gf256",
+      "vec_suffix": "threshold_cat3_gf256",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_threshold_cat3_p251": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_threshold_cat3_p251/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_threshold_cat3_p251/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_threshold_cat3_p251.rsp",
+      "gen_target": "gen-sdith_threshold_cat3_p251",
+      "vec_suffix": "threshold_cat3_p251",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_threshold_cat5_gf256": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_threshold_cat5_gf256/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_threshold_cat5_gf256/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_threshold_cat5_gf256.rsp",
+      "gen_target": "gen-sdith_threshold_cat5_gf256",
+      "vec_suffix": "threshold_cat5_gf256",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sdith_threshold_cat5_p251": {
+      "family": "sdith",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SDITH/sdith_threshold_cat5_p251/src",
+      "include_dir": "original/Additional-DS/SDITH/sdith_threshold_cat5_p251/include",
+      "rsp_path": "kat/rsp/Additional-DS/SDITH/sdith_threshold_cat5_p251.rsp",
+      "gen_target": "gen-sdith_threshold_cat5_p251",
+      "vec_suffix": "threshold_cat5_p251",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ]
+    },
+    "sqisign_lvl1": {
+      "family": "sqisign",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SQISIGN/common/src",
+      "include_dir": "original/Additional-DS/SQISIGN/sqisign_lvl1/include",
+      "rsp_path": "kat/rsp/Additional-DS/SQISIGN/sqisign_lvl1.rsp",
+      "gen_target": "gen-sqisign_lvl1",
+      "vec_suffix": "sqisign_lvl1",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SQISIGN/common/include",
+        "original/Additional-DS/SQISIGN/sqisign_lvl1/src"
+      ]
+    },
+    "sqisign_lvl3": {
+      "family": "sqisign",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SQISIGN/common/src",
+      "include_dir": "original/Additional-DS/SQISIGN/sqisign_lvl3/include",
+      "rsp_path": "kat/rsp/Additional-DS/SQISIGN/sqisign_lvl3.rsp",
+      "gen_target": "gen-sqisign_lvl3",
+      "vec_suffix": "sqisign_lvl3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SQISIGN/common/include",
+        "original/Additional-DS/SQISIGN/sqisign_lvl3/src"
+      ]
+    },
+    "sqisign_lvl5": {
+      "family": "sqisign",
+      "shape": "ds_drbg_hawk",
+      "src_dir": "original/Additional-DS/SQISIGN/common/src",
+      "include_dir": "original/Additional-DS/SQISIGN/sqisign_lvl5/include",
+      "rsp_path": "kat/rsp/Additional-DS/SQISIGN/sqisign_lvl5.rsp",
+      "gen_target": "gen-sqisign_lvl5",
+      "vec_suffix": "sqisign_lvl5",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SQISIGN/common/include",
+        "original/Additional-DS/SQISIGN/sqisign_lvl5/src"
       ]
     },
     "SPHINCSp128fsimple": {

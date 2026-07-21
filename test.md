@@ -1,6 +1,5 @@
 # Test commands — all algorithms
 
-Run from `/home/aledolme/home/CODE/pqrv`.
 
 ## Dynamic (gcc, `.rsp`-based)
 

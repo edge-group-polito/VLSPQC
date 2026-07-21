@@ -14,7 +14,7 @@
 /* Maximum sizes */
 #define KAT_MAX_FIELDS     32
 #define KAT_NAME_MAX       64
-#define KAT_DATA_MAX       (256 * 1024)  /* 256 KB per field (covers LESS pk ~197 KB) */
+#define KAT_DATA_MAX       (4 * 1024 * 1024)  /* 4 MB per field (covers UOV-V classic epk ~2.87 MB) */
 
 /* One field in an .rsp entry: either an integer or hex-decoded bytes */
 typedef struct {
