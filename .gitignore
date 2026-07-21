@@ -1,53 +1,21 @@
-# Ignore specific HQC executables
-VLSPQC/KEM/HQC/HQC-128/HQC-128
-VLSPQC/KEM/HQC/HQC-128/HQC-192
-VLSPQC/KEM/HQC/HQC-128/HQC-256
-# Ignore specific HQC executables
-VLSPQC/KEM/HQC-v5/HQC-1/HQC-1
-VLSPQC/KEM/HQC-v5/HQC-3/HQC-3
-VLSPQC/KEM/HQC-v5/HQC-5/HQC-5
+# Build output (compiled gen_*/test_* binaries -- see Makefile's $(BUILD))
+/build/
 
-# Ignore specific ML-KEM executables
-VLSPQC/KEM/ML-KEM/ml-kem-512/ml-kem-512
-VLSPQC/KEM/ML-KEM/ml-kem-768/ml-kem-768
-VLSPQC/KEM/ML-KEM/ml-kem-1024/ml-kem-1024
+# Generated KAT .rsp files -- both our own kat/rsp/ tree and any bundled
+# reference example .rsp files shipped inside original/<...>/<variant>/.
+# Large and fully reproducible via `make gen-*`.
+*.rsp
+/kat/rsp/
 
-# Ignore specific ML-DSA executables
-VLSPQC/DS/ML-DSA/ML-DSA-2/ML-DSA-2
-VLSPQC/DS/ML-DSA/ML-DSA-3/ML-DSA-3
-VLSPQC/DS/ML-DSA/ML-DSA-5/ML-DSA-5
+# Generated static (no file-I/O) test folders -- see `make static-test-*`
+# and tools/gen_static_test.py. Fully reproducible.
+/kat/static/
 
-# Ignore specific CROSS executables
-VLSPQC/DS/CROSS/CROSS_1_RSDP_b/CROSS_1_RSDP_b
-VLSPQC/DS/CROSS/CROSS_1_RSDP_b/CROSS_1_RSDP_f
-VLSPQC/DS/CROSS/CROSS_1_RSDP_b/CROSS_1_RSDP_s
-VLSPQC/DS/CROSS/CROSS_1_RSDPG_b/CROSS_1_RSDPG_b
-VLSPQC/DS/CROSS/CROSS_1_RSDPG_b/CROSS_1_RSDPG_f
-VLSPQC/DS/CROSS/CROSS_1_RSDPG_b/CROSS_1_RSDPG_s
-VLSPQC/DS/CROSS/CROSS_3_RSDP_b/CROSS_3_RSDP_b
-VLSPQC/DS/CROSS/CROSS_3_RSDP_b/CROSS_3_RSDP_f
-VLSPQC/DS/CROSS/CROSS_3_RSDP_b/CROSS_3_RSDP_s
-VLSPQC/DS/CROSS/CROSS_3_RSDPG_b/CROSS_3_RSDPG_b
-VLSPQC/DS/CROSS/CROSS_3_RSDPG_b/CROSS_3_RSDPG_f
-VLSPQC/DS/CROSS/CROSS_3_RSDPG_b/CROSS_3_RSDPG_s
-VLSPQC/DS/CROSS/CROSS_5_RSDP_b/CROSS_5_RSDP_b
-VLSPQC/DS/CROSS/CROSS_5_RSDP_b/CROSS_5_RSDP_f
-VLSPQC/DS/CROSS/CROSS_5_RSDP_b/CROSS_5_RSDP_s
-VLSPQC/DS/CROSS/CROSS_5_RSDPG_b/CROSS_5_RSDPG_b
-VLSPQC/DS/CROSS/CROSS_5_RSDPG_b/CROSS_5_RSDPG_f
-VLSPQC/DS/CROSS/CROSS_5_RSDPG_b/CROSS_5_RSDPG_s
+# Object files, archives, and compiled binaries
+*.o
+*.a
+*.so
+*.out
 
-# Ignore specific SLH-DSA executables
-VLSPQC/DS/SLH-DSA/SPHINCS+-128f-robust/SPHINCS+-128f-robust
-VLSPQC/DS/SLH-DSA/SPHINCS+-192f-robust/SPHINCS+-192f-robust
-VLSPQC/DS/SLH-DSA/SPHINCS+-256f-robust/SPHINCS+-256f-robust
-
-VLSPQC/DS/SLH-DSA/SPHINCS+-128f-simple/SPHINCS+-128f-simple
-VLSPQC/DS/SLH-DSA/SPHINCS+-192f-simple/SPHINCS+-192f-simple
-VLSPQC/DS/SLH-DSA/SPHINCS+-256f-simple/SPHINCS+-256f-simple
-
-
-VLSPQC/DS/CROSS/CROSS_1_RSDP_b_verify_roundclosed/
-VLSPQC/DS/CROSS/CROSS_1_RSDP_b_verify_roundopen/
-VLSPQC/DS/CROSS/CROSS_1_RSDPG_b_verify_roundclosed/
-VLSPQC/DS/CROSS/CROSS_1_RSDPG_b_verify_roundopen/
+# Batch-runner reports (tools/run_all_static_kat.sh)
+kat_golden_model_*.log

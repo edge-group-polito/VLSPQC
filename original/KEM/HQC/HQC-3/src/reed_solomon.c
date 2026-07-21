@@ -64,11 +64,8 @@ void compute_generator_poly(uint16_t *poly) {
         poly[++tmp_degree] = 1;
     }
 
-    printf("\n");
     for (int i = 0; i < (PARAM_G); ++i) {
-        printf("%d, ", poly[i]);
     }
-    printf("\n");
 }
 
 /**

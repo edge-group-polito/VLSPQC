@@ -10,31 +10,6 @@
 #include "address.h"
 #include "params.h"
 
-#include <stdio.h>
-#include <stdint.h>
-
-/* Helpers: keep these in the same C file for quick debug. */
-static void dump_bytes_hex(const char *label, const unsigned char *buf, size_t len)
-{
-    printf("%s (len=%zu):", label, len);
-    for (size_t i = 0; i < len; i++) {
-        if ((i % 16) == 0) printf("\n  ");
-        printf("%02x ", buf[i]);
-    }
-    printf("\n");
-}
-
-static void dump_u32_array(const char *label, const unsigned int *a, size_t len)
-{
-    printf("%s (len=%zu):", label, len);
-    for (size_t i = 0; i < len; i++) {
-        if ((i % 16) == 0) printf("\n  ");
-        printf("%u ", a[i]);
-    }
-    printf("\n");
-}
-
-
 // TODO clarify address expectations, and make them more uniform.
 // TODO i.e. do we expect types to be set already?
 // TODO and do we expect modifications or copies?

@@ -1,14 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 //                                                                                   //
-// Auth: Alessandra Dolmeta, Valeria Piscopo - Politecnico di Torino                 //
-// Date: September 2025                                                              //
-// Desc: Entry point for testing the ML-DSA implementation using input and output    //
-//       test vector coming from NIST                                                //
+// Auth: Alessandra Dolmeta, Valeria Piscopo                                         //
+// @ EDGE group, at VLSI-LAB, Politecnico di Torino                                  //
+// Date: July 2026                                                                   //
+// Desc: SPHINCS+-128f-simple KAT test entry point                                   //
 //                                                                                   //
 ///////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,9 +14,6 @@
 #include "api.h"
 
 #include "test_vectors_shake256_128f_simple.h"
-
-extern unsigned long long chain_lengths_call_count;
-
 
 #define TEST_KEY  1
 #define TEST_SIGN  1
@@ -127,8 +121,7 @@ int main(void)
         if(memcmp(m1, TVEC_IN_M_SIGN, MLEN_KAT)) { printf("ERROR: M mismatch\n");}
 
     #endif /* TEST_SIGN_OPEN */
-    
-    //printf("chain_lengths_call_count: %llu\n", chain_lengths_call_count);
+
     printf("OK\n");
 
     printf("Test Successful\n");

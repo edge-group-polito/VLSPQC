@@ -14,15 +14,6 @@
 #include "vector.h"
 #include <stdio.h>
 
-static void print_hex(const char *label, const uint8_t *data, size_t len) {
-    printf("%s (%zu bytes): ", label, len);
-    for (size_t i = 0; i < len; i++) {
-        printf("%02X", data[i]);
-        if ((i + 1) % 16 == 0) printf("\n    "); // wrap every 16 bytes
-    }
-    printf("\n");
-}
-
 /**
  * @brief Generates a keypair for the KEM (Key Encapsulation Mechanism) scheme.
  *
@@ -54,25 +45,16 @@ int crypto_kem_keypair(uint8_t *ek_kem, uint8_t *dk_kem) {
     uint8_t ek_pke[PUBLIC_KEY_BYTES] = {0};
     uint8_t dk_pke[SEED_BYTES] = {0};
 
-    print_hex("seed_kem before", seed_kem, SEED_BYTES);
     // Sample seed_kem
     prng_get_bytes(seed_kem, SEED_BYTES);
-    print_hex("seed_kem", seed_kem, SEED_BYTES);
 
     // Compute seed_pke and randomness sigma
     xof_init(&ctx_kem, seed_kem, SEED_BYTES);
     xof_get_bytes(&ctx_kem, seed_pke, SEED_BYTES);
     xof_get_bytes(&ctx_kem, sigma, PARAM_SECURITY_BYTES);
 
-    print_hex("seed_pke", seed_pke, SEED_BYTES);
-    print_hex("sigma", sigma, PARAM_SECURITY_BYTES);
-
     // Compute HQC-PKE keypair
     hqc_pke_keygen(ek_pke, dk_pke, seed_pke);
-
-    print_hex("ek_pke", ek_pke, PUBLIC_KEY_BYTES);
-    print_hex("dk_pke", dk_pke, SEED_BYTES);
-
 
     // Compute HQC-KEM keypair
     memcpy(ek_kem, ek_pke, PUBLIC_KEY_BYTES);
