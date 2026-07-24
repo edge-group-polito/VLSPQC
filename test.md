@@ -17,7 +17,7 @@ make test-xmss test-lms test-hss
 make test-ascon-aead test-ascon-hash
 
 # per variant, e.g.
-make test-ml-kem-512 test-ML-DSA-2 test-falcon-512 test-hawk-256 test-FAEST_128F
+make test-ml-kem-512 test-ML-DSA-2 test-falcon-512 test-hawk-512 test-FAEST_128F
 ```
 
 ## Static (no file I/O, plain `gcc`)

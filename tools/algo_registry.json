@@ -73,7 +73,6 @@
     "hawk": {
       "shape": "ds_drbg_hawk",
       "variants": [
-        "hawk-256",
         "hawk-512",
         "hawk-1024"
       ]
@@ -324,19 +323,6 @@
       "gen_target": "gen-falcon-1024",
       "vec_suffix": "1024",
       "main_headers": [
-        "api.h"
-      ]
-    },
-    "hawk-256": {
-      "family": "hawk",
-      "shape": "ds_drbg_hawk",
-      "src_dir": "original/Additional-DS/HAWK/hawk-256/src",
-      "include_dir": "original/Additional-DS/HAWK/hawk-256/include",
-      "rsp_path": "kat/rsp/Additional-DS/HAWK/hawk-256.rsp",
-      "gen_target": "gen-hawk-256",
-      "vec_suffix": "256",
-      "main_headers": [
-        "rng.h",
         "api.h"
       ]
     },

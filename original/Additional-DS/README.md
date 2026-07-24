@@ -23,11 +23,11 @@ for how that build works, and [`../../README.md`](../../README.md) for the
 | Family | Variants | Security levels | Notes |
 |--------|----------|------------------|-------|
 | CROSS | 18 (RSDP/RSDPG × 1/3/5 × b/f/s) | 128, 192, 256 bit | shared SHAKE CSPRNG |
-| HAWK | 3 (256, 512, 1024) | 128, 192, 256 bit | own NIST DRBG (`src/rng.c`) |
+| HAWK | 2 (512, 1024) | 128, 256 bit | own NIST DRBG (`src/rng.c`) |
 | LESS | 7 | 128, 192, 256 bit | shared SHAKE CSPRNG, same model as CROSS |
 | FAEST | 12 (plain/EM × 128/192/256 × f/s) | 128, 192, 256 bit | own NIST DRBG; ~30 files shared across all 12 variants live once in `FAEST/common/` |
 
-**`test-additional-ds` covers all 40 variants above.**
+**`test-additional-ds` covers all 39 variants above.**
 
 ## Per-family `make` targets
 
@@ -36,7 +36,7 @@ Prefix with `test-` or `gen-`: `cross`, `hawk`, `less`, `faest` (aggregate:
 
 Per-variant targets are `test-<NAME>`/`gen-<NAME>` using each variant's
 directory name directly, e.g. `make test-CROSS_1_RSDP_b`,
-`make test-hawk-256`, `make test-LESS_252_45`, `make test-FAEST_128F`.
+`make test-hawk-512`, `make test-LESS_252_45`, `make test-FAEST_128F`.
 
 ## `.rsp` fields specific to Additional-DS
 

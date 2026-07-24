@@ -98,7 +98,7 @@ declare -A FAMILIES=(
     [hqc2025]="HQC2025_1 HQC2025_3 HQC2025_5"
     # --- Non-standardized / separate-category families -- NOT part of the
     # default "all" expansion; see --benchmark-all above. ---
-    [hawk]="hawk-256 hawk-512 hawk-1024"
+    [hawk]="hawk-512 hawk-1024"
     [less]="LESS_252_45 LESS_252_68 LESS_252_192 LESS_400_102 LESS_400_220 LESS_548_137 LESS_548_345"
     [cross]="CROSS_1_RSDP_b CROSS_1_RSDP_f CROSS_1_RSDP_s CROSS_1_RSDPG_b CROSS_1_RSDPG_f CROSS_1_RSDPG_s CROSS_3_RSDP_b CROSS_3_RSDP_f CROSS_3_RSDP_s CROSS_3_RSDPG_b CROSS_3_RSDPG_f CROSS_3_RSDPG_s CROSS_5_RSDP_b CROSS_5_RSDP_f CROSS_5_RSDP_s CROSS_5_RSDPG_b CROSS_5_RSDPG_f CROSS_5_RSDPG_s"
     [faest]="FAEST_128F FAEST_128S FAEST_192F FAEST_192S FAEST_256F FAEST_256S FAEST_EM_128F FAEST_EM_128S FAEST_EM_192F FAEST_EM_192S FAEST_EM_256F FAEST_EM_256S"
@@ -124,7 +124,7 @@ EXTRA_FAMILIES=(cross hawk less faest xmss lms hss ascon-aead ascon-hash)
 # One representative variant per EXTRA_FAMILIES entry, used by --benchmark-all.
 declare -A REPRESENTATIVE=(
     [cross]="CROSS_1_RSDP_b"
-    [hawk]="hawk-256"
+    [hawk]="hawk-512"
     [less]="LESS_252_45"
     [faest]="FAEST_128F"
     [xmss]="XMSS-SHA2_10_256"

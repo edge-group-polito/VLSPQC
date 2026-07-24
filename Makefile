@@ -211,7 +211,7 @@ gen-falcon:  $(addprefix gen-,$(FALCON_VARIANTS))
 #        HAWK src/rng.c IS the NIST DRBG – do NOT add kat/gen/rng.c.
 # =============================================================================
 
-HAWK_VARIANTS := hawk-256 hawk-512 hawk-1024
+HAWK_VARIANTS := hawk-512 hawk-1024
 
 define HAWK_RULES
 $(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/original/Additional-DS/HAWK/$(1)/src/*.c)
@@ -1147,7 +1147,7 @@ help:
 	@echo ""
 	@echo "Per-variant examples:"
 	@echo "  make test-CROSS_1_RSDP_b"
-	@echo "  make test-hawk-256"
+	@echo "  make test-hawk-512"
 	@echo "  make test-SPHINCSp128fsimple"
 	@echo "  make test-ML-DSA-2"
 	@echo "  make test-HQC2025_1"

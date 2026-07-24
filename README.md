@@ -19,13 +19,8 @@ of the [NIST PQC](https://csrc.nist.gov/projects/post-quantum-cryptography) stan
 This repository contains the official reference implementation of the [Dilithium](https://www.pq-crystals.org/dilithium/) signature scheme.
 Dilithium is standardized as [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final).
 
-<<<<<<< HEAD
 - **HQC**       [HQC](https://gitlab.com/pqc-hqc/hqc/)  
 This repository provides the official implementation of HQC-2025 (levels 1, 3, 5), a code-based Key Encapsulation Mechanism (KEM) whose security is based on the hardness of solving the Quasi-Cylic Syndrome Decoding (QCSD) problem. HQC is one of the selected algorithms from the [NIST's Post-Quantum Cryptography Standardization Project](https://csrc.nist.gov/projects/post-quantum-cryptography).
-=======
-- **HQC**    [HQC](https://pqc-hqc.org)  
-This repository provides the official implementation of [HQC-2025](https://pqc-hqc.org) (levels 1, 3, 5), a code-based Key Encapsulation Mechanism (KEM) whose security is based on the hardness of solving the Quasi-Cyclic Syndrome Decoding (QCSD) problem. HQC is one of the algorithms selected by [NIST's Post-Quantum Cryptography Standardization Project](https://csrc.nist.gov/projects/post-quantum-cryptography) to be standardized alongside ML-KEM.
->>>>>>> f18c262e8b3352e7391c2c9d45bfffd4c4c7b90b
 
 - **Falcon**    [Falcon](https://falcon-sign.info/)  
 This repository contains the software that accompanies the [FN-DSA submission](https://falcon-sign.info/) to [NIST's Post-Quantum Cryptography](https://csrc.nist.gov/Projects/Post-Quantum-Cryptography) project.
@@ -187,7 +182,7 @@ All flags can be set on the command line and override the defaults.
 make test-CROSS_1_RSDP_b KATNUM=10 DEBUG=1
 
 # Test sign+verify only, skip keygen (uses stored keys from .rsp)
-make test-hawk-256 RUN_KEYGEN=0 RUN_SIGN=1 RUN_VERIFY=1
+make test-hawk-512 RUN_KEYGEN=0 RUN_SIGN=1 RUN_VERIFY=1
 
 # Cross-compile
 make test-all CC=arm-linux-gnueabihf-gcc CFLAGS="-O2 -std=c11"
