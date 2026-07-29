@@ -106,6 +106,7 @@ DIRS := $(BUILD) \
         $(RSPDIR)/DS/SLH-DSA-SHA2 \
         $(RSPDIR)/Additional-DS/CROSS \
         $(RSPDIR)/Additional-DS/FAEST \
+        $(RSPDIR)/Additional-DS/FAEST-decoupled \
         $(RSPDIR)/Additional-DS/HAWK \
         $(RSPDIR)/Additional-DS/LESS \
         $(RSPDIR)/Additional-DS/UOV \
@@ -365,6 +366,57 @@ $(foreach v,$(FAEST_VARIANTS),$(eval $(call FAEST_RULES,$(v))))
 test-faest: $(addprefix test-,$(FAEST_VARIANTS))
 gen-faest:  $(addprefix gen-,$(FAEST_VARIANTS))
 .PHONY: test-faest gen-faest
+
+# =============================================================================
+#  FAEST-decoupled (12 variants – same layout as FAEST above, but sign is
+#  decoupled from keygen/the DRBG: crypto_sign_with_randomness(sk, msg, rho)
+#  replays deterministically from a captured (sk, rho) pair alone, so
+#  RUN_KEYGEN=0 skips keygen entirely instead of silently calling it just to
+#  advance the DRBG. See original/Additional-DS/FAEST-decoupled/<variant>/
+#  src/crypto_sign.c and kat/gen/{PQCgenKAT_sign_faest_decoupled,
+#  main_faest_decoupled}.c. Targets are suffixed "-decoupled" to avoid
+#  colliding with the FAEST_RULES targets above.
+# =============================================================================
+
+FAEST_DECOUPLED_COMMON := $(ROOT)/original/Additional-DS/FAEST-decoupled/common
+
+define FAEST_DECOUPLED_RULES
+$(1)_DEC_SRCS := $$(wildcard $(FAEST_DECOUPLED_COMMON)/src/*.c) \
+             $$(wildcard $(ROOT)/original/Additional-DS/FAEST-decoupled/$(1)/src/*.c)
+$(1)_DEC_INC  := -I$(FAEST_DECOUPLED_COMMON)/include -I$(ROOT)/original/Additional-DS/FAEST-decoupled/$(1)/include \
+             -I$(GENDIR) -I$(COMMON)
+$(1)_DEC_RSP  := $(RSPDIR)/Additional-DS/FAEST-decoupled/$(1).rsp
+$(1)_DEC_DEFS := -Wno-psabi
+
+$(BUILD)/gen_$(1)_decoupled: $$($(1)_DEC_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_faest_decoupled.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/FAEST-decoupled
+	$(CC) $(CFLAGS) $$($(1)_DEC_DEFS) $$($(1)_DEC_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_DEC_RSP)"' -DALGO_NAME='"$(1)-decoupled"' \
+	    $$^ -o $$@
+
+$$($(1)_DEC_RSP): $(BUILD)/gen_$(1)_decoupled | $(RSPDIR)/Additional-DS/FAEST-decoupled
+	$$<
+
+$(BUILD)/test_$(1)_decoupled: $$($(1)_DEC_SRCS) $(GENDIR)/main_faest_decoupled.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_DEC_DEFS) $$($(1)_DEC_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_DEC_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1)-decoupled: $$($(1)_DEC_RSP)
+test-$(1)-decoupled: $$($(1)_DEC_RSP) $(BUILD)/test_$(1)_decoupled
+	@echo "=== Testing $(1)-decoupled ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)_decoupled
+
+.PHONY: gen-$(1)-decoupled test-$(1)-decoupled
+endef
+
+$(foreach v,$(FAEST_VARIANTS),$(eval $(call FAEST_DECOUPLED_RULES,$(v))))
+
+test-faest-decoupled: $(addprefix test-,$(addsuffix -decoupled,$(FAEST_VARIANTS)))
+gen-faest-decoupled:  $(addprefix gen-,$(addsuffix -decoupled,$(FAEST_VARIANTS)))
+.PHONY: test-faest-decoupled gen-faest-decoupled
 
 # =============================================================================
 #  UOV  (12 variants – shared common/ src, per-variant include/ (params.h only))
