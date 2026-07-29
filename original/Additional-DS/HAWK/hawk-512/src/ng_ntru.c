@@ -6,10 +6,17 @@
  *
  * RAM USAGE: 3*(2^logn_top)
  */
+#if HAWK_PROFILE
+static void
+make_fg_zero_impl(unsigned logn,
+	const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *restrict tmp)
+#else
 static void
 make_fg_zero(unsigned logn,
 	const int8_t *restrict f, const int8_t *restrict g,
 	uint32_t *restrict tmp)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 	uint32_t *ft = tmp;
@@ -24,6 +31,18 @@ make_fg_zero(unsigned logn,
 	mp_NTT(logn, gt, gm, p, p0i);
 }
 
+#if HAWK_PROFILE
+static void
+make_fg_zero(unsigned logn,
+	const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *restrict tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	make_fg_zero_impl(logn, f, g, tmp);
+	HAWK_PROF_ADD(MAKE_FG_ZERO, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /*
  * One step of computing (f,g) at a given depth.
  * Input: (f,g) of degree 2^(logn_top-depth)
@@ -34,9 +53,15 @@ make_fg_zero(unsigned logn,
  * (assumptions: max_bl_small[0] = max_bl_small[1] = 1, max_bl_small[2] = 2)
  */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+make_fg_step_impl(const ntru_profile *prof,
+	unsigned logn_top, unsigned depth, uint32_t *tmp)
+#else
 static void
 make_fg_step(const ntru_profile *prof,
 	unsigned logn_top, unsigned depth, uint32_t *tmp)
+#endif
 {
 	unsigned logn = logn_top - depth;
 	size_t n = (size_t)1 << logn;
@@ -175,6 +200,19 @@ make_fg_step(const ntru_profile *prof,
 	}
 }
 
+#if HAWK_PROFILE
+TARGET_AVX2
+static void
+make_fg_step(const ntru_profile *prof,
+	unsigned logn_top, unsigned depth, uint32_t *tmp)
+{
+	unsigned logn = logn_top - depth;
+	uint64_t t0 = hawk_prof_now();
+	make_fg_step_impl(prof, logn_top, depth, tmp);
+	HAWK_PROF_ADD(MAKE_FG_STEP, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /*
  * Compute (f,g) at a specified depth, in RNS+NTT notation.
  * Computed values are stored at the start of the provided tmp[] (slen
@@ -185,17 +223,39 @@ make_fg_step(const ntru_profile *prof,
  *
  * RAM USAGE: 3*(2^logn_top)
  */
+#if HAWK_PROFILE
+static void
+make_fg_intermediate_impl(const ntru_profile *prof,
+	unsigned logn_top,
+	const int8_t *restrict f, const int8_t *restrict g,
+	unsigned depth, uint32_t *tmp)
+#else
 static void
 make_fg_intermediate(const ntru_profile *prof,
 	unsigned logn_top,
 	const int8_t *restrict f, const int8_t *restrict g,
 	unsigned depth, uint32_t *tmp)
+#endif
 {
 	make_fg_zero(logn_top, f, g, tmp);
 	for (unsigned d = 0; d < depth; d ++) {
 		make_fg_step(prof, logn_top, d, tmp);
 	}
 }
+
+#if HAWK_PROFILE
+static void
+make_fg_intermediate(const ntru_profile *prof,
+	unsigned logn_top,
+	const int8_t *restrict f, const int8_t *restrict g,
+	unsigned depth, uint32_t *tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	make_fg_intermediate_impl(prof, logn_top, f, g, depth, tmp);
+	HAWK_PROF_ADD(MAKE_FG_INTERMEDIATE, (size_t)1 << logn_top,
+		hawk_prof_now() - t0);
+}
+#endif
 
 /*
  * Compute (f,g) at the deepest level (i.e. get Res(f,X^n+1) and
@@ -206,11 +266,19 @@ make_fg_intermediate(const ntru_profile *prof,
  * this function returns 0 (the resultants and intermediate values are
  * still computed). Otherwise it returns 1.
  */
+#if HAWK_PROFILE
+static int
+make_fg_deepest_impl(const ntru_profile *prof,
+	unsigned logn_top,
+	const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *tmp, size_t sav_off)
+#else
 static int
 make_fg_deepest(const ntru_profile *prof,
 	unsigned logn_top,
 	const int8_t *restrict f, const int8_t *restrict g,
 	uint32_t *tmp, size_t sav_off)
+#endif
 {
 	make_fg_zero(logn_top, f, g, tmp);
 	int r = 1;
@@ -246,6 +314,21 @@ make_fg_deepest(const ntru_profile *prof,
 	return r;
 }
 
+#if HAWK_PROFILE
+static int
+make_fg_deepest(const ntru_profile *prof,
+	unsigned logn_top,
+	const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *tmp, size_t sav_off)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = make_fg_deepest_impl(prof, logn_top, f, g, tmp, sav_off);
+	HAWK_PROF_ADD(MAKE_FG_DEEPEST, (size_t)1 << logn_top,
+		hawk_prof_now() - t0);
+	return r;
+}
+#endif
+
 /* Error code: no error (so far) */
 #define SOLVE_OK           0
 
@@ -274,10 +357,17 @@ make_fg_deepest(const ntru_profile *prof,
  *
  * RAM USAGE: max(3*(2^logn_top), 8*max_bl_small[depth])
  */
+#if HAWK_PROFILE
+static int
+solve_NTRU_deepest_impl(const ntru_profile *prof,
+	unsigned logn_top, const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *tmp)
+#else
 static int
 solve_NTRU_deepest(const ntru_profile *prof,
 	unsigned logn_top, const int8_t *restrict f, const int8_t *restrict g,
 	uint32_t *tmp)
+#endif
 {
 	/*
 	 * Get (f,g) at the deepest level (i.e. Res(f,X^n+1) and Res(g,X^n+1)).
@@ -331,6 +421,20 @@ solve_NTRU_deepest(const ntru_profile *prof,
 	return SOLVE_OK;
 }
 
+#if HAWK_PROFILE
+static int
+solve_NTRU_deepest(const ntru_profile *prof,
+	unsigned logn_top, const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = solve_NTRU_deepest_impl(prof, logn_top, f, g, tmp);
+	HAWK_PROF_ADD(SOLVE_NTRU_DEEPEST, (size_t)1 << logn_top,
+		hawk_prof_now() - t0);
+	return r;
+}
+#endif
+
 /*
  * We use poly_sub_scaled() when log(n) < MIN_LOGN_FGNTT, and
  * poly_sub_scaled_ntt() when log(n) >= MIN_LOGN_FGNTT. The NTT variant
@@ -355,11 +459,19 @@ solve_NTRU_deepest(const ntru_profile *prof,
  * Returned value: 0 on success, a negative error code otherwise.
  */
 TARGET_AVX2
+#if HAWK_PROFILE
+static int
+solve_NTRU_intermediate_impl(const ntru_profile *restrict prof,
+	unsigned logn_top,
+	const int8_t *restrict f, const int8_t *restrict g,
+	unsigned depth, uint32_t *restrict tmp)
+#else
 static int
 solve_NTRU_intermediate(const ntru_profile *restrict prof,
 	unsigned logn_top,
 	const int8_t *restrict f, const int8_t *restrict g,
 	unsigned depth, uint32_t *restrict tmp)
+#endif
 {
 	/*
 	 * MAX SIZE:
@@ -815,6 +927,23 @@ solve_NTRU_intermediate(const ntru_profile *restrict prof,
 	return SOLVE_OK;
 }
 
+#if HAWK_PROFILE
+TARGET_AVX2
+static int
+solve_NTRU_intermediate(const ntru_profile *restrict prof,
+	unsigned logn_top,
+	const int8_t *restrict f, const int8_t *restrict g,
+	unsigned depth, uint32_t *restrict tmp)
+{
+	unsigned logn = logn_top - depth;
+	uint64_t t0 = hawk_prof_now();
+	int r = solve_NTRU_intermediate_impl(prof, logn_top, f, g, depth, tmp);
+	HAWK_PROF_ADD(SOLVE_NTRU_INTERMEDIATE, (size_t)1 << logn,
+		hawk_prof_now() - t0);
+	return r;
+}
+#endif
+
 /*
  * Solving the NTRU equation, top recursion level. This is a specialized
  * variant for solve_NTRU_intermediate() with depth == 0, for lower RAM
@@ -825,11 +954,19 @@ solve_NTRU_intermediate(const ntru_profile *restrict prof,
  * Returned value: 0 on success, a negative error code otherwise.
  */
 TARGET_AVX2
+#if HAWK_PROFILE
+static int
+solve_NTRU_depth0_impl(const ntru_profile *restrict prof,
+	unsigned logn,
+	const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *restrict tmp)
+#else
 static int
 solve_NTRU_depth0(const ntru_profile *restrict prof,
 	unsigned logn,
 	const int8_t *restrict f, const int8_t *restrict g,
 	uint32_t *restrict tmp)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 	size_t hn = n >> 1;
@@ -1281,10 +1418,31 @@ solve_NTRU_depth0(const ntru_profile *restrict prof,
 	return SOLVE_OK;
 }
 
+#if HAWK_PROFILE
+static int
+solve_NTRU_depth0(const ntru_profile *restrict prof,
+	unsigned logn,
+	const int8_t *restrict f, const int8_t *restrict g,
+	uint32_t *restrict tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = solve_NTRU_depth0_impl(prof, logn, f, g, tmp);
+	HAWK_PROF_ADD(SOLVE_NTRU_DEPTH0, (size_t)1 << logn,
+		hawk_prof_now() - t0);
+	return r;
+}
+#endif
+
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static int
+solve_NTRU_impl(const ntru_profile *restrict prof, unsigned logn,
+	const int8_t *restrict f, const int8_t *restrict g, uint32_t *tmp)
+#else
 int
 solve_NTRU(const ntru_profile *restrict prof, unsigned logn,
 	const int8_t *restrict f, const int8_t *restrict g, uint32_t *tmp)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 
@@ -1322,6 +1480,18 @@ solve_NTRU(const ntru_profile *restrict prof, unsigned logn,
 
 	return SOLVE_OK;
 }
+
+#if HAWK_PROFILE
+int
+solve_NTRU(const ntru_profile *restrict prof, unsigned logn,
+	const int8_t *restrict f, const int8_t *restrict g, uint32_t *tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = solve_NTRU_impl(prof, logn, f, g, tmp);
+	HAWK_PROF_ADD(SOLVE_NTRU, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif
 
 /* see ng_inner.h */
 int

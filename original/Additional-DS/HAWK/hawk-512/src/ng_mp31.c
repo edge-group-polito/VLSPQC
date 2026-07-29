@@ -157,9 +157,15 @@ static const uint16_t REV10[] = {
 
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+mp_mkgmigm_impl(unsigned logn, uint32_t *restrict gm, uint32_t *restrict igm,
+	uint32_t g, uint32_t ig, uint32_t p, uint32_t p0i)
+#else
 void
 mp_mkgmigm(unsigned logn, uint32_t *restrict gm, uint32_t *restrict igm,
 	uint32_t g, uint32_t ig, uint32_t p, uint32_t p0i)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 
@@ -264,11 +270,28 @@ mp_mkgmigm(unsigned logn, uint32_t *restrict gm, uint32_t *restrict igm,
 #endif // NTRUGEN_AVX2
 }
 
+#if HAWK_PROFILE
+void
+mp_mkgmigm(unsigned logn, uint32_t *restrict gm, uint32_t *restrict igm,
+	uint32_t g, uint32_t ig, uint32_t p, uint32_t p0i)
+{
+	uint64_t t0 = hawk_prof_now();
+	mp_mkgmigm_impl(logn, gm, igm, g, ig, p, p0i);
+	HAWK_PROF_ADD(MP_MKGMIGM, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+mp_mkgm_impl(unsigned logn, uint32_t *restrict gm,
+	uint32_t g, uint32_t p, uint32_t p0i)
+#else
 void
 mp_mkgm(unsigned logn, uint32_t *restrict gm,
 	uint32_t g, uint32_t p, uint32_t p0i)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 
@@ -338,6 +361,17 @@ mp_mkgm(unsigned logn, uint32_t *restrict gm,
 #endif // NTRUGEN_AVX2
 }
 
+#if HAWK_PROFILE
+void
+mp_mkgm(unsigned logn, uint32_t *restrict gm,
+	uint32_t g, uint32_t p, uint32_t p0i)
+{
+	uint64_t t0 = hawk_prof_now();
+	mp_mkgm_impl(logn, gm, g, p, p0i);
+	HAWK_PROF_ADD(MP_MKGM, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
 void
 mp_mkgm7(uint32_t *restrict gm, uint32_t g, uint32_t p, uint32_t p0i)
@@ -354,9 +388,15 @@ mp_mkgm7(uint32_t *restrict gm, uint32_t g, uint32_t p, uint32_t p0i)
 
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+mp_mkigm_impl(unsigned logn, uint32_t *restrict igm,
+	uint32_t ig, uint32_t p, uint32_t p0i)
+#else
 void
 mp_mkigm(unsigned logn, uint32_t *restrict igm,
 	uint32_t ig, uint32_t p, uint32_t p0i)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 
@@ -425,6 +465,17 @@ mp_mkigm(unsigned logn, uint32_t *restrict igm,
 	}
 #endif // NTRUGEN_AVX2
 }
+
+#if HAWK_PROFILE
+void
+mp_mkigm(unsigned logn, uint32_t *restrict igm,
+	uint32_t ig, uint32_t p, uint32_t p0i)
+{
+	uint64_t t0 = hawk_prof_now();
+	mp_mkigm_impl(logn, igm, ig, p, p0i);
+	HAWK_PROF_ADD(MP_MKIGM, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
 
 #if NTRUGEN_AVX2
 TARGET_AVX2
@@ -539,9 +590,15 @@ mp_iNTT8(__m256i ya, const uint32_t *restrict igm, size_t k,
 
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+mp_NTT_impl(unsigned logn, uint32_t *restrict a, const uint32_t *restrict gm,
+	uint32_t p, uint32_t p0i)
+#else
 void
 mp_NTT(unsigned logn, uint32_t *restrict a, const uint32_t *restrict gm,
 	uint32_t p, uint32_t p0i)
+#endif
 {
 	if (logn == 0) {
 		return;
@@ -637,11 +694,28 @@ mp_NTT(unsigned logn, uint32_t *restrict a, const uint32_t *restrict gm,
 #endif // NTRUGEN_AVX2
 }
 
+#if HAWK_PROFILE
+void
+mp_NTT(unsigned logn, uint32_t *restrict a, const uint32_t *restrict gm,
+	uint32_t p, uint32_t p0i)
+{
+	uint64_t t0 = hawk_prof_now();
+	mp_NTT_impl(logn, a, gm, p, p0i);
+	HAWK_PROF_ADD(MP_NTT, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+mp_iNTT_impl(unsigned logn, uint32_t *restrict a, const uint32_t *restrict igm,
+	uint32_t p, uint32_t p0i)
+#else
 void
 mp_iNTT(unsigned logn, uint32_t *restrict a, const uint32_t *restrict igm,
 	uint32_t p, uint32_t p0i)
+#endif
 {
 	if (logn == 0) {
 		return;
@@ -737,6 +811,17 @@ mp_iNTT(unsigned logn, uint32_t *restrict a, const uint32_t *restrict igm,
 	}
 #endif // NTRUGEN_AVX2
 }
+
+#if HAWK_PROFILE
+void
+mp_iNTT(unsigned logn, uint32_t *restrict a, const uint32_t *restrict igm,
+	uint32_t p, uint32_t p0i)
+{
+	uint64_t t0 = hawk_prof_now();
+	mp_iNTT_impl(logn, a, igm, p, p0i);
+	HAWK_PROF_ADD(MP_INTT, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
 
 /* see ng_inner.h */
 const small_prime PRIMES[] = {

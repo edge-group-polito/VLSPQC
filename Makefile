@@ -65,6 +65,11 @@ DEBUG     ?= 0
 # of variants; override per-invocation, e.g. `make test-xmss-check CHECK_KATNUM=3`.
 CHECK_KATNUM ?= 1
 MLEN      ?= 33
+# HAWK_PROFILE = 0  Call-count/dimension/wall-clock profiler for HAWK
+#                   keygen (see original/Additional-DS/HAWK/hawk-512/
+#                   include/hawk_prof.h); 1=yes, prints a report at the
+#                   end of the KAT run, e.g. `make test-hawk-512 HAWK_PROFILE=1`.
+HAWK_PROFILE ?= 0
 
 ROOT    := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 GENDIR  := $(ROOT)/kat/gen
@@ -222,6 +227,7 @@ $(BUILD)/gen_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_hawk.c $(COMMON)/kat_parser.c \
     | $(BUILD) $(RSPDIR)/Additional-DS/HAWK
 	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(GEN_FLAGS) \
+	    -DHAWK_PROFILE=$(HAWK_PROFILE) \
 	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
@@ -231,6 +237,7 @@ $$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/Additional
 $(BUILD)/test_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) \
     $(GENDIR)/main_hawk.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(SIGN_TFLAGS) \
+	    -DHAWK_PROFILE=$(HAWK_PROFILE) \
 	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' \
 	    $$^ -o $$@
 

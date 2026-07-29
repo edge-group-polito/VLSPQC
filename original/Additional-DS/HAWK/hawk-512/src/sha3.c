@@ -2,6 +2,15 @@
  * SHA3 and SHAKE implementation.
  */
 
+/*
+ * Needed for clock_gettime()/CLOCK_MONOTONIC under -std=c11 (see
+ * ng_inner.h); must be defined before the first libc header, and this
+ * file pulls in <string.h> etc. itself before reaching ng_inner.h.
+ */
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE   200809L
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -617,8 +626,13 @@ static const uint64_t RC[] = {
 /*
  * Process the provided state.
  */
+#if HAWK_PROFILE && !NTRUGEN_ASM_CORTEXM4
+static void
+process_block_impl(uint64_t *A)
+#else
 static void
 process_block(uint64_t *A)
+#endif
 {
 	uint64_t t0, t1, t2, t3, t4;
 	uint64_t tt0, tt1, tt2, tt3;
@@ -1046,6 +1060,16 @@ process_block(uint64_t *A)
 }
 #endif // NTRUGEN_ASM_CORTEXM4
 
+#if HAWK_PROFILE && !NTRUGEN_ASM_CORTEXM4
+static void
+process_block(uint64_t *A)
+{
+	uint64_t t0 = hawk_prof_now();
+	process_block_impl(A);
+	HAWK_PROF_ADD(PROCESS_BLOCK, 25, hawk_prof_now() - t0);
+}
+#endif
+
 /* see sha3.h */
 void
 shake_init(shake_context *sc, unsigned size)
@@ -1056,8 +1080,13 @@ shake_init(shake_context *sc, unsigned size)
 }
 
 /* see sha3.h */
+#if HAWK_PROFILE
+static void
+shake_inject_impl(shake_context *sc, const void *in, size_t len)
+#else
 void
 shake_inject(shake_context *sc, const void *in, size_t len)
+#endif
 {
 	size_t dptr, rate;
 	const uint8_t *buf;
@@ -1089,9 +1118,24 @@ shake_inject(shake_context *sc, const void *in, size_t len)
 	sc->dptr = (unsigned)dptr;
 }
 
+#if HAWK_PROFILE
+void
+shake_inject(shake_context *sc, const void *in, size_t len)
+{
+	uint64_t t0 = hawk_prof_now();
+	shake_inject_impl(sc, in, len);
+	HAWK_PROF_ADD(SHAKE_INJECT, len, hawk_prof_now() - t0);
+}
+#endif
+
 /* see sha3.h */
+#if HAWK_PROFILE
+static void
+shake_flip_impl(shake_context *sc)
+#else
 void
 shake_flip(shake_context *sc)
+#endif
 {
 	/*
 	 * We apply padding and pre-XOR the value into the state. We
@@ -1107,9 +1151,24 @@ shake_flip(shake_context *sc)
 	sc->dptr = sc->rate;
 }
 
+#if HAWK_PROFILE
+void
+shake_flip(shake_context *sc)
+{
+	uint64_t t0 = hawk_prof_now();
+	shake_flip_impl(sc);
+	HAWK_PROF_ADD(SHAKE_FLIP, 0, hawk_prof_now() - t0);
+}
+#endif
+
 /* see sha3.h */
+#if HAWK_PROFILE
+static void
+shake_extract_impl(shake_context *sc, void *out, size_t len)
+#else
 void
 shake_extract(shake_context *sc, void *out, size_t len)
+#endif
 {
 	size_t dptr, rate;
 	uint8_t *buf;
@@ -1137,6 +1196,16 @@ shake_extract(shake_context *sc, void *out, size_t len)
 	}
 	sc->dptr = (unsigned)dptr;
 }
+
+#if HAWK_PROFILE
+void
+shake_extract(shake_context *sc, void *out, size_t len)
+{
+	uint64_t t0 = hawk_prof_now();
+	shake_extract_impl(sc, out, len);
+	HAWK_PROF_ADD(SHAKE_EXTRACT, len, hawk_prof_now() - t0);
+}
+#endif
 
 #if NTRUGEN_AVX2
 
@@ -1430,8 +1499,14 @@ shake_x4_flip(shake_x4_context *scx4, const shake_context *sc)
 }
 
 /* see sha3.h */
+#if HAWK_PROFILE
+static void
+shake_x4_extract_words_impl(shake_x4_context *scx4, uint64_t *dst,
+	size_t num_x4)
+#else
 void
 shake_x4_extract_words(shake_x4_context *scx4, uint64_t *dst, size_t num_x4)
+#endif
 {
 	size_t wptr = scx4->dptr >> 3;
 	size_t wrate = scx4->rate >> 3;
@@ -1467,8 +1542,14 @@ shake_x4_flip(shake_x4_context *scx4, const shake_context *sc)
 }
 
 /* see sha3.h */
+#if HAWK_PROFILE
+static void
+shake_x4_extract_words_impl(shake_x4_context *scx4, uint64_t *dst,
+	size_t num_x4)
+#else
 void
 shake_x4_extract_words(shake_x4_context *scx4, uint64_t *dst, size_t num_x4)
+#endif
 {
 	size_t dptr = scx4->dptr;
 	size_t rate = scx4->rate;
@@ -1489,6 +1570,16 @@ shake_x4_extract_words(shake_x4_context *scx4, uint64_t *dst, size_t num_x4)
 }
 
 #endif // NTRUGEN_AVX2
+
+#if HAWK_PROFILE
+void
+shake_x4_extract_words(shake_x4_context *scx4, uint64_t *dst, size_t num_x4)
+{
+	uint64_t t0 = hawk_prof_now();
+	shake_x4_extract_words_impl(scx4, dst, num_x4);
+	HAWK_PROF_ADD(SHAKE_X4_EXTRACT_WORDS, num_x4, hawk_prof_now() - t0);
+}
+#endif
 
 /* see sha3.h */
 void

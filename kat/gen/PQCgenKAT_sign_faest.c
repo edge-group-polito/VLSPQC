@@ -4,18 +4,28 @@
  * KAT generator for FAEST (all 12 variants: faest_{128,192,256}{f,s} and
  * faest_em_{128,192,256}{f,s}).
  *
- * FAEST has no explicit-randomness ("derand") entry point: crypto_sign_keypair()
- * and crypto_sign() draw randomness internally via rand_bytes(), which -- when
- * compiled with -DHAVE_RANDOMBYTES (see randomness.c) -- forwards straight to
- * the NIST AES-256-CTR DRBG's randombytes(). This is the same "reseed the
- * global DRBG once per count, then call the ordinary API" shape as HAWK; unlike
- * CROSS/LESS there is no separate internal CSPRNG object to re-seed.
+ * FAEST's keygen has no explicit-randomness ("derand") entry point:
+ * crypto_sign_keypair() draws randomness internally via rand_bytes() in a
+ * data-dependent rejection-sampling loop, which -- when compiled with
+ * -DHAVE_RANDOMBYTES (see randomness.c) -- forwards straight to the NIST
+ * AES-256-CTR DRBG's randombytes(). This is the same "reseed the global DRBG
+ * once per count, then call the ordinary API" shape as HAWK; unlike CROSS/LESS
+ * there is no separate internal CSPRNG object to re-seed.
+ *
+ * Sign, however, DOES have a derand entry point that upstream faest-ref
+ * exposes but nothing in this repo used until now: faest_<variant>_sign_with_
+ * randomness(sk, msg, mlen, rho, rho_len, sig, siglen). We draw `rho`
+ * ourselves (same pattern as ML-DSA's sign_rnd) and sign through
+ * crypto_sign_with_randomness() instead of crypto_sign() -- this lets a
+ * consumer replay sign deterministically from a static (sk, rho) pair alone,
+ * without needing to run keygen first purely to advance the DRBG.
  *
  *   crypto_sign_keypair(pk, sk)
- *   crypto_sign(sm, &smlen, m, mlen, sk)
+ *   crypto_sign_with_randomness(sm, &smlen, m, mlen, sk, rho)
  *   crypto_sign_open(m, &mlen, sm, smlen, pk)
  *
- * RSP fields written: count, seed (48 B DRBG seed), mlen, msg, pk, sk, smlen, sm
+ * RSP fields written: count, seed (48 B DRBG seed), mlen, msg, pk, sk, rho,
+ *                      smlen, sm
  *
  * Compile with the variant's sources (incl. kat/gen/rng.c for the DRBG) and
  * -DHAVE_RANDOMBYTES, e.g.:
@@ -52,6 +62,7 @@ int main(void)
     uint8_t msg[MLEN];
     uint8_t pk[CRYPTO_PUBLICKEYBYTES];
     uint8_t sk[CRYPTO_SECRETKEYBYTES];
+    uint8_t rho[CRYPTO_RHOBYTES];
     uint8_t *sm   = NULL;
     uint8_t *m_out = NULL;
     unsigned long long smlen, mlen_out;
@@ -90,14 +101,18 @@ int main(void)
             return 1;
         }
 
+        /* Draw rho explicitly (same pattern as ML-DSA's sign_rnd) so sign can
+         * later be replayed from (sk, rho) alone, without needing keygen. */
+        randombytes(rho, CRYPTO_RHOBYTES);
+
         /* Signing -- allocate max possible size */
         size_t sm_max = MLEN + CRYPTO_BYTES;
         sm = (uint8_t *)malloc(sm_max);
         if (!sm) { perror("malloc"); fclose(fp); return 1; }
 
-        ret = crypto_sign(sm, &smlen, msg, MLEN, sk);
+        ret = crypto_sign_with_randomness(sm, &smlen, msg, MLEN, sk, rho);
         if (ret != 0) {
-            fprintf(stderr, "count=%d: crypto_sign failed (%d)\n", count, ret);
+            fprintf(stderr, "count=%d: crypto_sign_with_randomness failed (%d)\n", count, ret);
             free(sm); fclose(fp); return 1;
         }
 
@@ -124,6 +139,9 @@ int main(void)
         fprintf(fp, "\n");
         fprintf(fp, "sk = ");
         for (int i = 0; i < CRYPTO_SECRETKEYBYTES; i++) fprintf(fp, "%02X", sk[i]);
+        fprintf(fp, "\n");
+        fprintf(fp, "rho = ");
+        for (int i = 0; i < CRYPTO_RHOBYTES; i++) fprintf(fp, "%02X", rho[i]);
         fprintf(fp, "\n");
         fprintf(fp, "smlen = %llu\n", smlen);
         fprintf(fp, "sm = ");

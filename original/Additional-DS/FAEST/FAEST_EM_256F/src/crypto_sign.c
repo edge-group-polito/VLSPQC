@@ -30,6 +30,16 @@ int crypto_sign(unsigned char* sm, unsigned long long* smlen, const unsigned cha
   return faest_em_256f_sign(sk, sm, mlen, sm + mlen, &signature_len);
 }
 
+int crypto_sign_with_randomness(unsigned char* sm, unsigned long long* smlen, const unsigned char* m,
+                                unsigned long long mlen, const unsigned char* sk,
+                                const unsigned char* rho) {
+  *smlen = mlen + FAEST_EM_256F_SIGNATURE_SIZE;
+  memmove(sm, m, mlen);
+
+  size_t signature_len = FAEST_EM_256F_SIGNATURE_SIZE;
+  return faest_em_256f_sign_with_randomness(sk, sm, mlen, rho, CRYPTO_RHOBYTES, sm + mlen, &signature_len);
+}
+
 int crypto_sign_open(unsigned char* m, unsigned long long* mlen, const unsigned char* sm,
                      unsigned long long smlen, const unsigned char* pk) {
   if (smlen < FAEST_EM_256F_SIGNATURE_SIZE) {

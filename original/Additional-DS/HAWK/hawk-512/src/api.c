@@ -61,6 +61,54 @@ crypto_sign(unsigned char *sm, unsigned long long *smlen,
 	return 0;
 }
 
+/*
+ * Playback RNG: serves bytes sequentially from a fixed buffer instead of
+ * drawing from the global DRBG. Lets sign be replayed deterministically
+ * from a captured randomness trace alone, without needing keygen to run
+ * first (HAWK's keygen has no explicit-seed entry point).
+ */
+typedef struct {
+	const unsigned char *buf;
+	size_t len;
+	size_t pos;
+} playback_rng_ctx;
+
+static void
+hrng_playback(void *ctx, void *dst, size_t len)
+{
+	playback_rng_ctx *pc = (playback_rng_ctx *)ctx;
+	memcpy(dst, pc->buf + pc->pos, len);
+	pc->pos += len;
+}
+
+/* see api.h */
+int
+crypto_sign_with_randomness(unsigned char *sm, unsigned long long *smlen,
+	const unsigned char *m, unsigned long long mlen,
+	const unsigned char *sk, const unsigned char *rho, size_t rho_len)
+{
+	unsigned char tmp[HAWK_TMPSIZE_SIGN(LOGN)];
+	shake_context sc;
+	playback_rng_ctx pc;
+
+	pc.buf = rho;
+	pc.len = rho_len;
+	pc.pos = 0;
+
+	if (m != sm) {
+		memmove(sm, m, (size_t)mlen);
+	}
+	hawk_sign_start(&sc);
+	shake_inject(&sc, sm, (size_t)mlen);
+	if (!hawk_sign_finish(LOGN, &hrng_playback, &pc,
+		sm + mlen, &sc, sk, tmp, sizeof tmp))
+	{
+		return -1;
+	}
+	*smlen = mlen + HAWK_SIG_SIZE(LOGN);
+	return 0;
+}
+
 /* see api.h */
 int
 crypto_sign_open(unsigned char *m, unsigned long long *mlen,

@@ -82,6 +82,10 @@ CROSS/LESS, needed here too since HAWK's keygen consumes a variable amount
 of randomness (an internal rejection-sampling retry loop), so only calling
 the real function reproduces its exact consumption.
 
+`hawk-512` also carries an optional keygen call-count/dimension/timing
+profiler (`HAWK_PROFILE=1`, disabled by default) — see
+[`HAWK/hawk-512/README.md`](HAWK/hawk-512/README.md).
+
 ### FAEST
 
 Ported from the [faest-ref](https://github.com/faest-sign/faest-ref)

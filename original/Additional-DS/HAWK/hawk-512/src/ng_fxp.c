@@ -1234,8 +1234,13 @@ fxp_FFT4(__m256i *ya0_re, __m256i *ya1_re, __m256i *ya0_im, __m256i *ya1_im,
 
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+vect_FFT_impl(unsigned logn, fxr *f)
+#else
 void
 vect_FFT(unsigned logn, fxr *f)
+#endif
 {
 	size_t hn = (size_t)1 << (logn - 1);
 	size_t t = hn;
@@ -1338,6 +1343,16 @@ vect_FFT(unsigned logn, fxr *f)
 	}
 }
 
+#if HAWK_PROFILE
+void
+vect_FFT(unsigned logn, fxr *f)
+{
+	uint64_t t0 = hawk_prof_now();
+	vect_FFT_impl(logn, f);
+	HAWK_PROF_ADD(VECT_FFT, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /* TODO: vect_FFT_autoadj() and vect_iFFT_autoadj(), for applying FFT or
    inverse FFT when the polynomial is known to be auto-adjoint (this may
    allow a few speed-ups). */
@@ -1434,8 +1449,13 @@ fxp_iFFT4(__m256i *ya0_re, __m256i *ya1_re, __m256i *ya0_im, __m256i *ya1_im,
 
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+vect_iFFT_impl(unsigned logn, fxr *f)
+#else
 void
 vect_iFFT(unsigned logn, fxr *f)
+#endif
 {
 	size_t hn = (size_t)1 << (logn - 1);
 	size_t ht = 1;
@@ -1537,6 +1557,16 @@ vect_iFFT(unsigned logn, fxr *f)
 		ht = t;
 	}
 }
+
+#if HAWK_PROFILE
+void
+vect_iFFT(unsigned logn, fxr *f)
+{
+	uint64_t t0 = hawk_prof_now();
+	vect_iFFT_impl(logn, f);
+	HAWK_PROF_ADD(VECT_IFFT, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
 
 /* see ng_inner.h */
 TARGET_AVX2

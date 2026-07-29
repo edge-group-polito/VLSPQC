@@ -1,9 +1,9 @@
 /*
  * main_hawk.c
  *
- * KAT test runner for HAWK (and any DS using NIST DRBG + standard API):
+ * KAT test runner for HAWK:
  *   crypto_sign_keypair(pk, sk)
- *   crypto_sign(sm, &smlen, m, mlen, sk)
+ *   crypto_sign_with_randomness(sm, &smlen, m, mlen, sk, rho, rho_len)
  *   crypto_sign_open(m, &mlen, sm, smlen, pk)
  *
  * Reads a .rsp file produced by PQCgenKAT_sign_hawk.c, re-seeds the DRBG
@@ -16,12 +16,28 @@
  *   RUN_VERIFY    – 1 = test verify (default 1)
  *   DEBUG         – 1 = print intermediate values (default 0)
  *   RSP_PATH      – path to the .rsp file (required; set by Makefile)
+ *   HAWK_PROFILE  – 1 = print a call-count/dimension/timing report for
+ *                   the keygen path after the KAT loop (default 0; see
+ *                   hawk_prof.h in the HAWK variant's include/ dir)
  *
- * HAWK has no explicit-randomness entry point, so with RUN_KEYGEN=0 the
- * real crypto_sign_keypair() is still called (output discarded in favor of
- * the .rsp values) purely to advance the DRBG to the position sign()
- * expects -- same fix already applied to CROSS/LESS.
+ * HAWK's keygen has no explicit-randomness entry point (data-dependent
+ * rejection-sampling loop, no seed parameter), so with RUN_KEYGEN=1 it's
+ * still driven by reseeding the DRBG with the stored `seed` exactly as the
+ * generator did. Sign, however, now goes through crypto_sign_with_randomness()
+ * with the `rho` trace the generator recorded explicitly -- it no longer
+ * touches the DRBG at all, so with RUN_KEYGEN=0 keygen is skipped entirely
+ * (not just discarded): pk/sk are loaded straight from the .rsp.
  */
+
+/*
+ * Needed for clock_gettime()/CLOCK_MONOTONIC under -std=c11 (see
+ * hawk_prof.h); must be defined before the first libc header, and this
+ * file pulls in <stdio.h> etc. itself before reaching hawk_prof.h.
+ */
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE   200809L
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,6 +45,7 @@
 
 #include "rng.h"
 #include "api.h"
+#include "hawk_prof.h"
 
 /* Pull in the KAT parser from common/ */
 #include "kat_parser.h"
@@ -57,6 +74,9 @@ static void __attribute__((constructor)) katnum_init(void) {
 #error "RSP_PATH must be defined (path to the .rsp file)"
 #endif
 
+/* Must match kat/gen/PQCgenKAT_sign_hawk.c's RHO_CAP. */
+#define RHO_CAP 65536
+
 #if DEBUG
 static void print_hex(const char *label, const uint8_t *buf, size_t len)
 {
@@ -79,6 +99,8 @@ int main(void)
     long    mlen_rsp = 0;
     uint8_t pk_rsp[CRYPTO_PUBLICKEYBYTES];
     uint8_t sk_rsp[CRYPTO_SECRETKEYBYTES];
+    uint8_t rho[RHO_CAP];
+    long    rho_len_rsp = 0;
     long    smlen_rsp = 0;
 
     uint8_t pk[CRYPTO_PUBLICKEYBYTES];
@@ -118,11 +140,15 @@ int main(void)
         if (kat_get_bytes(&entry, "msg", msg, (size_t)mlen_rsp) != 0) goto next;
         if (kat_get_bytes(&entry, "pk", pk_rsp, CRYPTO_PUBLICKEYBYTES)  != 0) goto next;
         if (kat_get_bytes(&entry, "sk", sk_rsp, CRYPTO_SECRETKEYBYTES)  != 0) goto next;
+        if (kat_get_long(&entry, "rho_len", &rho_len_rsp) != 0) goto next;
+        if (kat_get_bytes(&entry, "rho", rho, (size_t)rho_len_rsp) != 0) goto next;
         if (kat_get_long(&entry, "smlen", &smlen_rsp) != 0) goto next;
 
         kat_field_t *sm_f = kat_entry_get(&entry, "sm");
         if (!sm_f || !sm_f->data) goto next;
 
+        /* ------- KEYGEN ------- */
+#if RUN_KEYGEN
         /* Re-seed DRBG exactly as generator did, then advance past
          * the randombytes(msg, mlen) call the generator made before keygen. */
         randombytes_init(seed, NULL, 256);
@@ -130,9 +156,6 @@ int main(void)
             uint8_t _skip[1024];
             randombytes(_skip, (unsigned long long)mlen_rsp);
         }
-
-        /* ------- KEYGEN ------- */
-#if RUN_KEYGEN
         ret = crypto_sign_keypair(pk, sk);
         if (ret != 0) {
             printf("[%d] FAIL: crypto_sign_keypair returned %d\n", entry.count, ret);
@@ -151,13 +174,9 @@ int main(void)
             pass_key++;
         }
 #else
-        /* Still call the real keypair -- HAWK's keygen consumes a variable
-         * amount of randomness (internal rejection-sampling retry loop), so
-         * only calling the real function reproduces the DRBG's exact
-         * position for sign() below; a hand-replicated "throwaway read of N
-         * bytes" (as CROSS's fixed-size keygen allows) can't be done safely
-         * here. Output is discarded in favor of the .rsp values. */
-        ret = crypto_sign_keypair(pk, sk);
+        /* Sign is driven by the explicit `rho` field below and no longer
+         * touches the DRBG, so with RUN_KEYGEN=0 keygen is skipped entirely
+         * -- no DRBG reseed needed either. */
         memcpy(pk, pk_rsp, CRYPTO_PUBLICKEYBYTES);
         memcpy(sk, sk_rsp, CRYPTO_SECRETKEYBYTES);
 #endif
@@ -169,9 +188,9 @@ skip_sign:
             size_t sm_max = (size_t)mlen_rsp + CRYPTO_BYTES;
             sm = (uint8_t *)malloc(sm_max);
             if (!sm) { perror("malloc"); goto next; }
-            ret = crypto_sign(sm, &smlen, msg, (size_t)mlen_rsp, sk);
+            ret = crypto_sign_with_randomness(sm, &smlen, msg, (size_t)mlen_rsp, sk, rho, (size_t)rho_len_rsp);
             if (ret != 0) {
-                printf("[%d] FAIL: crypto_sign returned %d\n", entry.count, ret);
+                printf("[%d] FAIL: crypto_sign_with_randomness returned %d\n", entry.count, ret);
                 fail_sign++;
             } else if (smlen != (unsigned long long)smlen_rsp) {
                 printf("[%d] FAIL: smlen mismatch (%llu != %ld)\n",
@@ -224,6 +243,8 @@ next:
     }
 
     kat_parser_close(&parser);
+
+    hawk_prof_report();
 
     printf("\n=== Results for %s ===\n", CRYPTO_ALGNAME);
 #if RUN_KEYGEN

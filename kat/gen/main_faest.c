@@ -1,10 +1,9 @@
 /*
  * main_faest.c
  *
- * KAT test runner for FAEST (all 12 variants), using the NIST DRBG + standard
- * API convention (same shape as main_hawk.c):
+ * KAT test runner for FAEST (all 12 variants):
  *   crypto_sign_keypair(pk, sk)
- *   crypto_sign(sm, &smlen, m, mlen, sk)
+ *   crypto_sign_with_randomness(sm, &smlen, m, mlen, sk, rho)
  *   crypto_sign_open(m, &mlen, sm, smlen, pk)
  *
  * Reads a .rsp file produced by PQCgenKAT_sign_faest.c, re-seeds the DRBG
@@ -18,10 +17,14 @@
  *   DEBUG         - 1 = print intermediate values (default 0)
  *   RSP_PATH      - path to the .rsp file (required; set by Makefile)
  *
- * Like HAWK, FAEST has no explicit-randomness entry point. With RUN_KEYGEN=0
- * the real crypto_sign_keypair() is still called (output discarded in favor
- * of the .rsp values) purely to advance the DRBG to the position sign()
- * expects -- same fix already applied to CROSS/LESS/HAWK.
+ * FAEST's keygen has no explicit-randomness entry point (data-dependent
+ * rejection-sampling loop, no seed parameter), so with RUN_KEYGEN=1 it's
+ * still driven by reseeding the DRBG with the stored `seed` exactly as the
+ * generator did. Sign, however, now goes through crypto_sign_with_randomness()
+ * with the `rho` value the generator recorded explicitly -- it no longer
+ * touches the DRBG at all, so with RUN_KEYGEN=0 keygen is skipped entirely
+ * (not just discarded): pk/sk are loaded straight from the .rsp, same as
+ * main_mldsa.c.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,6 +83,7 @@ int main(void)
     long    mlen_rsp = 0;
     uint8_t pk_rsp[CRYPTO_PUBLICKEYBYTES];
     uint8_t sk_rsp[CRYPTO_SECRETKEYBYTES];
+    uint8_t rho[CRYPTO_RHOBYTES];
     long    smlen_rsp = 0;
 
     uint8_t pk[CRYPTO_PUBLICKEYBYTES];
@@ -119,11 +123,14 @@ int main(void)
         if (kat_get_bytes(&entry, "msg", msg, (size_t)mlen_rsp) != 0) goto next;
         if (kat_get_bytes(&entry, "pk", pk_rsp, CRYPTO_PUBLICKEYBYTES)  != 0) goto next;
         if (kat_get_bytes(&entry, "sk", sk_rsp, CRYPTO_SECRETKEYBYTES)  != 0) goto next;
+        if (kat_get_bytes(&entry, "rho", rho, CRYPTO_RHOBYTES) != 0) goto next;
         if (kat_get_long(&entry, "smlen", &smlen_rsp) != 0) goto next;
 
         kat_field_t *sm_f = kat_entry_get(&entry, "sm");
         if (!sm_f || !sm_f->data) goto next;
 
+        /* ------- KEYGEN ------- */
+#if RUN_KEYGEN
         /* Re-seed DRBG exactly as generator did, then advance past
          * the randombytes(msg, mlen) call the generator made before keygen. */
         randombytes_init(seed, NULL, 256);
@@ -131,9 +138,6 @@ int main(void)
             uint8_t _skip[1024];
             randombytes(_skip, (unsigned long long)mlen_rsp);
         }
-
-        /* ------- KEYGEN ------- */
-#if RUN_KEYGEN
         ret = crypto_sign_keypair(pk, sk);
         if (ret != 0) {
             printf("[%d] FAIL: crypto_sign_keypair returned %d\n", entry.count, ret);
@@ -152,14 +156,9 @@ int main(void)
             pass_key++;
         }
 #else
-        /* Still call the real keypair -- FAEST's keygen consumes a variable
-         * amount of randomness (internal rejection-sampling retry loop over
-         * the secret key bits), so only calling the real function reproduces
-         * the DRBG's exact position for sign() below; a hand-replicated
-         * "throwaway read of N bytes" (as CROSS's fixed-size keygen allows)
-         * can't be done safely here. Output is discarded in favor of the
-         * .rsp values. */
-        ret = crypto_sign_keypair(pk, sk);
+        /* Sign is driven by the explicit `rho` field below and no longer
+         * touches the DRBG, so with RUN_KEYGEN=0 keygen is skipped entirely
+         * -- no DRBG reseed needed either. */
         memcpy(pk, pk_rsp, CRYPTO_PUBLICKEYBYTES);
         memcpy(sk, sk_rsp, CRYPTO_SECRETKEYBYTES);
 #endif
@@ -171,9 +170,9 @@ skip_sign:
             size_t sm_max = (size_t)mlen_rsp + CRYPTO_BYTES;
             sm = (uint8_t *)malloc(sm_max);
             if (!sm) { perror("malloc"); goto next; }
-            ret = crypto_sign(sm, &smlen, msg, (size_t)mlen_rsp, sk);
+            ret = crypto_sign_with_randomness(sm, &smlen, msg, (size_t)mlen_rsp, sk, rho);
             if (ret != 0) {
-                printf("[%d] FAIL: crypto_sign returned %d\n", entry.count, ret);
+                printf("[%d] FAIL: crypto_sign_with_randomness returned %d\n", entry.count, ret);
                 fail_sign++;
             } else if (smlen != (unsigned long long)smlen_rsp) {
                 printf("[%d] FAIL: smlen mismatch (%llu != %ld)\n",

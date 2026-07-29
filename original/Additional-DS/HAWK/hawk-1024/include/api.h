@@ -1,6 +1,8 @@
 #ifndef api_h
 #define api_h
 
+#include <stddef.h>
+
 /* Private key size (bytes) */
 #define CRYPTO_SECRETKEYBYTES   360
 
@@ -12,6 +14,11 @@
 
 /* Algorithm name */
 #define CRYPTO_ALGNAME          "Hawk-1024"
+
+/* Degree logarithm (matches src/api.c's private LOGN); exposed here so
+ * external callers driving hawk_sign_finish() directly (e.g. the KAT
+ * generator's recording-rng path) don't need to guess it. */
+#define HAWK_LOGN               10
 
 /*
  * Generate a new key pair. The public and private key have sizes
@@ -51,5 +58,19 @@ int crypto_sign(unsigned char *sm, unsigned long long *smlen,
 int crypto_sign_open(unsigned char *m, unsigned long long *mlen,
 	const unsigned char *sm, unsigned long long smlen,
 	const unsigned char *pk);
+
+/*
+ * Sign a message using explicit randomness instead of the global DRBG.
+ * Same contract as crypto_sign(), but the random bytes HAWK's signing
+ * algorithm would otherwise draw internally are instead served from
+ * rho[] (rho_len bytes) in order -- this lets sign be replayed
+ * deterministically from a captured (sk, rho) pair alone, without
+ * needing crypto_sign_keypair() to run first.
+ *
+ * Returned value is 0 on success, -1 on error.
+ */
+int crypto_sign_with_randomness(unsigned char *sm, unsigned long long *smlen,
+	const unsigned char *m, unsigned long long mlen,
+	const unsigned char *sk, const unsigned char *rho, size_t rho_len);
 
 #endif /* api_h */

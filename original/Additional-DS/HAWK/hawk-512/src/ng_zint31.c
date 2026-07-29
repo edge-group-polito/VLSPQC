@@ -79,9 +79,15 @@ zint_mod_small_unsigned_x8(const uint32_t *d, size_t len, size_t stride,
 #endif // NTRUGEN_AVX2
 
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static void
+zint_add_mul_small_impl(uint32_t *restrict x, size_t len, size_t xstride,
+	const uint32_t *restrict y, uint32_t s)
+#else
 void
 zint_add_mul_small(uint32_t *restrict x, size_t len, size_t xstride,
 	const uint32_t *restrict y, uint32_t s)
+#endif
 {
 	uint32_t cc = 0;
 	for (size_t u = 0; u < len; u ++) {
@@ -97,6 +103,17 @@ zint_add_mul_small(uint32_t *restrict x, size_t len, size_t xstride,
 	}
 	*x = cc;
 }
+
+#if HAWK_PROFILE
+void
+zint_add_mul_small(uint32_t *restrict x, size_t len, size_t xstride,
+	const uint32_t *restrict y, uint32_t s)
+{
+	uint64_t t0 = hawk_prof_now();
+	zint_add_mul_small_impl(x, len, xstride, y, s);
+	HAWK_PROF_ADD(ZINT_ADD_MUL_SMALL, len, hawk_prof_now() - t0);
+}
+#endif
 
 #if NTRUGEN_AVX2
 /*
@@ -141,9 +158,15 @@ zint_add_mul_small_x8(uint32_t *restrict d, size_t len, size_t dstride,
 #endif // NTRUGEN_AVX2
 
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static void
+zint_norm_zero_impl(uint32_t *restrict x, size_t len, size_t xstride,
+	const uint32_t *restrict p)
+#else
 void
 zint_norm_zero(uint32_t *restrict x, size_t len, size_t xstride,
 	const uint32_t *restrict p)
+#endif
 {
 	/*
 	 * Compare x with p/2. We use the shifted version of p, and p
@@ -194,6 +217,17 @@ zint_norm_zero(uint32_t *restrict x, size_t len, size_t xstride,
 		x += xstride;
 	}
 }
+
+#if HAWK_PROFILE
+void
+zint_norm_zero(uint32_t *restrict x, size_t len, size_t xstride,
+	const uint32_t *restrict p)
+{
+	uint64_t t0 = hawk_prof_now();
+	zint_norm_zero_impl(x, len, xstride, p);
+	HAWK_PROF_ADD(ZINT_NORM_ZERO, len, hawk_prof_now() - t0);
+}
+#endif
 
 #if NTRUGEN_AVX2
 TARGET_AVX2
@@ -264,9 +298,15 @@ zint_norm_zero_x8(uint32_t *restrict x, size_t len, size_t xstride,
 
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+zint_rebuild_CRT_impl(uint32_t *restrict xx, size_t xlen, size_t n,
+	size_t num_sets, int normalize_signed, uint32_t *restrict tmp)
+#else
 void
 zint_rebuild_CRT(uint32_t *restrict xx, size_t xlen, size_t n,
 	size_t num_sets, int normalize_signed, uint32_t *restrict tmp)
+#endif
 {
 	size_t uu = 0;
 	tmp[0] = PRIMES[0].p;
@@ -353,9 +393,25 @@ zint_rebuild_CRT(uint32_t *restrict xx, size_t xlen, size_t n,
 	}
 }
 
+#if HAWK_PROFILE
+void
+zint_rebuild_CRT(uint32_t *restrict xx, size_t xlen, size_t n,
+	size_t num_sets, int normalize_signed, uint32_t *restrict tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	zint_rebuild_CRT_impl(xx, xlen, n, num_sets, normalize_signed, tmp);
+	HAWK_PROF_ADD(ZINT_REBUILD_CRT, xlen * n, hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static void
+zint_negate_impl(uint32_t *a, size_t len, uint32_t ctl)
+#else
 void
 zint_negate(uint32_t *a, size_t len, uint32_t ctl)
+#endif
 {
 	/*
 	 * If ctl = 1 then we flip the bits of a by XORing with
@@ -373,6 +429,16 @@ zint_negate(uint32_t *a, size_t len, uint32_t ctl)
 		cc = aw >> 31;
 	}
 }
+
+#if HAWK_PROFILE
+void
+zint_negate(uint32_t *a, size_t len, uint32_t ctl)
+{
+	uint64_t t0 = hawk_prof_now();
+	zint_negate_impl(a, len, ctl);
+	HAWK_PROF_ADD(ZINT_NEGATE, len, hawk_prof_now() - t0);
+}
+#endif
 
 /*
  * Replace a with (a*xa+b*xb)/(2^31) and b with (a*ya+b*yb)/(2^31).
@@ -528,10 +594,17 @@ mp_ninv31(uint32_t x)
 }
 
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static int
+zint_bezout_impl(uint32_t *restrict u, uint32_t *restrict v,
+	const uint32_t *restrict x, const uint32_t *restrict y,
+	size_t len, uint32_t *restrict tmp)
+#else
 int
 zint_bezout(uint32_t *restrict u, uint32_t *restrict v,
 	const uint32_t *restrict x, const uint32_t *restrict y,
 	size_t len, uint32_t *restrict tmp)
+#endif
 {
 	if (len == 0) {
 		return 0;
@@ -726,11 +799,31 @@ zint_bezout(uint32_t *restrict u, uint32_t *restrict v,
 	return 1 - ((r | -r) >> 31);
 }
 
+#if HAWK_PROFILE
+int
+zint_bezout(uint32_t *restrict u, uint32_t *restrict v,
+	const uint32_t *restrict x, const uint32_t *restrict y,
+	size_t len, uint32_t *restrict tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = zint_bezout_impl(u, v, x, y, len, tmp);
+	HAWK_PROF_ADD(ZINT_BEZOUT, len, hawk_prof_now() - t0);
+	return r;
+}
+#endif
+
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static void
+zint_add_scaled_mul_small_impl(uint32_t *restrict x, size_t xlen,
+	const uint32_t *restrict y, size_t ylen, size_t stride,
+	int32_t k, uint32_t sch, uint32_t scl)
+#else
 void
 zint_add_scaled_mul_small(uint32_t *restrict x, size_t xlen,
 	const uint32_t *restrict y, size_t ylen, size_t stride,
 	int32_t k, uint32_t sch, uint32_t scl)
+#endif
 {
 	if (ylen == 0) {
 		return;
@@ -771,11 +864,30 @@ zint_add_scaled_mul_small(uint32_t *restrict x, size_t xlen,
 	}
 }
 
+#if HAWK_PROFILE
+void
+zint_add_scaled_mul_small(uint32_t *restrict x, size_t xlen,
+	const uint32_t *restrict y, size_t ylen, size_t stride,
+	int32_t k, uint32_t sch, uint32_t scl)
+{
+	uint64_t t0 = hawk_prof_now();
+	zint_add_scaled_mul_small_impl(x, xlen, y, ylen, stride, k, sch, scl);
+	HAWK_PROF_ADD(ZINT_ADD_SCALED_MUL_SMALL, xlen, hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static void
+zint_sub_scaled_impl(uint32_t *restrict x, size_t xlen,
+	const uint32_t *restrict y, size_t ylen, size_t stride,
+	uint32_t sch, uint32_t scl)
+#else
 void
 zint_sub_scaled(uint32_t *restrict x, size_t xlen,
 	const uint32_t *restrict y, size_t ylen, size_t stride,
 	uint32_t sch, uint32_t scl)
+#endif
 {
 	if (ylen == 0) {
 		return;
@@ -806,3 +918,15 @@ zint_sub_scaled(uint32_t *restrict x, size_t xlen,
 		x += stride;
 	}
 }
+
+#if HAWK_PROFILE
+void
+zint_sub_scaled(uint32_t *restrict x, size_t xlen,
+	const uint32_t *restrict y, size_t ylen, size_t stride,
+	uint32_t sch, uint32_t scl)
+{
+	uint64_t t0 = hawk_prof_now();
+	zint_sub_scaled_impl(x, xlen, y, ylen, stride, sch, scl);
+	HAWK_PROF_ADD(ZINT_SUB_SCALED, xlen, hawk_prof_now() - t0);
+}
+#endif

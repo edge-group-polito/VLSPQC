@@ -76,9 +76,15 @@ poly_mp_norm(unsigned logn, uint32_t *f, uint32_t p)
 }
 
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static int
+poly_big_to_small_impl(unsigned logn, int8_t *restrict d,
+	const uint32_t *restrict s, int lim)
+#else
 int
 poly_big_to_small(unsigned logn, int8_t *restrict d,
 	const uint32_t *restrict s, int lim)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 	for (size_t u = 0; u < n; u ++) {
@@ -92,6 +98,18 @@ poly_big_to_small(unsigned logn, int8_t *restrict d,
 	}
 	return 1;
 }
+
+#if HAWK_PROFILE
+int
+poly_big_to_small(unsigned logn, int8_t *restrict d,
+	const uint32_t *restrict s, int lim)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = poly_big_to_small_impl(logn, d, s, lim);
+	HAWK_PROF_ADD(POLY_BIG_TO_SMALL, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif
 
 /* see ng_inner.h */
 uint32_t
@@ -133,9 +151,15 @@ poly_max_bitlength(unsigned logn, const uint32_t *f, size_t flen)
 }
 
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static void
+poly_big_to_fixed_impl(unsigned logn, fxr *restrict d,
+	const uint32_t *restrict f, size_t len, uint32_t sc)
+#else
 void
 poly_big_to_fixed(unsigned logn, fxr *restrict d, const uint32_t *restrict f,
 	size_t len, uint32_t sc)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 	if (len == 0) {
@@ -211,13 +235,32 @@ poly_big_to_fixed(unsigned logn, fxr *restrict d, const uint32_t *restrict f,
 	}
 }
 
+#if HAWK_PROFILE
+void
+poly_big_to_fixed(unsigned logn, fxr *restrict d, const uint32_t *restrict f,
+	size_t len, uint32_t sc)
+{
+	uint64_t t0 = hawk_prof_now();
+	poly_big_to_fixed_impl(logn, d, f, len, sc);
+	HAWK_PROF_ADD(POLY_BIG_TO_FIXED, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+poly_sub_scaled_impl(unsigned logn,
+	uint32_t *restrict F, size_t Flen,
+	const uint32_t *restrict f, size_t flen,
+	const int32_t *restrict k, uint32_t sc)
+#else
 void
 poly_sub_scaled(unsigned logn,
 	uint32_t *restrict F, size_t Flen,
 	const uint32_t *restrict f, size_t flen,
 	const int32_t *restrict k, uint32_t sc)
+#endif
 {
 	if (flen == 0) {
 		return;
@@ -742,12 +785,32 @@ poly_sub_scaled(unsigned logn,
 	}
 }
 
+#if HAWK_PROFILE
+void
+poly_sub_scaled(unsigned logn,
+	uint32_t *restrict F, size_t Flen,
+	const uint32_t *restrict f, size_t flen,
+	const int32_t *restrict k, uint32_t sc)
+{
+	uint64_t t0 = hawk_prof_now();
+	poly_sub_scaled_impl(logn, F, Flen, f, flen, k, sc);
+	HAWK_PROF_ADD(POLY_SUB_SCALED, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+poly_sub_scaled_ntt_impl(unsigned logn, uint32_t *restrict F, size_t Flen,
+	const uint32_t *restrict f, size_t flen,
+	const int32_t *restrict k, uint32_t sc, uint32_t *restrict tmp)
+#else
 void
 poly_sub_scaled_ntt(unsigned logn, uint32_t *restrict F, size_t Flen,
 	const uint32_t *restrict f, size_t flen,
 	const int32_t *restrict k, uint32_t sc, uint32_t *restrict tmp)
+#endif
 {
 #if NTRUGEN_AVX2
 	/* Fail-safe. */
@@ -824,13 +887,35 @@ poly_sub_scaled_ntt(unsigned logn, uint32_t *restrict F, size_t Flen,
 	}
 }
 
+#if HAWK_PROFILE
+void
+poly_sub_scaled_ntt(unsigned logn, uint32_t *restrict F, size_t Flen,
+	const uint32_t *restrict f, size_t flen,
+	const int32_t *restrict k, uint32_t sc, uint32_t *restrict tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	poly_sub_scaled_ntt_impl(logn, F, Flen, f, flen, k, sc, tmp);
+	HAWK_PROF_ADD(POLY_SUB_SCALED_NTT, (size_t)1 << logn,
+		hawk_prof_now() - t0);
+}
+#endif
+
 /* see ng_inner.h */
+#if HAWK_PROFILE
+static void
+poly_sub_kf_scaled_depth1_impl(unsigned logn_top,
+	uint32_t *restrict F, size_t FGlen,
+	uint32_t *restrict k, uint32_t sc,
+	const int8_t *restrict f,
+	uint32_t *restrict tmp)
+#else
 void
 poly_sub_kf_scaled_depth1(unsigned logn_top,
 	uint32_t *restrict F, size_t FGlen,
 	uint32_t *restrict k, uint32_t sc,
 	const int8_t *restrict f,
 	uint32_t *restrict tmp)
+#endif
 {
 	unsigned logn = logn_top - 1;
 	size_t n = (size_t)1 << logn;
@@ -1007,6 +1092,21 @@ poly_sub_kf_scaled_depth1(unsigned logn_top,
 		}
 	}
 }
+
+#if HAWK_PROFILE
+void
+poly_sub_kf_scaled_depth1(unsigned logn_top,
+	uint32_t *restrict F, size_t FGlen,
+	uint32_t *restrict k, uint32_t sc,
+	const int8_t *restrict f,
+	uint32_t *restrict tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	poly_sub_kf_scaled_depth1_impl(logn_top, F, FGlen, k, sc, f, tmp);
+	HAWK_PROF_ADD(POLY_SUB_KF_SCALED_DEPTH1, (size_t)1 << logn_top,
+		hawk_prof_now() - t0);
+}
+#endif
 
 /* see ng_inner.h */
 int

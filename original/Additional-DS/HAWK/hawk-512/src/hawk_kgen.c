@@ -32,10 +32,17 @@ extract_lowbit(unsigned logn, uint8_t *restrict f2, const int8_t *restrict f)
 /*
  * Encode the private key.
  */
+#if HAWK_PROFILE
+static size_t
+encode_private_impl(unsigned logn, void *restrict dst,
+	const void *seed, const int8_t *restrict F, const int8_t *restrict G,
+	const void *pub, size_t pub_len)
+#else
 static size_t
 encode_private(unsigned logn, void *restrict dst,
 	const void *seed, const int8_t *restrict F, const int8_t *restrict G,
 	const void *pub, size_t pub_len)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 	uint8_t *buf = (uint8_t *)dst;
@@ -69,6 +76,19 @@ encode_private(unsigned logn, void *restrict dst,
 
 	return (size_t)(buf - (uint8_t *)dst);
 }
+
+#if HAWK_PROFILE
+static size_t
+encode_private(unsigned logn, void *restrict dst,
+	const void *seed, const int8_t *restrict F, const int8_t *restrict G,
+	const void *pub, size_t pub_len)
+{
+	uint64_t t0 = hawk_prof_now();
+	size_t r = encode_private_impl(logn, dst, seed, F, G, pub, pub_len);
+	HAWK_PROF_ADD(ENCODE_PRIVATE, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif
 
 /*
  * Width of the fixed-sized part of the encoding of a coefficient of q00
@@ -194,10 +214,17 @@ encode_gr(unsigned logn, void *restrict dst, size_t dst_len,
  * Note: this function temporarily modifies q00[0], but resets it to
  * its original value afterwards.
  */
+#if HAWK_PROFILE
+static int
+encode_public_impl(unsigned logn,
+	void *restrict dst, size_t dst_len,
+	int16_t *restrict q00, const int16_t *restrict q01)
+#else
 static int
 encode_public(unsigned logn,
 	void *restrict dst, size_t dst_len,
 	int16_t *restrict q00, const int16_t *restrict q01)
+#endif
 {
 	/*
 	 * General format:
@@ -255,11 +282,31 @@ encode_public(unsigned logn,
 	return 1;
 }
 
+#if HAWK_PROFILE
+static int
+encode_public(unsigned logn,
+	void *restrict dst, size_t dst_len,
+	int16_t *restrict q00, const int16_t *restrict q01)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = encode_public_impl(logn, dst, dst_len, q00, q01);
+	HAWK_PROF_ADD(ENCODE_PUBLIC, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif
+
 /* see hawk.h */
+#if HAWK_PROFILE
+static int
+kgen_impl(unsigned logn, void *restrict priv, void *restrict pub,
+	hawk_rng rng, void *restrict rng_context,
+	void *restrict tmp, size_t tmp_len)
+#else
 int
 Zh(keygen)(unsigned logn, void *restrict priv, void *restrict pub,
 	hawk_rng rng, void *restrict rng_context,
 	void *restrict tmp, size_t tmp_len)
+#endif
 {
 	if (logn < 8 || logn > 10) {
 		return 0;
@@ -316,3 +363,16 @@ Zh(keygen)(unsigned logn, void *restrict priv, void *restrict pub,
 		}
 	}
 }
+
+#if HAWK_PROFILE
+int
+Zh(keygen)(unsigned logn, void *restrict priv, void *restrict pub,
+	hawk_rng rng, void *restrict rng_context,
+	void *restrict tmp, size_t tmp_len)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = kgen_impl(logn, priv, pub, rng, rng_context, tmp, tmp_len);
+	HAWK_PROF_ADD(KGEN_TOP, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif

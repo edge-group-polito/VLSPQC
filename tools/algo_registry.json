@@ -31,7 +31,15 @@
     },
     "ds_drbg_hawk": {
       "type": "DS",
-      "description": "No derand API. Reseed via randombytes_init(seed, NULL, 256), skip the mlen bytes the generator drew for the message, then keypair/sign/open. Unlike CROSS/LESS, keypair is only called when RUN_KEYGEN=1 -- matches kat/gen/main_hawk.c exactly, including its RUN_KEYGEN=0 CSPRNG-desync caveat (see tools/README.md). Shared verbatim by HAWK and FAEST (main_faest.c is the same shape: FAEST's rand_bytes() forwards straight to the reseeded NIST DRBG, no internal CSPRNG object of its own)."
+      "description": "No derand API. Reseed via randombytes_init(seed, NULL, 256), skip the mlen bytes the generator drew for the message, then keypair/sign/open. keypair is only called when RUN_KEYGEN=1 -- matches kat/gen/main_hawk.c exactly, including its RUN_KEYGEN=0 CSPRNG-desync caveat (see tools/README.md)."
+    },
+    "ds_drbg_faest": {
+      "type": "DS",
+      "description": "FAEST (all 12 variants): keygen has no derand API (data-dependent rejection-sampling loop over rand_bytes(), no seed parameter), so with RUN_KEYGEN=1 it's driven by reseeding the DRBG with `seed` exactly like ds_drbg_hawk, and it only runs at all when RUN_KEYGEN=1 (unlike ds_drbg_hawk's hawk, it's never called just to advance the DRBG). Sign DOES have a derand entry point upstream (faest_<variant>_sign_with_randomness()), wired up as crypto_sign_with_randomness(sm,&smlen,m,mlen,sk,rho) -- rho is captured explicitly at generation time (same pattern as ML-DSA's sign_rnd), so sign never touches the DRBG and RUN_KEYGEN=0 loads pk/sk straight from the .rsp, same as ds_derand_rnd."
+    },
+    "ds_drbg_hawk_rho": {
+      "type": "DS",
+      "description": "HAWK (hawk-512, hawk-1024): keygen has no derand API (Gaussian/NTRU sampling draws a data-dependent, variable amount of randomness via an rng callback, no seed parameter), so with RUN_KEYGEN=1 it's driven by reseeding the DRBG with `seed` exactly like ds_drbg_hawk, and it only runs at all when RUN_KEYGEN=1. Sign, however, is driven entirely by whatever bytes its rng callback hands back -- hawk_sign_finish() takes an arbitrary hawk_rng callback -- so crypto_sign_with_randomness() substitutes a playback callback fed from an explicit, variable-length `rho` trace captured at generation time (recorded via a tee'd callback around the real randombytes(), see kat/gen/PQCgenKAT_sign_hawk.c), wired up as crypto_sign_with_randomness(sm,&smlen,m,mlen,sk,rho,rho_len). Sign never touches the DRBG, so RUN_KEYGEN=0 loads pk/sk straight from the .rsp, same as ds_derand_rnd."
     },
     "kem_prng_reseed": {
       "type": "KEM",
@@ -71,7 +79,7 @@
       ]
     },
     "hawk": {
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_hawk_rho",
       "variants": [
         "hawk-512",
         "hawk-1024"
@@ -113,7 +121,7 @@
       ]
     },
     "faest": {
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "variants": [
         "FAEST_128F",
         "FAEST_128S",
@@ -328,7 +336,7 @@
     },
     "hawk-512": {
       "family": "hawk",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_hawk_rho",
       "src_dir": "original/Additional-DS/HAWK/hawk-512/src",
       "include_dir": "original/Additional-DS/HAWK/hawk-512/include",
       "rsp_path": "kat/rsp/Additional-DS/HAWK/hawk-512.rsp",
@@ -341,7 +349,7 @@
     },
     "hawk-1024": {
       "family": "hawk",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_hawk_rho",
       "src_dir": "original/Additional-DS/HAWK/hawk-1024/src",
       "include_dir": "original/Additional-DS/HAWK/hawk-1024/include",
       "rsp_path": "kat/rsp/Additional-DS/HAWK/hawk-1024.rsp",
@@ -704,7 +712,7 @@
     },
     "FAEST_128F": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_128F/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_128F/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_128F.rsp",
@@ -721,7 +729,7 @@
     },
     "FAEST_128S": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_128S/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_128S/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_128S.rsp",
@@ -738,7 +746,7 @@
     },
     "FAEST_192F": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_192F/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_192F/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_192F.rsp",
@@ -755,7 +763,7 @@
     },
     "FAEST_192S": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_192S/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_192S/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_192S.rsp",
@@ -772,7 +780,7 @@
     },
     "FAEST_256F": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_256F/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_256F/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_256F.rsp",
@@ -789,7 +797,7 @@
     },
     "FAEST_256S": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_256S/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_256S/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_256S.rsp",
@@ -806,7 +814,7 @@
     },
     "FAEST_EM_128F": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_EM_128F/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_EM_128F/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_128F.rsp",
@@ -823,7 +831,7 @@
     },
     "FAEST_EM_128S": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_EM_128S/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_EM_128S/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_128S.rsp",
@@ -840,7 +848,7 @@
     },
     "FAEST_EM_192F": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_EM_192F/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_EM_192F/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_192F.rsp",
@@ -857,7 +865,7 @@
     },
     "FAEST_EM_192S": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_EM_192S/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_EM_192S/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_192S.rsp",
@@ -874,7 +882,7 @@
     },
     "FAEST_EM_256F": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_EM_256F/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_EM_256F/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_256F.rsp",
@@ -891,7 +899,7 @@
     },
     "FAEST_EM_256S": {
       "family": "faest",
-      "shape": "ds_drbg_hawk",
+      "shape": "ds_drbg_faest",
       "src_dir": "original/Additional-DS/FAEST/FAEST_EM_256S/src",
       "include_dir": "original/Additional-DS/FAEST/FAEST_EM_256S/include",
       "rsp_path": "kat/rsp/Additional-DS/FAEST/FAEST_EM_256S.rsp",

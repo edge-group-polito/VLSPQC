@@ -291,9 +291,15 @@ regen_fg_10(int8_t *restrict f, int8_t *restrict g, const void *seed)
 
 /* see ntrugen.h */
 TARGET_AVX2
+#if HAWK_PROFILE
+static void
+Hawk_regen_fg_impl(unsigned logn,
+	int8_t *restrict f, int8_t *restrict g, const void *seed)
+#else
 void
 Hawk_regen_fg(unsigned logn,
 	int8_t *restrict f, int8_t *restrict g, const void *seed)
+#endif
 {
 	switch (logn) {
 	case 8:
@@ -402,9 +408,26 @@ Hawk_regen_fg(unsigned logn,
 #endif
 }
 
+#if HAWK_PROFILE
 TARGET_AVX2
+void
+Hawk_regen_fg(unsigned logn,
+	int8_t *restrict f, int8_t *restrict g, const void *seed)
+{
+	uint64_t t0 = hawk_prof_now();
+	Hawk_regen_fg_impl(logn, f, g, seed);
+	HAWK_PROF_ADD(REGEN_FG, (size_t)1 << logn, hawk_prof_now() - t0);
+}
+#endif
+
+TARGET_AVX2
+#if HAWK_PROFILE
+static unsigned
+parity_impl(unsigned logn, int8_t *f)
+#else
 static unsigned
 parity(unsigned logn, int8_t *f)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 #if NTRUGEN_AVX2
@@ -428,6 +451,17 @@ parity(unsigned logn, int8_t *f)
 	return pp & 1;
 #endif // NTRUGEN_AVX2
 }
+
+#if HAWK_PROFILE
+static unsigned
+parity(unsigned logn, int8_t *f)
+{
+	uint64_t t0 = hawk_prof_now();
+	unsigned r = parity_impl(logn, f);
+	HAWK_PROF_ADD(PARITY, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif
 
 /*
  * Limits for q00, q01 and q11 (maximum bit size of the absolute value of
@@ -465,12 +499,21 @@ static const int8_t bits_lim11[11] = {
  *
  * RAM USAGE: 4.5*n words
  */
+#if HAWK_PROFILE
+static int
+make_q001_impl(unsigned logn,
+	int lim00, int lim01, int32_t lim11,
+	const int8_t *restrict f, const int8_t *restrict g,
+	const int8_t *restrict F, const int8_t *restrict G,
+	uint32_t *restrict tmp)
+#else
 static int
 make_q001(unsigned logn,
 	int lim00, int lim01, int32_t lim11,
 	const int8_t *restrict f, const int8_t *restrict g,
 	const int8_t *restrict F, const int8_t *restrict G,
 	uint32_t *restrict tmp)
+#endif
 {
 	size_t n = (size_t)1 << logn;
 	size_t hn = n >> 1;
@@ -616,7 +659,31 @@ make_q001(unsigned logn,
 	return 1;
 }
 
+#if HAWK_PROFILE
+static int
+make_q001(unsigned logn,
+	int lim00, int lim01, int32_t lim11,
+	const int8_t *restrict f, const int8_t *restrict g,
+	const int8_t *restrict F, const int8_t *restrict G,
+	uint32_t *restrict tmp)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = make_q001_impl(logn, lim00, lim01, lim11, f, g, F, G, tmp);
+	HAWK_PROF_ADD(MAKE_Q001, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif
+
 /* see ntrugen.h */
+#if HAWK_PROFILE
+static int
+Hawk_keygen_impl(unsigned logn,
+	int8_t *restrict f, int8_t *restrict g,
+	int8_t *restrict F, int8_t *restrict G,
+	int16_t *restrict q00, int16_t *restrict q01, int32_t *restrict q11,
+	void *seed, ntrugen_rng rng, void *restrict rng_context,
+	void *restrict tmp, size_t tmp_len)
+#else
 int
 Hawk_keygen(unsigned logn,
 	int8_t *restrict f, int8_t *restrict g,
@@ -624,6 +691,7 @@ Hawk_keygen(unsigned logn,
 	int16_t *restrict q00, int16_t *restrict q01, int32_t *restrict q11,
 	void *seed, ntrugen_rng rng, void *restrict rng_context,
 	void *restrict tmp, size_t tmp_len)
+#endif
 {
 	/*
 	 * Ensure that the tmp[] buffer has proper alignment for 64-bit
@@ -878,6 +946,23 @@ Hawk_keygen(unsigned logn,
 		return 0;
 	}
 }
+
+#if HAWK_PROFILE
+int
+Hawk_keygen(unsigned logn,
+	int8_t *restrict f, int8_t *restrict g,
+	int8_t *restrict F, int8_t *restrict G,
+	int16_t *restrict q00, int16_t *restrict q01, int32_t *restrict q11,
+	void *seed, ntrugen_rng rng, void *restrict rng_context,
+	void *restrict tmp, size_t tmp_len)
+{
+	uint64_t t0 = hawk_prof_now();
+	int r = Hawk_keygen_impl(logn, f, g, F, G, q00, q01, q11,
+		seed, rng, rng_context, tmp, tmp_len);
+	HAWK_PROF_ADD(HAWK_KEYGEN, (size_t)1 << logn, hawk_prof_now() - t0);
+	return r;
+}
+#endif
 
 /* see ntrugen.h */
 int

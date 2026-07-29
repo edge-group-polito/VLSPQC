@@ -3,6 +3,15 @@
 
 /* ==================================================================== */
 
+/*
+ * Needed for clock_gettime()/CLOCK_MONOTONIC under -std=c11 (strict ISO
+ * mode hides POSIX declarations otherwise); must be defined before the
+ * first libc header is pulled in by anything below, including hawk_prof.h.
+ */
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE   200809L
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -1790,6 +1799,14 @@ extern uint32_t stats_compute_w_success;
 #define stats_init   Zn(stats_init)
 void stats_init(void);
 #endif
+
+/* ==================================================================== */
+
+/*
+ * Call-count / dimension / wall-clock profiler for the keygen path.
+ * See hawk_prof.h; disabled by default (HAWK_PROFILE=0).
+ */
+#include "hawk_prof.h"
 
 /* ==================================================================== */
 

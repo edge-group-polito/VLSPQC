@@ -54,9 +54,11 @@ for NAME in "${VARIANTS[@]}"; do
 // TEST_KEY/TEST_SIGN/TEST_SIGN_OPEN convention.
 ///////////////////////////////////////////////////////////////////////////////////////
 EOF
-  # Strip upstream's own auto-generated banner (10 lines, ending at the
-  # second "////...////" divider) before appending its body, renamed.
-  tail -n +11 "$out_static/main.c" | sed \
+  # Strip upstream's own auto-generated banner (everything up to and
+  # including the second "////...////" divider -- found dynamically since
+  # different shapes' banners aren't all the same length) before appending
+  # its body, renamed.
+  awk '/^\/+$/ { n++; if (n == 2) { found = 1; next } } found' "$out_static/main.c" | sed \
     -e 's/RUN_KEYGEN/TEST_KEY/g' \
     -e 's/RUN_SIGN\b/TEST_SIGN/g' \
     -e 's/RUN_VERIFY/TEST_SIGN_OPEN/g' \
