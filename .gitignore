@@ -19,3 +19,5 @@
 
 # Batch-runner reports (tools/run_all_static_kat.sh)
 kat_golden_model_*.log
+
+/bench/

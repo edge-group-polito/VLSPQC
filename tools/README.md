@@ -210,6 +210,14 @@ Non-standardized / separate-category (each with its own aggregate target —
 | `xmss` | `ds_derand_seed` | 1 | `XMSS-SHA2_10_256` only — see "XMSS/LMS/HSS are a special case" above |
 | `lms` | `ds_derand_seed` | 1 | `LMS_H10_W8` only |
 | `hss` | `ds_derand_seed` | 1 | `HSS_L2_H5_W8` only |
+| `mqom` | `ds_drbg_nist` | 18 | MQOM3 (constant `mlen`); official NIST DRBG flow, nothing skipped after reseed |
+| `mayo-r3` | `ds_drbg_official` | 4 | Round-3 MAYO; registry flag `size_t_api` (smlen/mlen1 are `size_t`) |
+| `uov-r3` | `ds_drbg_official` | 12 | Round-3 UOV |
+| `snova-r3` | `ds_drbg_official` | 18 | Round-3 SNOVA |
+| `qruov-r3` | `ds_drbg_official` | 30 | Round-3 QR-UOV |
+| `sdith-r3` | `ds_drbg_official` | 12 | Round-3 SDitH; registry `static_gcc_flags: "-lm"` |
+| `sqisign-r3` | `ds_drbg_official` | 3 | Round-3 SQIsign; registry `static_gcc_flags: "-I."` (project headers use `<x.h>` includes) |
+| `faest-r3` | `ds_drbg_official` | 4 | FAEST v3 (round 3, `FAEST_<V>-R3`); plain `gcc *.c`, no extra flags |
 | `ascon-aead` | `aead_direct` | 3 | ascon128v12, ascon128av12, ascon80pqv12; no keygen, no RUN_KEYGEN |
 | `ascon-hash` | `hash_direct` | 4 | asconhashv12, asconhashav12, asconxofv12, asconxofav12; no RUN_* flags at all |
 
@@ -217,6 +225,12 @@ Non-standardized / separate-category (each with its own aggregate target —
 existing `test-hqc` dynamic target's scope (`hqc2025` is currently the only
 HQC family registered). Likewise `make static-test-ascon` covers all 7 ASCON
 variants (`static-test-ascon-aead` + `static-test-ascon-hash`).
+
+`ds_drbg_official` (Round-3 families) is `ds_drbg_nist` with a per-record `mlen`/message (the official Round-3 KATs use
+`mlen = 33*(count+1)`), so `STATIC_KATNUM` > 1 works for them. The optional registry key `static_gcc_flags` is
+informational: the generator prints it, and the static folder must be compiled as `gcc *.c <flags>` (libraries after
+the sources). Example: `make static-test-additional-ds` now also covers MQOM and the seven `*-R3` families (family keys
+`mayo-r3`, `uov-r3`, `snova-r3`, `qruov-r3`, `sdith-r3`, `sqisign-r3`, `faest-r3`; per-variant targets `static-test-<V>-R3`).
 
 All 91 variants have been generated and round-tripped (compiled + run,
 `Test Successful`) on an x86_64 host at `--kat-num` values of 1 and higher,
@@ -361,3 +375,16 @@ always wins.
 correct — see "The RUN_KEYGEN=0 desync caveat" above. The script detects
 this and calls those failures out separately in the summary rather than
 hiding them.
+
+`tools/assemble_faest_r3.sh` rebuilds `original/Additional-DS/FAEST-R3/` (flattened common/ + the four lambda=128 variants)
+from the official FAEST v3 reference packages (`sw/original/faest-v3`); see the FAEST-R3 section of
+[`original/Additional-DS/README.md`](../original/Additional-DS/README.md).
+
+## Level-1 benchmark (`tools/bench/`)
+
+`make bench-l1` builds the static-test folders listed in `tools/bench/variants_l1.json`
+with one common `CFLAGS` set, runs keygen / sign / verify of every variant (one
+operation per process, pinned to one CPU) with `bench.c` + `memtrack.c`, then
+`report.py` writes `bench/results/{results.md,results.csv,*.png}`. `make bench-l1`
+overwrites `bench/results`. `make bench-clean` removes `build/bench`. Methodology
+and regeneration: [`bench/README.md`](../bench/README.md).

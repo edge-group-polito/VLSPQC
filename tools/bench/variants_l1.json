@@ -1,0 +1,296 @@
+{
+"variants": [
+{
+"label": "FAEST-128f",
+"family": "FAEST",
+"target": "FAEST_128F-R3",
+"note": "v3 (round 3)",
+"level": 1,
+"tradeoff": "fast"
+},
+{
+"label": "FAEST-128s",
+"family": "FAEST",
+"target": "FAEST_128S-R3",
+"note": "v3 (round 3)",
+"level": 1,
+"tradeoff": "short"
+},
+{
+"label": "FAEST-EM-128f",
+"family": "FAEST",
+"target": "FAEST_EM_128F-R3",
+"note": "v3 (round 3)",
+"level": 1,
+"tradeoff": "fast"
+},
+{
+"label": "FAEST-EM-128s",
+"family": "FAEST",
+"target": "FAEST_EM_128S-R3",
+"note": "v3 (round 3)",
+"level": 1,
+"tradeoff": "short"
+},
+{
+"label": "MAYO-1",
+"family": "MAYO",
+"target": "MAYO_1-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "MAYO-2",
+"family": "MAYO",
+"target": "MAYO_2-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "MQOM-gf2-shorter-ct",
+"family": "MQOM",
+"target": "mqom3_cat1_gf2_shorter_ct",
+"level": 1,
+"tradeoff": "short"
+},
+{
+"label": "MQOM-gf2-shorter-ot",
+"family": "MQOM",
+"target": "mqom3_cat1_gf2_shorter_ot",
+"level": 1,
+"tradeoff": "short"
+},
+{
+"label": "MQOM-gf16-fast-ct",
+"family": "MQOM",
+"target": "mqom3_cat1_gf16_fast_ct",
+"level": 1,
+"tradeoff": "fast"
+},
+{
+"label": "MQOM-gf16-fast-ot",
+"family": "MQOM",
+"target": "mqom3_cat1_gf16_fast_ot",
+"level": 1,
+"tradeoff": "fast"
+},
+{
+"label": "MQOM-gf16-short-ct",
+"family": "MQOM",
+"target": "mqom3_cat1_gf16_short_ct",
+"level": 1,
+"tradeoff": "short"
+},
+{
+"label": "MQOM-gf16-short-ot",
+"family": "MQOM",
+"target": "mqom3_cat1_gf16_short_ot",
+"level": 1,
+"tradeoff": "short"
+},
+{
+"label": "QR-UOV-1q7L10-aes",
+"family": "QR-UOV",
+"target": "QRUOV_1q7L10_aes-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q7L10-shake",
+"family": "QR-UOV",
+"target": "QRUOV_1q7L10_shake-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q31L3-aes",
+"family": "QR-UOV",
+"target": "QRUOV_1q31L3_aes-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q31L3-shake",
+"family": "QR-UOV",
+"target": "QRUOV_1q31L3_shake-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q31L10-aes",
+"family": "QR-UOV",
+"target": "QRUOV_1q31L10_aes-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q31L10-shake",
+"family": "QR-UOV",
+"target": "QRUOV_1q31L10_shake-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q127L3-aes",
+"family": "QR-UOV",
+"target": "QRUOV_1q127L3_aes-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q127L3-shake",
+"family": "QR-UOV",
+"target": "QRUOV_1q127L3_shake-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q127L10-aes",
+"family": "QR-UOV",
+"target": "QRUOV_1q127L10_aes-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "QR-UOV-1q127L10-shake",
+"family": "QR-UOV",
+"target": "QRUOV_1q127L10_shake-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "SDitH-fast",
+"family": "SDitH",
+"target": "sdith_cat1_fast-R3",
+"level": 1,
+"tradeoff": "fast",
+"cflags_extra": [
+"-lm"
+]
+},
+{
+"label": "SDitH-fast-cipherpow",
+"family": "SDitH",
+"target": "sdith_cat1_fast_cipherpow-R3",
+"level": 1,
+"tradeoff": "fast",
+"cflags_extra": [
+"-lm"
+]
+},
+{
+"label": "SDitH-short",
+"family": "SDitH",
+"target": "sdith_cat1_short-R3",
+"level": 1,
+"tradeoff": "short",
+"cflags_extra": [
+"-lm"
+]
+},
+{
+"label": "SDitH-short-cipherpow",
+"family": "SDitH",
+"target": "sdith_cat1_short_cipherpow-R3",
+"level": 1,
+"tradeoff": "short",
+"cflags_extra": [
+"-lm"
+]
+},
+{
+"label": "SNOVA-I-B",
+"family": "SNOVA",
+"target": "SNOVA_I_B-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "SNOVA-I-B-AES",
+"family": "SNOVA",
+"target": "SNOVA_I_B_AES-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "SNOVA-I-K",
+"family": "SNOVA",
+"target": "SNOVA_I_K-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "SNOVA-I-K-AES",
+"family": "SNOVA",
+"target": "SNOVA_I_K_AES-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "SNOVA-I-S",
+"family": "SNOVA",
+"target": "SNOVA_I_S-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "SNOVA-I-S-AES",
+"family": "SNOVA",
+"target": "SNOVA_I_S_AES-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "SQIsign-p324-3",
+"family": "SQIsign",
+"target": "sqisign_p324_3-R3",
+"level": 1,
+"tradeoff": "",
+"cflags_extra": [
+"-I."
+]
+},
+{
+"label": "UOV-Ip",
+"family": "UOV",
+"target": "UOV_Ip-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "UOV-Ip-pkc",
+"family": "UOV",
+"target": "UOV_Ip_pkc-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "UOV-Ip-pkc-skc",
+"family": "UOV",
+"target": "UOV_Ip_pkc_skc-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "UOV-Is",
+"family": "UOV",
+"target": "UOV_Is-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "UOV-Is-pkc",
+"family": "UOV",
+"target": "UOV_Is_pkc-R3",
+"level": 1,
+"tradeoff": ""
+},
+{
+"label": "UOV-Is-pkc-skc",
+"family": "UOV",
+"target": "UOV_Is_pkc_skc-R3",
+"level": 1,
+"tradeoff": ""
+}
+]
+}

@@ -59,6 +59,9 @@ This repository contains a port of the SDitH (Syndrome Decoding in the Head) ref
 - **SQIsign**    [the-sqisign](https://github.com/SQIsign/the-sqisign)  
 This repository contains a port of the-sqisign reference implementation, an isogeny-based signature scheme over quaternion algebras (Short Quaternion and Isogeny Signature). SQIsign was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
 
+- **MQOM and the Round-3 families (`*-R3`)**  
+`original/Additional-DS/` also contains MQOM (NIST Round-3 package, 18 variants) and Round-3 ports of MAYO, UOV, SNOVA, QR-UOV, SDitH, SQIsign and FAEST (v3) in separate `*-R3` families (the older ports of the same schemes are kept unchanged). They are built with plain `gcc`, portable C only, and their record #0 matches the official Round-3 KAT where the package ships one; see [`original/Additional-DS/README.md`](original/Additional-DS/README.md).
+
 - **XMSS / LMS / HSS**  
 This repository contains implementations of the stateful hash-based signature schemes [XMSS](https://datatracker.ietf.org/doc/html/rfc8391) (RFC 8391) and [LMS/HSS](https://datatracker.ietf.org/doc/html/rfc8554) (RFC 8554), both approved by NIST in [SP 800-208](https://csrc.nist.gov/projects/stateful-hash-based-signatures) for stateful hash-based signatures.
 
@@ -71,7 +74,7 @@ Algorithms are organized by standardization status:
 |----------|--------------|----------------------|
 | `original/DS/` | Standardized digital signatures: ML-DSA, SLH-DSA ×4, FALCON | Yes |
 | `original/KEM/` | Standardized KEMs: ML-KEM, HQC (HQC-2025 only) | Yes |
-| `original/Additional-DS/` | Non-standardized candidate signatures: CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign | No — `test-additional-ds` |
+| `original/Additional-DS/` | Non-standardized candidate signatures: CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign, MQOM, plus the Round-3 `*-R3` ports of MAYO, UOV, SNOVA, QRUOV, SDitH, SQIsign, FAEST | No — `test-additional-ds` |
 | `original/Stateful-DS/` | NIST SP 800-208 stateful hash-based signatures: XMSS, LMS, HSS | No — `test-stateful-ds` |
 | `original/Symmetric/` | ASCON (lightweight AEAD + hash/XOF) — not PQC at all | No — `test-ascon` |
 
@@ -98,7 +101,7 @@ subfolder's own README:
 | Where | What's there |
 |-------|--------------|
 | [`original/DS/README.md`](original/DS/README.md) | Standardized DS families/variants, per-family `make` targets, `.rsp` fields, algorithm notes (FALCON/ML-DSA/SLH-DSA) |
-| [`original/Additional-DS/README.md`](original/Additional-DS/README.md) | Non-standardized DS families (CROSS/HAWK/LESS/FAEST/UOV/MAYO/QRUOV/SNOVA/SDitH/SQIsign) |
+| [`original/Additional-DS/README.md`](original/Additional-DS/README.md) | Non-standardized DS families (CROSS/HAWK/LESS/FAEST/UOV/MAYO/QRUOV/SNOVA/SDitH/SQIsign/MQOM and the Round-3 `*-R3` families) |
 | [`original/Stateful-DS/README.md`](original/Stateful-DS/README.md) | Stateful hash-based signatures (XMSS/LMS/HSS, NIST SP 800-208) |
 | [`original/KEM/README.md`](original/KEM/README.md) | KEM families/variants, per-family `make` targets, KEM-specific `.rsp` fields, algorithm notes (ML-KEM/HQC) |
 | [`original/Symmetric/ASCON/README.md`](original/Symmetric/ASCON/README.md) | ASCON AEAD + hash/XOF variants, `.rsp` fields, `make` targets |
@@ -150,7 +153,8 @@ make test-mlkem
 make test-ml-kem-512
 
 # Non-standardized / separate-category algorithms -- NOT part of test-all
-make test-additional-ds   # CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign
+make test-additional-ds   # CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign, MQOM + *-R3 families
+make test-mayo-r3 KATNUM=10   # one Round-3 family (also uov-r3, snova-r3, qruov-r3, sdith-r3, sqisign-r3, faest-r3); variant: make test-MAYO_1-R3
 make test-stateful-ds     # XMSS, LMS, HSS (default variant each)
 make test-ascon           # ASCON AEAD + hash/XOF (not PQC)
 
@@ -169,6 +173,10 @@ make static-test-ascon
 # Batch-run + log every static test's pass/fail — see tools/README.md
 tools/run_all_static_kat.sh                  # standardized set only
 tools/run_all_static_kat.sh --benchmark-all  # + one representative of each extra family
+
+# Level-1 benchmark of the additional signatures (idle machine!) — see bench/README.md
+make bench-l1       # tools/bench/run_bench.py + report.py -> bench/results/
+make bench-clean    # removes build/bench only
 
 # Clean up
 make clean          # build/ only

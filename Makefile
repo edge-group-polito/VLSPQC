@@ -15,7 +15,7 @@
 #    make gen-all                  Generate .rsp files for the standardized set
 #    make test-all                 Run KAT tests for the standardized set
 #                                   (ML-KEM, ML-DSA, SLH-DSA x4, FALCON, HQC)
-#    make test-additional-ds       Test CROSS + HAWK + LESS + FAEST + UOV + MAYO + QRUOV + SNOVA + SDITH + SQISIGN (not standardized)
+#    make test-additional-ds       Test CROSS + HAWK + LESS + FAEST + UOV + MAYO + QRUOV + SNOVA + SDITH + SQISIGN + MQOM + the seven *-R3 Round-3 families (not standardized)
 #    make test-stateful-ds         Test XMSS + LMS + HSS (NIST SP 800-208)
 #    make test-ascon               Test ASCON AEAD + hash/XOF (not PQC)
 #    make test-cross               Test all CROSS variants
@@ -39,8 +39,9 @@
 #    Standardized (in test-all): test-falcon test-mldsa test-slhdsa
 #      test-slhdsa-haraka test-slhdsa-haraka-aes test-slhdsa-sha2 test-mlkem
 #      test-hqc  (aggregates: test-ds, test-kem)
-#    Additional-DS (NOT in test-all): test-cross test-hawk test-less test-faest test-uov test-mayo test-qruov test-snova test-sdith test-sqisign
-#      (aggregate: test-additional-ds)
+#    Additional-DS (NOT in test-all): test-cross test-hawk test-less test-faest test-uov test-mayo test-qruov test-snova test-sdith test-sqisign test-mqom
+#                   Round-3: test-mayo-r3 test-uov-r3 test-snova-r3 test-qruov-r3 test-sdith-r3 test-sqisign-r3 test-faest-r3
+#      (aggregate: test-additional-ds; per-family gen-<family>-r3 also exist)
 #    Stateful-DS (NOT in test-all): test-xmss test-lms test-hss
 #      (aggregate: test-stateful-ds)
 #    ASCON (NOT in test-all, not PQC): test-ascon-aead test-ascon-hash
@@ -115,6 +116,14 @@ DIRS := $(BUILD) \
         $(RSPDIR)/Additional-DS/SNOVA \
         $(RSPDIR)/Additional-DS/SDITH \
         $(RSPDIR)/Additional-DS/SQISIGN \
+        $(RSPDIR)/Additional-DS/MQOM \
+        $(RSPDIR)/Additional-DS/MAYO-R3 \
+        $(RSPDIR)/Additional-DS/UOV-R3 \
+        $(RSPDIR)/Additional-DS/SNOVA-R3 \
+        $(RSPDIR)/Additional-DS/QRUOV-R3 \
+        $(RSPDIR)/Additional-DS/SDITH-R3 \
+        $(RSPDIR)/Additional-DS/SQISIGN-R3 \
+        $(RSPDIR)/Additional-DS/FAEST-R3 \
         $(RSPDIR)/Stateful-DS/XMSS \
         $(RSPDIR)/Stateful-DS/LMS \
         $(RSPDIR)/Stateful-DS/HSS \
@@ -901,6 +910,497 @@ gen-sqisign:  $(addprefix gen-,$(SQISIGN_VARIANTS))
 .PHONY: test-sqisign gen-sqisign
 
 # =============================================================================
+#  MQOM  (18 variants – shared common/ src, per-variant include/ only)
+#        Ported from the MQOM3 round-3 submission package
+#        (Reference_Implementation/), a multivariate-quadratic MPC-in-the-Head
+#        signature. 18 variants: mqom3_cat{1,3,5}_{gf2_shorter,gf16_fast,
+#        gf16_short}_{ct,ot} (NIST levels 1/3/5 x field/trade-off x
+#        correlated-tree/one-tree BLC). Upstream's 18 directories differ by
+#        exactly one file each (mqom3_parameters_<variant>.h) plus the -D
+#        flags its Makefile uses to pick the variant: everything else lives
+#        once in MQOM/common/{src,include}, FLATTENED (upstream's blc/ piop/
+#        ggm_tree/ rijndael/ fields/ sha3/ subdirectories become plain files),
+#        and each variant dir holds only include/mqom3_parameters_<v>.h +
+#        include/mqom3_variant.h (the 4 MQOM3_PARAM_* defines). Every .c starts
+#        with common/include/mqom3_build_config.h, which hardcodes the
+#        portable (no AES-NI/AVX/NEON, XKCP opt64) build options, so no -D flag
+#        is needed. No OpenSSL/liboqs: upstream's generator/rng.c (OpenSSL AES)
+#        is replaced by kat/gen/rng.c's software AES-256 DRBG, shipped as
+#        common/src/rng.c -- do NOT add kat/gen/rng.c. See tools/assemble_mqom.sh.
+#        No derand entry point, same "reseed global DRBG" shape as HAWK/FAEST/
+#        UOV/MAYO/...; the KAT generator follows the official NIST procedure
+#        (message drawn before reseeding) so seed -> pk/sk matches the official
+#        KAT/<variant>/PQCsignKAT_*.rsp.
+# =============================================================================
+
+MQOM_COMMON := $(ROOT)/original/Additional-DS/MQOM/common
+MQOM_VARIANTS := \
+    mqom3_cat1_gf2_shorter_ct mqom3_cat1_gf2_shorter_ot \
+    mqom3_cat1_gf16_fast_ct   mqom3_cat1_gf16_fast_ot \
+    mqom3_cat1_gf16_short_ct  mqom3_cat1_gf16_short_ot \
+    mqom3_cat3_gf2_shorter_ct mqom3_cat3_gf2_shorter_ot \
+    mqom3_cat3_gf16_fast_ct   mqom3_cat3_gf16_fast_ot \
+    mqom3_cat3_gf16_short_ct  mqom3_cat3_gf16_short_ot \
+    mqom3_cat5_gf2_shorter_ct mqom3_cat5_gf2_shorter_ot \
+    mqom3_cat5_gf16_fast_ct   mqom3_cat5_gf16_fast_ot \
+    mqom3_cat5_gf16_short_ct  mqom3_cat5_gf16_short_ot
+
+define MQOM_RULES
+$(1)_SRCS := $$(wildcard $(MQOM_COMMON)/src/*.c)
+$(1)_INC  := -I$(MQOM_COMMON)/include -I$(ROOT)/original/Additional-DS/MQOM/$(1)/include \
+             -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/Additional-DS/MQOM/$(1).rsp
+
+$(BUILD)/gen_$(1): $$($(1)_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_mqom.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/MQOM
+	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
+	    $$^ -o $$@
+
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/MQOM
+	$$<
+
+$(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_mqom.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1): $$($(1)_RSP)
+test-$(1): $$($(1)_RSP) $(BUILD)/test_$(1)
+	@echo "=== Testing $(1) ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)
+
+.PHONY: gen-$(1) test-$(1)
+endef
+
+$(foreach v,$(MQOM_VARIANTS),$(eval $(call MQOM_RULES,$(v))))
+
+test-mqom: $(addprefix test-,$(MQOM_VARIANTS))
+gen-mqom:  $(addprefix gen-,$(MQOM_VARIANTS))
+.PHONY: test-mqom gen-mqom
+
+# =============================================================================
+#  MAYO-R3  (4 variants – Round-3 NIST additional-signatures package (MAYO-C
+#          commit "NIST Round 3"). NOT the same as the older MAYO family above:
+#          Round 3 changed the parameter handling/encodings, so pk/sig sizes and
+#          KATs differ (e.g. MAYO_1 pk 1420 -> 1456 B, sig 454 -> 464 B).)
+#          Same layout as MAYO: common/{src,include} + per-variant src/api.c,
+#          include/{api.h,mayo_variant.h}. Compile-time fixed parameters
+#          (MAYO_BUILD_TYPE_OPT, no ENABLE_PARAMS_DYNAMIC) on the portable
+#          src/generic backend; no AVX2/GFNI/NEON/AES-NI, no OpenSSL. Targets are
+#          suffixed "-R3" (test-MAYO_1-R3, gen-MAYO_1-R3), binaries
+#          gen_<VARIANT>_R3 / test_<VARIANT>_R3. Uses its own
+#          kat/gen/PQCgenKAT_sign_mayo_r3.c + main_mayo_r3.c (official NIST
+#          flow: seed/msg drawn from the entropy-seeded DRBG, keygen right after
+#          randombytes_init(seed); size_t smlen/mlen as in MAYO's api.h).
+# =============================================================================
+
+MAYO_R3_COMMON := $(ROOT)/original/Additional-DS/MAYO-R3/common
+MAYO_R3_VARIANTS := MAYO_1 MAYO_2 MAYO_3 MAYO_5
+
+define MAYO_R3_RULES
+$(1)_R3_SRCS := $$(wildcard $(MAYO_R3_COMMON)/src/*.c) \
+             $$(wildcard $(ROOT)/original/Additional-DS/MAYO-R3/$(1)/src/*.c)
+$(1)_R3_INC  := -I$(MAYO_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/MAYO-R3/$(1)/include \
+             -I$(GENDIR) -I$(COMMON)
+$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/MAYO-R3/$(1).rsp
+
+$(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_mayo_r3.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/MAYO-R3
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
+	    $$^ -o $$@
+
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/MAYO-R3
+	$$<
+
+$(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_mayo_r3.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1)-R3: $$($(1)_R3_RSP)
+test-$(1)-R3: $$($(1)_R3_RSP) $(BUILD)/test_$(1)_R3
+	@echo "=== Testing $(1)-R3 ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)_R3
+
+.PHONY: gen-$(1)-R3 test-$(1)-R3
+endef
+
+$(foreach v,$(MAYO_R3_VARIANTS),$(eval $(call MAYO_R3_RULES,$(v))))
+
+test-mayo-r3: $(addsuffix -R3,$(addprefix test-,$(MAYO_R3_VARIANTS)))
+gen-mayo-r3:  $(addsuffix -R3,$(addprefix gen-,$(MAYO_R3_VARIANTS)))
+.PHONY: test-mayo-r3 gen-mayo-r3
+
+# =============================================================================
+#  UOV-R3  (12 variants – Round-3 NIST additional-signatures package. NOT the
+#          same as the older UOV family above: Round 3 changed the OV256 parameter
+#          sets (Ip 112/44 -> 119/45, III 184/72 -> 193/72, V 244/96 -> 259/96;
+#          Is unchanged), so pk/sig sizes and KATs differ.)
+#          Same layout as UOV: common/{src,include} + per-variant
+#          include/params.h only. Reference_Implementation only (generic
+#          ref BLAS, no AVX2/GFNI/NEON, no OpenSSL). Targets are suffixed
+#          "-R3" (test-UOV_Ip-R3, gen-UOV_Ip-R3), binaries gen_<VARIANT>_R3 / test_<VARIANT>_R3 (the exact name
+#          tools/gen_static_test.py derives from the gen target, so it can
+#          delete a stale generator before rebuilding). Uses its own kat/gen/PQCgenKAT_sign_uov_r3.c + main_uov_r3.c (official NIST flow).
+# =============================================================================
+
+UOV_R3_COMMON := $(ROOT)/original/Additional-DS/UOV-R3/common
+UOV_R3_VARIANTS := UOV_Ip UOV_Ip_pkc UOV_Ip_pkc_skc \
+                   UOV_Is UOV_Is_pkc UOV_Is_pkc_skc \
+                   UOV_III UOV_III_pkc UOV_III_pkc_skc \
+                   UOV_V UOV_V_pkc UOV_V_pkc_skc
+
+define UOV_R3_RULES
+$(1)_R3_SRCS := $$(wildcard $(UOV_R3_COMMON)/src/*.c)
+$(1)_R3_INC  := -I$(UOV_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/UOV-R3/$(1)/include \
+             -I$(GENDIR) -I$(COMMON)
+$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/UOV-R3/$(1).rsp
+
+$(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_uov_r3.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/UOV-R3
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
+	    $$^ -o $$@
+
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/UOV-R3
+	$$<
+
+$(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_uov_r3.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1)-R3: $$($(1)_R3_RSP)
+test-$(1)-R3: $$($(1)_R3_RSP) $(BUILD)/test_$(1)_R3
+	@echo "=== Testing $(1)-R3 ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)_R3
+
+.PHONY: gen-$(1)-R3 test-$(1)-R3
+endef
+
+$(foreach v,$(UOV_R3_VARIANTS),$(eval $(call UOV_R3_RULES,$(v))))
+
+test-uov-r3: $(addsuffix -R3,$(addprefix test-,$(UOV_R3_VARIANTS)))
+gen-uov-r3:  $(addsuffix -R3,$(addprefix gen-,$(UOV_R3_VARIANTS)))
+.PHONY: test-uov-r3 gen-uov-r3
+
+# =============================================================================
+#  SNOVA-R3  (18 variants – Round-3 reference implementation, shared common/ src,
+#         per-variant include/snova_params.h only)
+#         Round-3 NIST additional-signature package (SNOVA_Round3/
+#         Reference_Implementation): 3 levels (I/III/V) x 3 parameter sets
+#         (B = balanced, K, S) x 2 PRG modes (plain = SHAKE, _AES = AES-CTR).
+#         The 18 upstream dirs differ ONLY in snova_params.h; every other file is
+#         byte-identical and lives once in SNOVA-R3/common/. The upstream
+#         Makefile passes -DSNOVA_REF=1 (portable ref backend); it is hardcoded
+#         at the end of each variant's snova_params.h here, so plain gcc with
+#         zero -D flags works. No OpenSSL (its use in rng.c is behind #if 0).
+#         The official R3 KAT uses the standard NIST flow (one entropy-seeded DRBG draws
+#         seed AND msg, mlen = 33*(count+1), keygen directly after the reseed), which
+#         differs from the older SNOVA generator, so dedicated
+#         kat/gen/PQCgenKAT_sign_snova_r3.c and main_snova_r3.c are used.
+#         Level-5 (V) variants may need a bigger stack: gen/test recipes run
+#         `ulimit -s 65536` first.
+# =============================================================================
+
+SNOVA_R3_COMMON := $(ROOT)/original/Additional-DS/SNOVA-R3/common
+SNOVA_R3_VARIANTS := \
+    SNOVA_I_B SNOVA_I_B_AES SNOVA_I_K SNOVA_I_K_AES SNOVA_I_S SNOVA_I_S_AES \
+    SNOVA_III_B SNOVA_III_B_AES SNOVA_III_K SNOVA_III_K_AES SNOVA_III_S SNOVA_III_S_AES \
+    SNOVA_V_B SNOVA_V_B_AES SNOVA_V_K SNOVA_V_K_AES SNOVA_V_S SNOVA_V_S_AES
+
+define SNOVA_R3_RULES
+$(1)_R3_SRCS := $$(wildcard $(SNOVA_R3_COMMON)/src/*.c)
+$(1)_R3_INC  := -I$(SNOVA_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/SNOVA-R3/$(1)/include \
+                -I$(GENDIR) -I$(COMMON)
+$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/SNOVA-R3/$(1).rsp
+
+$(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_snova_r3.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/SNOVA-R3
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)"' \
+	    $$^ -o $$@
+
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/SNOVA-R3
+	@ulimit -s 65536 2>/dev/null; $$<
+
+$(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_snova_r3.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1)-R3: $$($(1)_R3_RSP)
+test-$(1)-R3: $$($(1)_R3_RSP) $(BUILD)/test_$(1)_R3
+	@echo "=== Testing $(1)-R3 ==="
+	@ulimit -s 65536 2>/dev/null; KATNUM=$(KATNUM) $(BUILD)/test_$(1)_R3
+
+.PHONY: gen-$(1)-R3 test-$(1)-R3
+endef
+
+$(foreach v,$(SNOVA_R3_VARIANTS),$(eval $(call SNOVA_R3_RULES,$(v))))
+
+test-snova-r3: $(addsuffix -R3,$(addprefix test-,$(SNOVA_R3_VARIANTS)))
+gen-snova-r3:  $(addsuffix -R3,$(addprefix gen-,$(SNOVA_R3_VARIANTS)))
+.PHONY: test-snova-r3 gen-snova-r3
+
+# =============================================================================
+#  QRUOV-R3  (30 variants -- NIST Round-3 QR-UOV reference implementation,
+#         shared common/ src, per-variant include/qruov_build_config.h only)
+#
+#         Round-3 package (Reference_Implementation/ref) is a rewrite of the
+#         Round-2 code base ported as QRUOV above, so it is a separate family.
+#         15 parameter sets (5 per NIST level 1/3/5: q7L10, q31L3, q31L10,
+#         q127L3, q127L10) x 2 public-seed-expansion PRG modes (aes/shake).
+#         Variant names are <cat>q<q>L<L>_<prg> exactly as upstream's
+#         PARAM/PRG make options. Upstream's -DQRUOV_PARAM_<..> and
+#         -DPRG_IS_AES=<0|1> flags are hardcoded in each variant's
+#         include/qruov_build_config.h (included by qruov_param.h).
+#
+#         OpenSSL replaced by self-contained code (prim.c/prim.h on the
+#         portable fips202.c + aes_c.c; rng.c on a software AES-256) --
+#         do NOT add kat/gen/rng.c (QRUOV-R3/common/src/rng.c IS the NIST
+#         DRBG). Targets are suffixed "-R3" to avoid colliding with QRUOV.
+# =============================================================================
+
+QRUOV_R3_COMMON := $(ROOT)/original/Additional-DS/QRUOV-R3/common
+QRUOV_R3_VARIANTS := \
+    QRUOV_1q7L10_aes QRUOV_1q7L10_shake QRUOV_1q31L3_aes QRUOV_1q31L3_shake \
+    QRUOV_1q31L10_aes QRUOV_1q31L10_shake QRUOV_1q127L3_aes QRUOV_1q127L3_shake \
+    QRUOV_1q127L10_aes QRUOV_1q127L10_shake \
+    QRUOV_3q7L10_aes QRUOV_3q7L10_shake QRUOV_3q31L3_aes QRUOV_3q31L3_shake \
+    QRUOV_3q31L10_aes QRUOV_3q31L10_shake QRUOV_3q127L3_aes QRUOV_3q127L3_shake \
+    QRUOV_3q127L10_aes QRUOV_3q127L10_shake \
+    QRUOV_5q7L10_aes QRUOV_5q7L10_shake QRUOV_5q31L3_aes QRUOV_5q31L3_shake \
+    QRUOV_5q31L10_aes QRUOV_5q31L10_shake QRUOV_5q127L3_aes QRUOV_5q127L3_shake \
+    QRUOV_5q127L10_aes QRUOV_5q127L10_shake
+
+define QRUOV_R3_RULES
+$(1)_R3_SRCS := $$(wildcard $(QRUOV_R3_COMMON)/src/*.c)
+$(1)_R3_INC  := -I$(QRUOV_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/QRUOV-R3/$(1)/include \
+             -I$(GENDIR) -I$(COMMON)
+$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/QRUOV-R3/$(1).rsp
+
+$(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_qruov_r3.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/QRUOV-R3
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
+	    $$^ -o $$@
+
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/QRUOV-R3
+	$$<
+
+$(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_qruov_r3.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1)-R3: $$($(1)_R3_RSP)
+test-$(1)-R3: $$($(1)_R3_RSP) $(BUILD)/test_$(1)_R3
+	@echo "=== Testing $(1)-R3 ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)_R3
+
+.PHONY: gen-$(1)-R3 test-$(1)-R3
+endef
+
+$(foreach v,$(QRUOV_R3_VARIANTS),$(eval $(call QRUOV_R3_RULES,$(v))))
+
+test-qruov-r3: $(addsuffix -R3,$(addprefix test-,$(QRUOV_R3_VARIANTS)))
+gen-qruov-r3:  $(addsuffix -R3,$(addprefix gen-,$(QRUOV_R3_VARIANTS)))
+.PHONY: test-qruov-r3 gen-qruov-r3
+
+# =============================================================================
+#  SDITH-R3  (12 variants – Round-3 VOLE-in-the-Head SDitH, v3.0.0; shared
+#         common/ src+include, per-variant include/api.h only)
+#         Sources come from upstream github.com/sdith/sdith tag v3.0.0
+#         (portable-C "Reference_Implementation" file set: src/*.c without
+#         *_avx2.c, lib/aes ref, lib/sha3 + opt64 Keccak, NIST sign.c). The
+#         12 parameter sets (cat{1,3,5} x {fast,short} x {-,cipherpow}) are
+#         run-time parameter structs in the library, so the only per-variant
+#         file is api.h (CRYPTO_*BYTES + SIGNATURE_PARAMS). Zero -D flags:
+#         ONLY_REF_IMPLEMENTATION/NDEBUG live in common/include/
+#         sdith_build_config.h. log2() in sdith_signature.c needs -lm at link time
+#         (also for the static-test folders: `gcc *.c -lm`). The DRBG is the repo's self-contained
+#         kat/gen/rng.c (copied into common/src/rng.c; no OpenSSL). The KAT
+#         flow is the OFFICIAL NIST PQCgenKAT_sign.c one (one entropy-seeded
+#         DRBG stream draws seed_i and msg_i, mlen = 33*(i+1); then reseed with
+#         seed_i for keygen+sign), implemented in kat/gen/PQCgenKAT_sign_sdith_r3.c
+#         and main_sdith_r3.c (same logic as the *_qruov_r3.c pair; the older
+#         *_sdith.c pair reseeds before drawing the message and does NOT
+#         reproduce the official R3 KAT).
+#         Targets: test-<VARIANT>-R3 / gen-<VARIANT>-R3, aggregates
+#         test-sdith-r3 / gen-sdith-r3, binaries gen_<VARIANT>_R3/test_<VARIANT>_R3.
+# =============================================================================
+
+SDITH_R3_DIR := $(ROOT)/original/Additional-DS/SDITH-R3
+SDITH_R3_VARIANTS := \
+    sdith_cat1_fast sdith_cat1_short sdith_cat1_fast_cipherpow sdith_cat1_short_cipherpow \
+    sdith_cat3_fast sdith_cat3_short sdith_cat3_fast_cipherpow sdith_cat3_short_cipherpow \
+    sdith_cat5_fast sdith_cat5_short sdith_cat5_fast_cipherpow sdith_cat5_short_cipherpow
+
+define SDITH_R3_RULES
+$(1)_R3_SRCS := $$(wildcard $(SDITH_R3_DIR)/common/src/*.c)
+$(1)_R3_INC  := -I$(SDITH_R3_DIR)/common/include -I$(SDITH_R3_DIR)/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/SDITH-R3/$(1).rsp
+
+$(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_sdith_r3.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/SDITH-R3
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)"' \
+	    $$^ -o $$@ -lm
+
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/SDITH-R3
+	$$<
+
+$(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_sdith_r3.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' \
+	    $$^ -o $$@ -lm
+
+gen-$(1)-R3: $$($(1)_R3_RSP)
+test-$(1)-R3: $$($(1)_R3_RSP) $(BUILD)/test_$(1)_R3
+	@echo "=== Testing $(1)-R3 ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)_R3
+
+.PHONY: gen-$(1)-R3 test-$(1)-R3
+endef
+
+$(foreach v,$(SDITH_R3_VARIANTS),$(eval $(call SDITH_R3_RULES,$(v))))
+
+test-sdith-r3: $(addsuffix -R3,$(addprefix test-,$(SDITH_R3_VARIANTS)))
+gen-sdith-r3:  $(addsuffix -R3,$(addprefix gen-,$(SDITH_R3_VARIANTS)))
+.PHONY: test-sdith-r3 gen-sdith-r3
+
+# =============================================================================
+#  SQISIGN-R3  (3 variants – Round-3 NIST additional-signatures package,
+#           upstream tag nist-v3 of github.com/SQIsign/the-sqisign,
+#           parameter sets p324_3 / p500_27 / p664_17 = NIST levels 1/3/5.
+#           A different code base than the older SQISIGN family above (no
+#           GMP/mini-gmp, own mp/ module, different pk/sk/sig sizes, KATs
+#           PQCsignKAT_{270,417,549}_SQIsign_*.rsp). Same layout as SQISIGN:
+#           common/{src,include} + per-variant src/ (api.c, fp_<p>.c, 5
+#           precomp .c) and include/ (api.h, precomp headers, fp_<p>_{32,64}_inc.h,
+#           sqisign_variant.h). "ref" build type only (no broadwell/arm64
+#           assembly). The upstream CMake -D flags are hardcoded in
+#           common/include/sqisign_build_config.h (+ per-variant
+#           sqisign_variant.h), included first by every .c file.
+#           Targets are suffixed "-R3" (test-sqisign_p324_3-R3, ...) and
+#           binaries "_R3". Needs -lm. Uses kat/gen/PQCgenKAT_sign_sqisign_r3.c
+#           and main_sqisign_r3.c (official two-phase NIST KAT procedure).
+# =============================================================================
+
+SQISIGN_R3_COMMON := $(ROOT)/original/Additional-DS/SQISIGN-R3/common
+SQISIGN_R3_VARIANTS := sqisign_p324_3 sqisign_p500_27 sqisign_p664_17
+
+define SQISIGN_R3_RULES
+$(1)_R3_SRCS := $$(wildcard $(SQISIGN_R3_COMMON)/src/*.c) \
+             $$(wildcard $(ROOT)/original/Additional-DS/SQISIGN-R3/$(1)/src/*.c)
+$(1)_R3_INC  := -I$(SQISIGN_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/SQISIGN-R3/$(1)/include \
+             -I$(GENDIR) -I$(COMMON)
+$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/SQISIGN-R3/$(1).rsp
+
+$(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_sqisign_r3.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/SQISIGN-R3
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
+	    $$^ -o $$@ -lm
+
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/SQISIGN-R3
+	$$<
+
+$(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_sqisign_r3.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' \
+	    $$^ -o $$@ -lm
+
+gen-$(1)-R3: $$($(1)_R3_RSP)
+test-$(1)-R3: $$($(1)_R3_RSP) $(BUILD)/test_$(1)_R3
+	@echo "=== Testing $(1)-R3 ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)_R3
+
+.PHONY: gen-$(1)-R3 test-$(1)-R3
+endef
+
+$(foreach v,$(SQISIGN_R3_VARIANTS),$(eval $(call SQISIGN_R3_RULES,$(v))))
+
+test-sqisign-r3: $(addsuffix -R3,$(addprefix test-,$(SQISIGN_R3_VARIANTS)))
+gen-sqisign-r3:  $(addsuffix -R3,$(addprefix gen-,$(SQISIGN_R3_VARIANTS)))
+.PHONY: test-sqisign-r3 gen-sqisign-r3
+
+# =============================================================================
+#  FAEST-R3  (4 variants -- FAEST v3, NIST round 3, lambda = 128: FAEST_128F,
+#          FAEST_128S, FAEST_EM_128F, FAEST_EM_128S). NOT the same as the
+#          FAEST family above (v2-sized signatures 5924/4506/5060/3906 B): the
+#          v3 signatures are 5170/4066/4170/3466 B and the KAT is the official
+#          v3 one. Source: official reference packages (sw/original/faest-v3),
+#          assembled by tools/assemble_faest_r3.sh. Layout: common/{src,include}
+#          + per-variant src/{crypto_sign.c,faest_<v>.c}, include/{api.h,faest_<v>.h}.
+#          Portable C only (no AES-NI/SSE2/AVX2, no OpenSSL, no -march): the build
+#          configuration (HAVE_CONFIG_H, HAVE_RANDOMBYTES, NDEBUG, _GNU_SOURCE) is
+#          hardcoded in common/include/faest_build_config.h, so zero -D is needed.
+#          Targets are suffixed "-R3" (test-FAEST_128F-R3, gen-FAEST_128F-R3),
+#          binaries gen_<V>_R3 / test_<V>_R3. Uses its own
+#          kat/gen/PQCgenKAT_sign_faest_r3.c + main_faest_r3.c (official NIST flow:
+#          seed/msg drawn from the entropy-seeded DRBG, mlen = 33*(count+1)).
+# =============================================================================
+
+FAEST_R3_COMMON := $(ROOT)/original/Additional-DS/FAEST-R3/common
+FAEST_R3_VARIANTS := FAEST_128F FAEST_128S FAEST_EM_128F FAEST_EM_128S
+
+define FAEST_R3_RULES
+$(1)_R3_SRCS := $$(wildcard $(FAEST_R3_COMMON)/src/*.c) \
+             $$(wildcard $(ROOT)/original/Additional-DS/FAEST-R3/$(1)/src/*.c)
+$(1)_R3_INC  := -I$(FAEST_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/FAEST-R3/$(1)/include \
+             -I$(GENDIR) -I$(COMMON)
+$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/FAEST-R3/$(1).rsp
+$(1)_R3_DEFS := -Wno-psabi
+
+$(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
+    $(GENDIR)/PQCgenKAT_sign_faest_r3.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/Additional-DS/FAEST-R3
+	$(CC) $(CFLAGS) $$($(1)_R3_DEFS) $$($(1)_R3_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
+	    $$^ -o $$@
+
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/FAEST-R3
+	$$<
+
+$(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_faest_r3.c \
+    $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(1)_R3_DEFS) $$($(1)_R3_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(1)_R3_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1)-R3: $$($(1)_R3_RSP)
+test-$(1)-R3: $$($(1)_R3_RSP) $(BUILD)/test_$(1)_R3
+	@echo "=== Testing $(1)-R3 ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(1)_R3
+
+.PHONY: gen-$(1)-R3 test-$(1)-R3
+endef
+
+$(foreach v,$(FAEST_R3_VARIANTS),$(eval $(call FAEST_R3_RULES,$(v))))
+
+test-faest-r3: $(addsuffix -R3,$(addprefix test-,$(FAEST_R3_VARIANTS)))
+gen-faest-r3:  $(addsuffix -R3,$(addprefix gen-,$(FAEST_R3_VARIANTS)))
+.PHONY: test-faest-r3 gen-faest-r3
+
+# =============================================================================
 #  ML-DSA  (3 variants – src/ + include/ layout)
 #           Exclude src/randombytes.c (uses /dev/urandom); kat/gen/rng.c provides
 #           the NIST DRBG randombytes() for generators and satisfies the linker
@@ -1512,8 +2012,8 @@ gen-kem:  $(KEM_GEN_TARGETS)
 test-kem: $(KEM_TEST_TARGETS)
 .PHONY: gen-ds test-ds gen-kem test-kem
 
-gen-additional-ds:  gen-cross gen-hawk gen-less gen-faest gen-uov gen-mayo gen-qruov gen-snova gen-sdith gen-sqisign
-test-additional-ds: test-cross test-hawk test-less test-faest test-uov test-mayo test-qruov test-snova test-sdith test-sqisign
+gen-additional-ds:  gen-cross gen-hawk gen-less gen-faest gen-uov gen-mayo gen-qruov gen-snova gen-sdith gen-sqisign gen-mqom gen-mayo-r3 gen-uov-r3 gen-snova-r3 gen-qruov-r3 gen-sdith-r3 gen-sqisign-r3 gen-faest-r3
+test-additional-ds: test-cross test-hawk test-less test-faest test-uov test-mayo test-qruov test-snova test-sdith test-sqisign test-mqom test-mayo-r3 test-uov-r3 test-snova-r3 test-qruov-r3 test-sdith-r3 test-sqisign-r3 test-faest-r3
 .PHONY: gen-additional-ds test-additional-ds
 
 gen-stateful-ds:  gen-xmss gen-lms gen-hss
@@ -1538,7 +2038,8 @@ all: test-all
 #    src/include) instead of a binary that fopen()s a .rsp at runtime.
 #    See tools/gen_static_test.py and tools/algo_registry.json for details.
 #
-#    Currently supported families: mlkem, mldsa, falcon, hawk, less, cross, faest, uov, mayo, qruov, snova, sdith,
+#    Currently supported families: mlkem, mldsa, falcon, hawk, less, cross, faest, uov, mayo, qruov, snova, sdith, sqisign, mqom,
+#    the seven *-R3 families (mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3; variant names <V>-R3),
 #    slhdsa, slhdsa-haraka, slhdsa-haraka-aes, slhdsa-sha2, hqc2025,
 #    ascon-aead, ascon-hash (see tools/algo_registry.json)
 #
@@ -1593,7 +2094,9 @@ HARAKA_AES_SAFE_NAMES := HARAKAAESp128fsimple HARAKAAESp128frobust \
 
 STATIC_ALL_VARIANTS := \
     $(MLKEM_VARIANTS) $(MLDSA_VARIANTS) $(FALCON_VARIANTS) $(HAWK_VARIANTS) \
-    $(LESS_VARIANTS) $(CROSS_VARIANTS) $(FAEST_VARIANTS) $(UOV_VARIANTS) $(MAYO_VARIANTS) $(QRUOV_VARIANTS) $(SNOVA_VARIANTS) $(SDITH_VARIANTS) $(SQISIGN_VARIANTS) $(SLHDSA_SAFE_NAMES) \
+    $(LESS_VARIANTS) $(CROSS_VARIANTS) $(FAEST_VARIANTS) $(UOV_VARIANTS) $(MAYO_VARIANTS) $(QRUOV_VARIANTS) $(SNOVA_VARIANTS) $(SDITH_VARIANTS) $(SQISIGN_VARIANTS) $(MQOM_VARIANTS) \
+    $(addsuffix -R3,$(MAYO_R3_VARIANTS) $(UOV_R3_VARIANTS) $(SNOVA_R3_VARIANTS) $(QRUOV_R3_VARIANTS) $(SDITH_R3_VARIANTS) $(SQISIGN_R3_VARIANTS) $(FAEST_R3_VARIANTS)) \
+    $(SLHDSA_SAFE_NAMES) \
     $(HARAKA_SAFE_NAMES) $(HARAKA_AES_SAFE_NAMES) $(SHA2_SAFE_NAMES) $(HQC_SAFE_NAMES) \
     XMSS-SHA2_10_256 LMS_H10_W8 HSS_L2_H5_W8
 
@@ -1611,7 +2114,7 @@ static-test-$(1):
 .PHONY: static-test-$(1)
 endef
 
-$(foreach f,mlkem mldsa falcon hawk less cross faest uov mayo qruov snova sdith sqisign slhdsa slhdsa-haraka slhdsa-haraka-aes slhdsa-sha2 hqc2025 xmss lms hss ascon-aead ascon-hash,$(eval $(call STATIC_FAMILY_RULE,$(f))))
+$(foreach f,mlkem mldsa falcon hawk less cross faest uov mayo qruov snova sdith sqisign mqom mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3 slhdsa slhdsa-haraka slhdsa-haraka-aes slhdsa-sha2 hqc2025 xmss lms hss ascon-aead ascon-hash,$(eval $(call STATIC_FAMILY_RULE,$(f))))
 
 static-test-hqc: static-test-hqc2025
 .PHONY: static-test-hqc
@@ -1628,7 +2131,7 @@ static-test-ds: $(addprefix static-test-,falcon mldsa \
 static-test-kem: $(addprefix static-test-,mlkem hqc2025)
 .PHONY: static-test-ds static-test-kem
 
-static-test-additional-ds: $(addprefix static-test-,hawk less cross faest uov mayo qruov snova sdith sqisign)
+static-test-additional-ds: $(addprefix static-test-,hawk less cross faest uov mayo qruov snova sdith sqisign mqom mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3)
 static-test-stateful-ds: $(addprefix static-test-,xmss lms hss)
 .PHONY: static-test-additional-ds static-test-stateful-ds
 
@@ -1649,6 +2152,18 @@ clean-rsp:
 clean-static:
 	rm -rf $(STATICDIR)
 
+# Level-1 benchmark of the additional signatures (tools/bench/, results in bench/results).
+# Run it on an otherwise idle machine; BENCH_OUT / BENCH_TIME override output dir / seconds per operation.
+BENCH_OUT  ?= bench/results
+BENCH_TIME ?= 3
+bench-l1:
+	python3 -I tools/bench/run_bench.py --time $(BENCH_TIME) --out $(BENCH_OUT)
+	python3 -I tools/bench/report.py --results $(BENCH_OUT)
+
+# Remove only the benchmark build products (build/bench), never the results.
+bench-clean:
+	rm -rf build/bench
+
 distclean: clean clean-rsp clean-static
 
 help:
@@ -1664,7 +2179,7 @@ help:
 	@echo "  make distclean        Remove build/, kat/rsp/ and kat/static/"
 	@echo ""
 	@echo "Non-standardized / separate-category targets (NOT part of test-all):"
-	@echo "  make test-additional-ds   CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDITH, SQISIGN (candidate signature schemes)"
+	@echo "  make test-additional-ds   CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDITH, SQISIGN, MQOM (candidate signature schemes)"
 	@echo "  make test-stateful-ds     XMSS, LMS, HSS (NIST SP 800-208, default variant each)"
 	@echo "  make test-ascon           ASCON AEAD + hash/XOF (not PQC)"
 	@echo "  (each also has gen-* and static-test-* equivalents)"
@@ -1681,7 +2196,7 @@ help:
 	@echo "  ds kem                                          (standardized aggregates)"
 	@echo "  falcon mldsa slhdsa slhdsa-haraka slhdsa-haraka-aes slhdsa-sha2"
 	@echo "  mlkem hqc"
-	@echo "  additional-ds cross hawk less faest uov mayo qruov snova sdith sqisign (not standardized)"
+	@echo "  additional-ds cross hawk less faest uov mayo qruov snova sdith sqisign mqom (not standardized)"
 	@echo "  stateful-ds xmss lms hss                         (NIST SP 800-208)"
 	@echo "  ascon ascon-aead ascon-hash                      (not PQC)"
 	@echo ""
@@ -1692,15 +2207,18 @@ help:
 	@echo "  make test-MAYO_1"
 	@echo "  make test-QRUOV_1_q127L3v156m54_a"
 	@echo "  make test-SNOVA_28_5_19_4"
+	@echo "  make test-mqom3_cat1_gf16_fast_ct"
 	@echo "  make test-SPHINCSp128fsimple"
 	@echo "  make test-ML-DSA-2"
 	@echo "  make test-HQC2025_1"
 	@echo "  make test-ascon128v12"
 	@echo "  make test-asconhashv12"
 	@echo ""
+	@echo "Benchmark (level 1, see bench/README.md):  make bench-l1   make bench-clean"
+	@echo ""
 	@echo "Configuration (current values):"
 	@echo "  KATNUM=$(KATNUM)  RUN_KEYGEN=$(RUN_KEYGEN)  RUN_SIGN=$(RUN_SIGN)  RUN_VERIFY=$(RUN_VERIFY)"
 	@echo "  RUN_ENCAPS=$(RUN_ENCAPS)  RUN_DECAPS=$(RUN_DECAPS)  DEBUG=$(DEBUG)  MLEN=$(MLEN)"
 	@echo "  CC=$(CC)"
 
-.PHONY: clean clean-rsp clean-static distclean help
+.PHONY: clean clean-rsp clean-static distclean help bench-l1 bench-clean

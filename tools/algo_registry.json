@@ -33,6 +33,10 @@
       "type": "DS",
       "description": "No derand API. Reseed via randombytes_init(seed, NULL, 256), skip the mlen bytes the generator drew for the message, then keypair/sign/open. Unlike CROSS/LESS, keypair is only called when RUN_KEYGEN=1 -- matches kat/gen/main_hawk.c exactly, including its RUN_KEYGEN=0 CSPRNG-desync caveat (see tools/README.md). Shared verbatim by HAWK, FAEST, UOV, MAYO, QRUOV, SNOVA, and SDitH (main_faest.c/main_uov.c/main_mayo.c/main_qruov.c/main_snova.c/main_sdith.c are the same shape: FAEST's rand_bytes(), pqov's randombytes(), MAYO-C's randombytes(), QR-UOV's randombytes(), SNOVA's randombytes(), and SDitH's randombytes() all forward straight to the reseeded NIST DRBG, no internal CSPRNG object of their own; main_mayo.c differs only in using size_t instead of unsigned long long for smlen/mlen, matching MAYO's own api.h; main_sdith.c uses unsigned long long like main_hawk.c, matching SDitH's own api.h in both Hypercube_Variant and Threshold_Variant)."
     },
+    "ds_drbg_nist": {
+      "type": "DS",
+      "description": "Same as ds_drbg_hawk (no derand API; reseed via randombytes_init(seed, NULL, 256); keypair(pk,sk)/sign(sm,&smlen,m,mlen,sk)/open(m,&mlen,sm,smlen,pk); unsigned long long smlen/mlen) except that nothing is skipped after the reseed: the .rsp follows the official NIST PQCgenKAT_sign procedure (the message is drawn from the entropy-seeded DRBG BEFORE reseeding with `seed`), so keygen runs immediately after randombytes_init(seed) and seed -> pk/sk matches the submitter's official KAT files. Used by MQOM3 (kat/gen/main_mqom.c)."
+    },
     "kem_prng_reseed": {
       "type": "KEM",
       "description": "No explicit seed params. Reseed via prng_init(seed,NULL,48,0) then keypair(pk,sk)/enc(ct,ss,pk)/dec(ss,ct,sk). Used by HQC-2025. Same RUN_KEYGEN=0 desync caveat as ds_drbg_hawk."
@@ -44,6 +48,10 @@
     "hash_direct": {
       "type": "HASH",
       "description": "Single call, no key/nonce/AD, no RUN_* flag: crypto_hash(out,in,inlen). Used by ASCON's hash/XOF variants (asconhashv12, asconhashav12, asconxofv12, asconxofav12)."
+    },
+    "ds_drbg_official": {
+      "type": "DS",
+      "description": "Like ds_drbg_nist (official NIST PQCgenKAT_sign flow: message drawn from the entropy-seeded DRBG BEFORE reseeding with `seed`; keygen runs right after randombytes_init(seed)) but the message length is NOT constant: the official Round-3 KATs use mlen = 33*(count+1). mlen and the messages are therefore emitted per record (TVEC_MLEN[], TVEC_IN_M_SIGN_LEN[]) and --kat-num > 1 works. Optional per-variant registry flags: \"size_t_api\": true -> smlen/mlen1 are size_t (MAYO's api.h; unsigned long long is an error with gcc >= 14); \"static_gcc_flags\": informational extra flags the static folder needs with plain gcc (e.g. -lm, -I.), printed by the generator. Used by the Round-3 families MAYO-R3, UOV-R3, SNOVA-R3, QRUOV-R3, SDITH-R3, SQISIGN-R3 (kat/gen/main_*_r3.c). MQOM (constant mlen) keeps ds_drbg_nist."
     }
   },
   "families": {
@@ -342,6 +350,147 @@
         "asconhashav12",
         "asconxofv12",
         "asconxofav12"
+      ]
+    },
+    "mqom": {
+      "shape": "ds_drbg_nist",
+      "variants": [
+        "mqom3_cat1_gf2_shorter_ct",
+        "mqom3_cat1_gf2_shorter_ot",
+        "mqom3_cat1_gf16_fast_ct",
+        "mqom3_cat1_gf16_fast_ot",
+        "mqom3_cat1_gf16_short_ct",
+        "mqom3_cat1_gf16_short_ot",
+        "mqom3_cat3_gf2_shorter_ct",
+        "mqom3_cat3_gf2_shorter_ot",
+        "mqom3_cat3_gf16_fast_ct",
+        "mqom3_cat3_gf16_fast_ot",
+        "mqom3_cat3_gf16_short_ct",
+        "mqom3_cat3_gf16_short_ot",
+        "mqom3_cat5_gf2_shorter_ct",
+        "mqom3_cat5_gf2_shorter_ot",
+        "mqom3_cat5_gf16_fast_ct",
+        "mqom3_cat5_gf16_fast_ot",
+        "mqom3_cat5_gf16_short_ct",
+        "mqom3_cat5_gf16_short_ot"
+      ]
+    },
+    "mayo-r3": {
+      "shape": "ds_drbg_official",
+      "variants": [
+        "MAYO_1-R3",
+        "MAYO_2-R3",
+        "MAYO_3-R3",
+        "MAYO_5-R3"
+      ]
+    },
+    "uov-r3": {
+      "shape": "ds_drbg_official",
+      "variants": [
+        "UOV_Ip-R3",
+        "UOV_Ip_pkc-R3",
+        "UOV_Ip_pkc_skc-R3",
+        "UOV_Is-R3",
+        "UOV_Is_pkc-R3",
+        "UOV_Is_pkc_skc-R3",
+        "UOV_III-R3",
+        "UOV_III_pkc-R3",
+        "UOV_III_pkc_skc-R3",
+        "UOV_V-R3",
+        "UOV_V_pkc-R3",
+        "UOV_V_pkc_skc-R3"
+      ]
+    },
+    "snova-r3": {
+      "shape": "ds_drbg_official",
+      "variants": [
+        "SNOVA_I_B-R3",
+        "SNOVA_I_B_AES-R3",
+        "SNOVA_I_K-R3",
+        "SNOVA_I_K_AES-R3",
+        "SNOVA_I_S-R3",
+        "SNOVA_I_S_AES-R3",
+        "SNOVA_III_B-R3",
+        "SNOVA_III_B_AES-R3",
+        "SNOVA_III_K-R3",
+        "SNOVA_III_K_AES-R3",
+        "SNOVA_III_S-R3",
+        "SNOVA_III_S_AES-R3",
+        "SNOVA_V_B-R3",
+        "SNOVA_V_B_AES-R3",
+        "SNOVA_V_K-R3",
+        "SNOVA_V_K_AES-R3",
+        "SNOVA_V_S-R3",
+        "SNOVA_V_S_AES-R3"
+      ]
+    },
+    "qruov-r3": {
+      "shape": "ds_drbg_official",
+      "variants": [
+        "QRUOV_1q7L10_aes-R3",
+        "QRUOV_1q7L10_shake-R3",
+        "QRUOV_1q31L3_aes-R3",
+        "QRUOV_1q31L3_shake-R3",
+        "QRUOV_1q31L10_aes-R3",
+        "QRUOV_1q31L10_shake-R3",
+        "QRUOV_1q127L3_aes-R3",
+        "QRUOV_1q127L3_shake-R3",
+        "QRUOV_1q127L10_aes-R3",
+        "QRUOV_1q127L10_shake-R3",
+        "QRUOV_3q7L10_aes-R3",
+        "QRUOV_3q7L10_shake-R3",
+        "QRUOV_3q31L3_aes-R3",
+        "QRUOV_3q31L3_shake-R3",
+        "QRUOV_3q31L10_aes-R3",
+        "QRUOV_3q31L10_shake-R3",
+        "QRUOV_3q127L3_aes-R3",
+        "QRUOV_3q127L3_shake-R3",
+        "QRUOV_3q127L10_aes-R3",
+        "QRUOV_3q127L10_shake-R3",
+        "QRUOV_5q7L10_aes-R3",
+        "QRUOV_5q7L10_shake-R3",
+        "QRUOV_5q31L3_aes-R3",
+        "QRUOV_5q31L3_shake-R3",
+        "QRUOV_5q31L10_aes-R3",
+        "QRUOV_5q31L10_shake-R3",
+        "QRUOV_5q127L3_aes-R3",
+        "QRUOV_5q127L3_shake-R3",
+        "QRUOV_5q127L10_aes-R3",
+        "QRUOV_5q127L10_shake-R3"
+      ]
+    },
+    "sdith-r3": {
+      "shape": "ds_drbg_official",
+      "variants": [
+        "sdith_cat1_fast-R3",
+        "sdith_cat1_short-R3",
+        "sdith_cat1_fast_cipherpow-R3",
+        "sdith_cat1_short_cipherpow-R3",
+        "sdith_cat3_fast-R3",
+        "sdith_cat3_short-R3",
+        "sdith_cat3_fast_cipherpow-R3",
+        "sdith_cat3_short_cipherpow-R3",
+        "sdith_cat5_fast-R3",
+        "sdith_cat5_short-R3",
+        "sdith_cat5_fast_cipherpow-R3",
+        "sdith_cat5_short_cipherpow-R3"
+      ]
+    },
+    "sqisign-r3": {
+      "shape": "ds_drbg_official",
+      "variants": [
+        "sqisign_p324_3-R3",
+        "sqisign_p500_27-R3",
+        "sqisign_p664_17-R3"
+      ]
+    },
+    "faest-r3": {
+      "shape": "ds_drbg_official",
+      "variants": [
+        "FAEST_128F-R3",
+        "FAEST_128S-R3",
+        "FAEST_EM_128F-R3",
+        "FAEST_EM_128S-R3"
       ]
     }
   },
@@ -3021,6 +3170,1652 @@
       "vec_suffix": "asconxofav12",
       "main_headers": [
         "crypto_hash.h"
+      ]
+    },
+    "mqom3_cat1_gf2_shorter_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat1_gf2_shorter_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat1_gf2_shorter_ct.rsp",
+      "gen_target": "gen-mqom3_cat1_gf2_shorter_ct",
+      "vec_suffix": "mqom3_cat1_gf2_shorter_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat1_gf2_shorter_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat1_gf2_shorter_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat1_gf2_shorter_ot.rsp",
+      "gen_target": "gen-mqom3_cat1_gf2_shorter_ot",
+      "vec_suffix": "mqom3_cat1_gf2_shorter_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat1_gf16_fast_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat1_gf16_fast_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat1_gf16_fast_ct.rsp",
+      "gen_target": "gen-mqom3_cat1_gf16_fast_ct",
+      "vec_suffix": "mqom3_cat1_gf16_fast_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat1_gf16_fast_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat1_gf16_fast_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat1_gf16_fast_ot.rsp",
+      "gen_target": "gen-mqom3_cat1_gf16_fast_ot",
+      "vec_suffix": "mqom3_cat1_gf16_fast_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat1_gf16_short_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat1_gf16_short_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat1_gf16_short_ct.rsp",
+      "gen_target": "gen-mqom3_cat1_gf16_short_ct",
+      "vec_suffix": "mqom3_cat1_gf16_short_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat1_gf16_short_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat1_gf16_short_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat1_gf16_short_ot.rsp",
+      "gen_target": "gen-mqom3_cat1_gf16_short_ot",
+      "vec_suffix": "mqom3_cat1_gf16_short_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat3_gf2_shorter_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat3_gf2_shorter_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat3_gf2_shorter_ct.rsp",
+      "gen_target": "gen-mqom3_cat3_gf2_shorter_ct",
+      "vec_suffix": "mqom3_cat3_gf2_shorter_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat3_gf2_shorter_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat3_gf2_shorter_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat3_gf2_shorter_ot.rsp",
+      "gen_target": "gen-mqom3_cat3_gf2_shorter_ot",
+      "vec_suffix": "mqom3_cat3_gf2_shorter_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat3_gf16_fast_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat3_gf16_fast_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat3_gf16_fast_ct.rsp",
+      "gen_target": "gen-mqom3_cat3_gf16_fast_ct",
+      "vec_suffix": "mqom3_cat3_gf16_fast_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat3_gf16_fast_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat3_gf16_fast_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat3_gf16_fast_ot.rsp",
+      "gen_target": "gen-mqom3_cat3_gf16_fast_ot",
+      "vec_suffix": "mqom3_cat3_gf16_fast_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat3_gf16_short_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat3_gf16_short_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat3_gf16_short_ct.rsp",
+      "gen_target": "gen-mqom3_cat3_gf16_short_ct",
+      "vec_suffix": "mqom3_cat3_gf16_short_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat3_gf16_short_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat3_gf16_short_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat3_gf16_short_ot.rsp",
+      "gen_target": "gen-mqom3_cat3_gf16_short_ot",
+      "vec_suffix": "mqom3_cat3_gf16_short_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat5_gf2_shorter_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat5_gf2_shorter_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat5_gf2_shorter_ct.rsp",
+      "gen_target": "gen-mqom3_cat5_gf2_shorter_ct",
+      "vec_suffix": "mqom3_cat5_gf2_shorter_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat5_gf2_shorter_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat5_gf2_shorter_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat5_gf2_shorter_ot.rsp",
+      "gen_target": "gen-mqom3_cat5_gf2_shorter_ot",
+      "vec_suffix": "mqom3_cat5_gf2_shorter_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat5_gf16_fast_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat5_gf16_fast_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat5_gf16_fast_ct.rsp",
+      "gen_target": "gen-mqom3_cat5_gf16_fast_ct",
+      "vec_suffix": "mqom3_cat5_gf16_fast_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat5_gf16_fast_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat5_gf16_fast_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat5_gf16_fast_ot.rsp",
+      "gen_target": "gen-mqom3_cat5_gf16_fast_ot",
+      "vec_suffix": "mqom3_cat5_gf16_fast_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat5_gf16_short_ct": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat5_gf16_short_ct/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat5_gf16_short_ct.rsp",
+      "gen_target": "gen-mqom3_cat5_gf16_short_ct",
+      "vec_suffix": "mqom3_cat5_gf16_short_ct",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "mqom3_cat5_gf16_short_ot": {
+      "family": "mqom",
+      "shape": "ds_drbg_nist",
+      "src_dir": "original/Additional-DS/MQOM/common/src",
+      "include_dir": "original/Additional-DS/MQOM/mqom3_cat5_gf16_short_ot/include",
+      "rsp_path": "kat/rsp/Additional-DS/MQOM/mqom3_cat5_gf16_short_ot.rsp",
+      "gen_target": "gen-mqom3_cat5_gf16_short_ot",
+      "vec_suffix": "mqom3_cat5_gf16_short_ot",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MQOM/common/include"
+      ]
+    },
+    "MAYO_1-R3": {
+      "family": "mayo-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/MAYO-R3/common/src",
+      "include_dir": "original/Additional-DS/MAYO-R3/MAYO_1/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO-R3/MAYO_1.rsp",
+      "gen_target": "gen-MAYO_1-R3",
+      "vec_suffix": "1_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO-R3/common/include",
+        "original/Additional-DS/MAYO-R3/MAYO_1/src"
+      ],
+      "size_t_api": true
+    },
+    "MAYO_2-R3": {
+      "family": "mayo-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/MAYO-R3/common/src",
+      "include_dir": "original/Additional-DS/MAYO-R3/MAYO_2/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO-R3/MAYO_2.rsp",
+      "gen_target": "gen-MAYO_2-R3",
+      "vec_suffix": "2_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO-R3/common/include",
+        "original/Additional-DS/MAYO-R3/MAYO_2/src"
+      ],
+      "size_t_api": true
+    },
+    "MAYO_3-R3": {
+      "family": "mayo-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/MAYO-R3/common/src",
+      "include_dir": "original/Additional-DS/MAYO-R3/MAYO_3/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO-R3/MAYO_3.rsp",
+      "gen_target": "gen-MAYO_3-R3",
+      "vec_suffix": "3_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO-R3/common/include",
+        "original/Additional-DS/MAYO-R3/MAYO_3/src"
+      ],
+      "size_t_api": true
+    },
+    "MAYO_5-R3": {
+      "family": "mayo-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/MAYO-R3/common/src",
+      "include_dir": "original/Additional-DS/MAYO-R3/MAYO_5/include",
+      "rsp_path": "kat/rsp/Additional-DS/MAYO-R3/MAYO_5.rsp",
+      "gen_target": "gen-MAYO_5-R3",
+      "vec_suffix": "5_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/MAYO-R3/common/include",
+        "original/Additional-DS/MAYO-R3/MAYO_5/src"
+      ],
+      "size_t_api": true
+    },
+    "UOV_Ip-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_Ip/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_Ip.rsp",
+      "gen_target": "gen-UOV_Ip-R3",
+      "vec_suffix": "Ip_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_Ip_pkc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_Ip_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_Ip_pkc.rsp",
+      "gen_target": "gen-UOV_Ip_pkc-R3",
+      "vec_suffix": "Ip_pkc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_Ip_pkc_skc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_Ip_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_Ip_pkc_skc.rsp",
+      "gen_target": "gen-UOV_Ip_pkc_skc-R3",
+      "vec_suffix": "Ip_pkc_skc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_Is-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_Is/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_Is.rsp",
+      "gen_target": "gen-UOV_Is-R3",
+      "vec_suffix": "Is_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_Is_pkc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_Is_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_Is_pkc.rsp",
+      "gen_target": "gen-UOV_Is_pkc-R3",
+      "vec_suffix": "Is_pkc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_Is_pkc_skc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_Is_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_Is_pkc_skc.rsp",
+      "gen_target": "gen-UOV_Is_pkc_skc-R3",
+      "vec_suffix": "Is_pkc_skc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_III-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_III/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_III.rsp",
+      "gen_target": "gen-UOV_III-R3",
+      "vec_suffix": "III_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_III_pkc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_III_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_III_pkc.rsp",
+      "gen_target": "gen-UOV_III_pkc-R3",
+      "vec_suffix": "III_pkc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_III_pkc_skc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_III_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_III_pkc_skc.rsp",
+      "gen_target": "gen-UOV_III_pkc_skc-R3",
+      "vec_suffix": "III_pkc_skc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_V-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_V/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_V.rsp",
+      "gen_target": "gen-UOV_V-R3",
+      "vec_suffix": "V_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_V_pkc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_V_pkc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_V_pkc.rsp",
+      "gen_target": "gen-UOV_V_pkc-R3",
+      "vec_suffix": "V_pkc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "UOV_V_pkc_skc-R3": {
+      "family": "uov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/UOV-R3/common/src",
+      "include_dir": "original/Additional-DS/UOV-R3/UOV_V_pkc_skc/include",
+      "rsp_path": "kat/rsp/Additional-DS/UOV-R3/UOV_V_pkc_skc.rsp",
+      "gen_target": "gen-UOV_V_pkc_skc-R3",
+      "vec_suffix": "V_pkc_skc_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/UOV-R3/common/include"
+      ]
+    },
+    "SNOVA_I_B-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_I_B/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_I_B.rsp",
+      "gen_target": "gen-SNOVA_I_B-R3",
+      "vec_suffix": "SNOVA_I_B_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_I_B_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_I_B_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_I_B_AES.rsp",
+      "gen_target": "gen-SNOVA_I_B_AES-R3",
+      "vec_suffix": "SNOVA_I_B_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_I_K-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_I_K/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_I_K.rsp",
+      "gen_target": "gen-SNOVA_I_K-R3",
+      "vec_suffix": "SNOVA_I_K_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_I_K_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_I_K_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_I_K_AES.rsp",
+      "gen_target": "gen-SNOVA_I_K_AES-R3",
+      "vec_suffix": "SNOVA_I_K_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_I_S-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_I_S/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_I_S.rsp",
+      "gen_target": "gen-SNOVA_I_S-R3",
+      "vec_suffix": "SNOVA_I_S_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_I_S_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_I_S_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_I_S_AES.rsp",
+      "gen_target": "gen-SNOVA_I_S_AES-R3",
+      "vec_suffix": "SNOVA_I_S_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_III_B-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_III_B/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_III_B.rsp",
+      "gen_target": "gen-SNOVA_III_B-R3",
+      "vec_suffix": "SNOVA_III_B_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_III_B_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_III_B_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_III_B_AES.rsp",
+      "gen_target": "gen-SNOVA_III_B_AES-R3",
+      "vec_suffix": "SNOVA_III_B_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_III_K-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_III_K/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_III_K.rsp",
+      "gen_target": "gen-SNOVA_III_K-R3",
+      "vec_suffix": "SNOVA_III_K_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_III_K_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_III_K_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_III_K_AES.rsp",
+      "gen_target": "gen-SNOVA_III_K_AES-R3",
+      "vec_suffix": "SNOVA_III_K_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_III_S-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_III_S/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_III_S.rsp",
+      "gen_target": "gen-SNOVA_III_S-R3",
+      "vec_suffix": "SNOVA_III_S_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_III_S_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_III_S_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_III_S_AES.rsp",
+      "gen_target": "gen-SNOVA_III_S_AES-R3",
+      "vec_suffix": "SNOVA_III_S_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_V_B-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_V_B/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_V_B.rsp",
+      "gen_target": "gen-SNOVA_V_B-R3",
+      "vec_suffix": "SNOVA_V_B_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_V_B_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_V_B_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_V_B_AES.rsp",
+      "gen_target": "gen-SNOVA_V_B_AES-R3",
+      "vec_suffix": "SNOVA_V_B_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_V_K-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_V_K/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_V_K.rsp",
+      "gen_target": "gen-SNOVA_V_K-R3",
+      "vec_suffix": "SNOVA_V_K_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_V_K_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_V_K_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_V_K_AES.rsp",
+      "gen_target": "gen-SNOVA_V_K_AES-R3",
+      "vec_suffix": "SNOVA_V_K_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_V_S-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_V_S/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_V_S.rsp",
+      "gen_target": "gen-SNOVA_V_S-R3",
+      "vec_suffix": "SNOVA_V_S_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "SNOVA_V_S_AES-R3": {
+      "family": "snova-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SNOVA-R3/common/src",
+      "include_dir": "original/Additional-DS/SNOVA-R3/SNOVA_V_S_AES/include",
+      "rsp_path": "kat/rsp/Additional-DS/SNOVA-R3/SNOVA_V_S_AES.rsp",
+      "gen_target": "gen-SNOVA_V_S_AES-R3",
+      "vec_suffix": "SNOVA_V_S_AES_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SNOVA-R3/common/include"
+      ]
+    },
+    "QRUOV_1q7L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q7L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q7L10_aes.rsp",
+      "gen_target": "gen-QRUOV_1q7L10_aes-R3",
+      "vec_suffix": "1q7L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q7L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q7L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q7L10_shake.rsp",
+      "gen_target": "gen-QRUOV_1q7L10_shake-R3",
+      "vec_suffix": "1q7L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q31L3_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q31L3_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q31L3_aes.rsp",
+      "gen_target": "gen-QRUOV_1q31L3_aes-R3",
+      "vec_suffix": "1q31L3_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q31L3_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q31L3_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q31L3_shake.rsp",
+      "gen_target": "gen-QRUOV_1q31L3_shake-R3",
+      "vec_suffix": "1q31L3_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q31L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q31L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q31L10_aes.rsp",
+      "gen_target": "gen-QRUOV_1q31L10_aes-R3",
+      "vec_suffix": "1q31L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q31L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q31L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q31L10_shake.rsp",
+      "gen_target": "gen-QRUOV_1q31L10_shake-R3",
+      "vec_suffix": "1q31L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q127L3_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q127L3_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q127L3_aes.rsp",
+      "gen_target": "gen-QRUOV_1q127L3_aes-R3",
+      "vec_suffix": "1q127L3_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q127L3_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q127L3_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q127L3_shake.rsp",
+      "gen_target": "gen-QRUOV_1q127L3_shake-R3",
+      "vec_suffix": "1q127L3_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q127L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q127L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q127L10_aes.rsp",
+      "gen_target": "gen-QRUOV_1q127L10_aes-R3",
+      "vec_suffix": "1q127L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_1q127L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_1q127L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_1q127L10_shake.rsp",
+      "gen_target": "gen-QRUOV_1q127L10_shake-R3",
+      "vec_suffix": "1q127L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q7L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q7L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q7L10_aes.rsp",
+      "gen_target": "gen-QRUOV_3q7L10_aes-R3",
+      "vec_suffix": "3q7L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q7L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q7L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q7L10_shake.rsp",
+      "gen_target": "gen-QRUOV_3q7L10_shake-R3",
+      "vec_suffix": "3q7L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q31L3_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q31L3_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q31L3_aes.rsp",
+      "gen_target": "gen-QRUOV_3q31L3_aes-R3",
+      "vec_suffix": "3q31L3_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q31L3_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q31L3_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q31L3_shake.rsp",
+      "gen_target": "gen-QRUOV_3q31L3_shake-R3",
+      "vec_suffix": "3q31L3_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q31L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q31L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q31L10_aes.rsp",
+      "gen_target": "gen-QRUOV_3q31L10_aes-R3",
+      "vec_suffix": "3q31L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q31L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q31L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q31L10_shake.rsp",
+      "gen_target": "gen-QRUOV_3q31L10_shake-R3",
+      "vec_suffix": "3q31L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q127L3_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q127L3_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q127L3_aes.rsp",
+      "gen_target": "gen-QRUOV_3q127L3_aes-R3",
+      "vec_suffix": "3q127L3_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q127L3_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q127L3_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q127L3_shake.rsp",
+      "gen_target": "gen-QRUOV_3q127L3_shake-R3",
+      "vec_suffix": "3q127L3_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q127L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q127L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q127L10_aes.rsp",
+      "gen_target": "gen-QRUOV_3q127L10_aes-R3",
+      "vec_suffix": "3q127L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_3q127L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_3q127L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_3q127L10_shake.rsp",
+      "gen_target": "gen-QRUOV_3q127L10_shake-R3",
+      "vec_suffix": "3q127L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q7L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q7L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q7L10_aes.rsp",
+      "gen_target": "gen-QRUOV_5q7L10_aes-R3",
+      "vec_suffix": "5q7L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q7L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q7L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q7L10_shake.rsp",
+      "gen_target": "gen-QRUOV_5q7L10_shake-R3",
+      "vec_suffix": "5q7L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q31L3_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q31L3_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q31L3_aes.rsp",
+      "gen_target": "gen-QRUOV_5q31L3_aes-R3",
+      "vec_suffix": "5q31L3_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q31L3_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q31L3_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q31L3_shake.rsp",
+      "gen_target": "gen-QRUOV_5q31L3_shake-R3",
+      "vec_suffix": "5q31L3_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q31L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q31L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q31L10_aes.rsp",
+      "gen_target": "gen-QRUOV_5q31L10_aes-R3",
+      "vec_suffix": "5q31L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q31L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q31L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q31L10_shake.rsp",
+      "gen_target": "gen-QRUOV_5q31L10_shake-R3",
+      "vec_suffix": "5q31L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q127L3_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q127L3_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q127L3_aes.rsp",
+      "gen_target": "gen-QRUOV_5q127L3_aes-R3",
+      "vec_suffix": "5q127L3_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q127L3_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q127L3_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q127L3_shake.rsp",
+      "gen_target": "gen-QRUOV_5q127L3_shake-R3",
+      "vec_suffix": "5q127L3_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q127L10_aes-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q127L10_aes/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q127L10_aes.rsp",
+      "gen_target": "gen-QRUOV_5q127L10_aes-R3",
+      "vec_suffix": "5q127L10_aes_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "QRUOV_5q127L10_shake-R3": {
+      "family": "qruov-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/QRUOV-R3/common/src",
+      "include_dir": "original/Additional-DS/QRUOV-R3/QRUOV_5q127L10_shake/include",
+      "rsp_path": "kat/rsp/Additional-DS/QRUOV-R3/QRUOV_5q127L10_shake.rsp",
+      "gen_target": "gen-QRUOV_5q127L10_shake-R3",
+      "vec_suffix": "5q127L10_shake_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/QRUOV-R3/common/include"
+      ]
+    },
+    "sdith_cat1_fast-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat1_fast/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat1_fast.rsp",
+      "gen_target": "gen-sdith_cat1_fast-R3",
+      "vec_suffix": "sdith_cat1_fast",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat1_short-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat1_short/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat1_short.rsp",
+      "gen_target": "gen-sdith_cat1_short-R3",
+      "vec_suffix": "sdith_cat1_short",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat1_fast_cipherpow-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat1_fast_cipherpow/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat1_fast_cipherpow.rsp",
+      "gen_target": "gen-sdith_cat1_fast_cipherpow-R3",
+      "vec_suffix": "sdith_cat1_fast_cipherpow",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat1_short_cipherpow-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat1_short_cipherpow/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat1_short_cipherpow.rsp",
+      "gen_target": "gen-sdith_cat1_short_cipherpow-R3",
+      "vec_suffix": "sdith_cat1_short_cipherpow",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat3_fast-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat3_fast/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat3_fast.rsp",
+      "gen_target": "gen-sdith_cat3_fast-R3",
+      "vec_suffix": "sdith_cat3_fast",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat3_short-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat3_short/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat3_short.rsp",
+      "gen_target": "gen-sdith_cat3_short-R3",
+      "vec_suffix": "sdith_cat3_short",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat3_fast_cipherpow-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat3_fast_cipherpow/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat3_fast_cipherpow.rsp",
+      "gen_target": "gen-sdith_cat3_fast_cipherpow-R3",
+      "vec_suffix": "sdith_cat3_fast_cipherpow",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat3_short_cipherpow-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat3_short_cipherpow/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat3_short_cipherpow.rsp",
+      "gen_target": "gen-sdith_cat3_short_cipherpow-R3",
+      "vec_suffix": "sdith_cat3_short_cipherpow",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat5_fast-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat5_fast/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat5_fast.rsp",
+      "gen_target": "gen-sdith_cat5_fast-R3",
+      "vec_suffix": "sdith_cat5_fast",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat5_short-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat5_short/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat5_short.rsp",
+      "gen_target": "gen-sdith_cat5_short-R3",
+      "vec_suffix": "sdith_cat5_short",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat5_fast_cipherpow-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat5_fast_cipherpow/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat5_fast_cipherpow.rsp",
+      "gen_target": "gen-sdith_cat5_fast_cipherpow-R3",
+      "vec_suffix": "sdith_cat5_fast_cipherpow",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sdith_cat5_short_cipherpow-R3": {
+      "family": "sdith-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SDITH-R3/common/src",
+      "include_dir": "original/Additional-DS/SDITH-R3/sdith_cat5_short_cipherpow/include",
+      "extra_dirs": [
+        "original/Additional-DS/SDITH-R3/common/include"
+      ],
+      "rsp_path": "kat/rsp/Additional-DS/SDITH-R3/sdith_cat5_short_cipherpow.rsp",
+      "gen_target": "gen-sdith_cat5_short_cipherpow-R3",
+      "vec_suffix": "sdith_cat5_short_cipherpow",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "static_gcc_flags": "-lm"
+    },
+    "sqisign_p324_3-R3": {
+      "family": "sqisign-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SQISIGN-R3/common/src",
+      "include_dir": "original/Additional-DS/SQISIGN-R3/sqisign_p324_3/include",
+      "rsp_path": "kat/rsp/Additional-DS/SQISIGN-R3/sqisign_p324_3.rsp",
+      "gen_target": "gen-sqisign_p324_3-R3",
+      "vec_suffix": "sqisign_p324_3_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SQISIGN-R3/common/include",
+        "original/Additional-DS/SQISIGN-R3/sqisign_p324_3/src"
+      ],
+      "static_gcc_flags": "-I."
+    },
+    "sqisign_p500_27-R3": {
+      "family": "sqisign-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SQISIGN-R3/common/src",
+      "include_dir": "original/Additional-DS/SQISIGN-R3/sqisign_p500_27/include",
+      "rsp_path": "kat/rsp/Additional-DS/SQISIGN-R3/sqisign_p500_27.rsp",
+      "gen_target": "gen-sqisign_p500_27-R3",
+      "vec_suffix": "sqisign_p500_27_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SQISIGN-R3/common/include",
+        "original/Additional-DS/SQISIGN-R3/sqisign_p500_27/src"
+      ],
+      "static_gcc_flags": "-I."
+    },
+    "sqisign_p664_17-R3": {
+      "family": "sqisign-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/SQISIGN-R3/common/src",
+      "include_dir": "original/Additional-DS/SQISIGN-R3/sqisign_p664_17/include",
+      "rsp_path": "kat/rsp/Additional-DS/SQISIGN-R3/sqisign_p664_17.rsp",
+      "gen_target": "gen-sqisign_p664_17-R3",
+      "vec_suffix": "sqisign_p664_17_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/SQISIGN-R3/common/include",
+        "original/Additional-DS/SQISIGN-R3/sqisign_p664_17/src"
+      ],
+      "static_gcc_flags": "-I."
+    },
+    "FAEST_128F-R3": {
+      "family": "faest-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/FAEST-R3/common/src",
+      "include_dir": "original/Additional-DS/FAEST-R3/FAEST_128F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST-R3/FAEST_128F.rsp",
+      "gen_target": "gen-FAEST_128F-R3",
+      "vec_suffix": "128F_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST-R3/common/include",
+        "original/Additional-DS/FAEST-R3/FAEST_128F/src"
+      ]
+    },
+    "FAEST_128S-R3": {
+      "family": "faest-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/FAEST-R3/common/src",
+      "include_dir": "original/Additional-DS/FAEST-R3/FAEST_128S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST-R3/FAEST_128S.rsp",
+      "gen_target": "gen-FAEST_128S-R3",
+      "vec_suffix": "128S_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST-R3/common/include",
+        "original/Additional-DS/FAEST-R3/FAEST_128S/src"
+      ]
+    },
+    "FAEST_EM_128F-R3": {
+      "family": "faest-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/FAEST-R3/common/src",
+      "include_dir": "original/Additional-DS/FAEST-R3/FAEST_EM_128F/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST-R3/FAEST_EM_128F.rsp",
+      "gen_target": "gen-FAEST_EM_128F-R3",
+      "vec_suffix": "EM_128F_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST-R3/common/include",
+        "original/Additional-DS/FAEST-R3/FAEST_EM_128F/src"
+      ]
+    },
+    "FAEST_EM_128S-R3": {
+      "family": "faest-r3",
+      "shape": "ds_drbg_official",
+      "src_dir": "original/Additional-DS/FAEST-R3/common/src",
+      "include_dir": "original/Additional-DS/FAEST-R3/FAEST_EM_128S/include",
+      "rsp_path": "kat/rsp/Additional-DS/FAEST-R3/FAEST_EM_128S.rsp",
+      "gen_target": "gen-FAEST_EM_128S-R3",
+      "vec_suffix": "EM_128S_R3",
+      "main_headers": [
+        "rng.h",
+        "api.h"
+      ],
+      "extra_dirs": [
+        "original/Additional-DS/FAEST-R3/common/include",
+        "original/Additional-DS/FAEST-R3/FAEST_EM_128S/src"
       ]
     }
   },

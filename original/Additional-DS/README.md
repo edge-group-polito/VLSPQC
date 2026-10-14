@@ -33,13 +33,23 @@ for how that build works, and [`../../README.md`](../../README.md) for the
 | SNOVA | 36 (6 params/level × 3 levels × AES-CTR/SHAKE PRG) | 128, 192, 256 bit | own NIST DRBG; already OpenSSL-free upstream; all `.c`/`.h` shared across all 36 variants live once in `SNOVA/common/`, each variant dir holds only its own `include/snova_params.h`; the 8 level-5 variants need a bumped stack (see "SNOVA" below) |
 | SDitH | 12 (Hypercube/Threshold × 1/3/5 × gf256/p251) | 128, 192, 256 bit | own NIST DRBG (patched off OpenSSL, see "SDitH" below); full self-contained copy per variant (like HAWK/LESS), no shared `common/` — the two sub-architectures are structurally distinct codebases |
 | SQIsign | 3 (lvl1/lvl3/lvl5) | 128, 192, 256 bit | own NIST DRBG; already OpenSSL-free and (via mini-gmp) real-GMP-free upstream; 48 `.c`+33 `.h` shared across all 3 variants live once in `SQISIGN/common/`, each variant dir holds only its own 8 `.c` + 11 `.h` (api, field arithmetic, precomputed constants) — see "SQIsign" below |
+| MQOM | 18 (cat1/3/5 x gf2_shorter/gf16_fast/gf16_short x ct/ot) | 128, 192, 256 bit | Round-3 package; own NIST DRBG (`common/src/rng.c`); everything shared lives once in `MQOM/common/`, each variant dir holds only `include/{mqom3_parameters_<v>.h,mqom3_variant.h}` |
+| MAYO-R3 | 4 (MAYO_1/2/3/5) | 128, 192, 256 bit | Round-3 MAYO (differs from MAYO: e.g. MAYO_1 pk 1420 -> 1456 B); `MAYO-R3/common/` + per-variant `src/api.c`, `include/{api.h,mayo_variant.h}` |
+| UOV-R3 | 12 (Ip/Is/III/V x classic/pkc/pkc_skc) | 128, 192, 256 bit | Round-3 UOV (Ip/III/V parameters changed); `UOV-R3/common/` + per-variant `include/params.h`; no offline official KAT |
+| SNOVA-R3 | 18 (I/III/V x B/K/S x plain/AES) | 128, 192, 256 bit | Round-3 SNOVA; `SNOVA-R3/common/` + per-variant `include/snova_params.h`; level-V variants need a bigger stack |
+| QRUOV-R3 | 30 (5 sets/level x 3 levels x aes/shake) | 128, 192, 256 bit | Round-3 QR-UOV (rewrite of the Round-2 code); `QRUOV-R3/common/` + per-variant `include/qruov_build_config.h`; no official KAT shipped |
+| SDitH-R3 | 12 (cat1/3/5 x fast/short x -/cipherpow) | 128, 192, 256 bit | VOLE-in-the-Head SDitH v3.0.0 (sources from upstream tag `v3.0.0`, the package ships none); needs `-lm` |
+| SQIsign-R3 | 3 (p324_3/p500_27/p664_17) | 128, 192, 256 bit | Round-3 SQIsign (sources from upstream tag `nist-v3`, the package ships almost none); static folder needs `-I.` |
+| FAEST-R3 | 4 (FAEST_128F/128S/EM_128F/EM_128S) | 128 bit | FAEST v3 (round 3; the `FAEST/` family above is v2-sized); `FAEST-R3/common/` + per-variant `src/`+`include/`; assembled by `tools/assemble_faest_r3.sh`; portable C, plain `gcc *.c` |
 
-**`test-additional-ds` covers all 131 variants above.**
+**`test-additional-ds` covers all 131 variants of the Round-2-era families plus MQOM (18) and the seven `*-R3` families (83: 4 + 12 + 18 + 30 + 12 + 3 + 4).**
+The `*-R3` families are the Round-3 packages used for the FAEST comparison; the older families (MAYO, UOV, QRUOV, SNOVA, SDitH, SQIsign) are unchanged Round-2 ports.
 
 ## Per-family `make` targets
 
 Prefix with `test-` or `gen-`: `cross`, `hawk`, `less`, `faest`, `uov`, `mayo`,
-`qruov`, `snova`, `sdith`, `sqisign` (aggregate: `test-additional-ds`/`gen-additional-ds`,
+`qruov`, `snova`, `sdith`, `sqisign`, `mqom`, and the Round-3 aggregates `mayo-r3`, `uov-r3`, `snova-r3`,
+`qruov-r3`, `sdith-r3`, `sqisign-r3`, `faest-r3` (aggregate: `test-additional-ds`/`gen-additional-ds`,
 **not** part of `test-all`/`gen-all`).
 
 Per-variant targets are `test-<NAME>`/`gen-<NAME>` using each variant's
@@ -47,7 +57,9 @@ directory name directly, e.g. `make test-CROSS_1_RSDP_b`,
 `make test-hawk-256`, `make test-LESS_252_45`, `make test-FAEST_128F`,
 `make test-UOV_Ip`, `make test-MAYO_1`, `make test-QRUOV_1_q127L3v156m54_a`,
 `make test-SNOVA_28_5_19_4`, `make test-sdith_hypercube_cat1_gf256`,
-`make test-sqisign_lvl1`.
+`make test-sqisign_lvl1`; Round-3 variants carry a `-R3` suffix: `make test-MAYO_1-R3`,
+`make test-UOV_Ip-R3`, `make test-SNOVA_I_B-R3`, `make test-QRUOV_1q127L3_shake-R3`,
+`make test-sdith_cat1_fast-R3`, `make test-sqisign_p324_3-R3`, `make test-FAEST_128F-R3`, `make test-mqom3_cat1_gf16_fast_ct`.
 
 ## `.rsp` fields specific to Additional-DS
 
@@ -476,6 +488,350 @@ and same caveat as HAWK/FAEST/UOV/MAYO/QRUOV/SNOVA/SDitH.
 `common/src/randombytes_ctrdrbg.c` is the NIST AES-256-CTR DRBG — do not
 additionally link `kat/gen/rng.c`. Needs `-lm` at link time — the only
 family here that does (quaternion arithmetic uses libm).
+
+### MQOM
+
+Ported from the MQOM3 round-3 submission package (`Reference_Implementation/`), a multivariate-quadratic
+MPC-in-the-Head signature. 18 variants `mqom3_cat{1,3,5}_{gf2_shorter,gf16_fast,gf16_short}_{ct,ot}`
+(NIST levels 1/3/5; names verbatim from upstream, no `-R3` suffix: there is no older MQOM in the tree).
+
+Layout: `MQOM/common/{src,include}` holds everything shared, FLATTENED (upstream's `blc/ piop/ ggm_tree/
+rijndael/ fields/ fields_bitsliced/ sha3/` subdirectories become plain files; only the portable Rijndael units
+and the XKCP `opt64` Keccak backend are kept). Each variant dir holds only `include/mqom3_parameters_<v>.h`
+(the one file in which upstream's 18 dirs differ) and `include/mqom3_variant.h` (the four `MQOM3_PARAM_*`
+defines upstream passes with `-D`). `tools/assemble_mqom.sh <complete Reference_Implementation>` regenerates the tree
+(verified: re-running it reproduces the checked-in tree byte for byte).
+
+Patches vs upstream (all mechanical):
+1. `#include "sha3/X.h"` -> `"X.h"` in `xof.h`; `"../endian_compat.h"` -> `"endian_compat.h"` in `brg_endian.h`.
+2. New `common/include/mqom3_build_config.h` (hardcodes upstream's Makefile `-D` defaults, portable backends only,
+   every define `#ifndef`-guarded); included first by every `.c` and by `api.h`. No `-D` flag needed.
+3. `piop_cache.h` / `seed_expand_cache.h`: `#include <common.h>` / `<fields.h>` -> quoted includes, so that
+   `gcc *.c` in the flat static-test folder works without `-I.`.
+4. `rng.c`/`rng.h`: upstream's OpenSSL-based generator DRBG is replaced by the software AES-256 CTR-DRBG of `kat/gen/`
+   (shipped as `common/src/rng.c`; do not add `kat/gen/rng.c` to the build).
+Dropped: benchmark/, generator/, tests, Makefiles, mupq/liboqs glue, AVX/NEON/ARM/AES-NI units, x8 Keccak.
+
+KAT: `ds_drbg_nist` shape (official procedure: message drawn from the entropy-seeded DRBG before reseeding with
+`seed`); record #0 of every variant equals the package's `KAT/<variant>/PQCsignKAT_*.rsp` byte for byte.
+
+Provenance: in the copy of the package under `DS-add/` the subdirectories of `Reference_Implementation/<v>/`
+(blc, piop, ggm_tree, sha3, rijndael, fields, fields_bitsliced, ...) contain only 0-byte files (so do those of
+`Optimized_Implementation/`). The sources of those directories come from a complete copy of
+`Reference_Implementation/` whose top-level files and `mqom3_parameters_*.h` are byte-identical to the DS-add ones
+(41/41 top-level files of cat1_gf16_fast_ct; the 18 parameter headers). The original archive of that complete copy
+was not found on this machine; it is kept in `.claude/scratch/upstream/mqom-pkg-copy/`. Independent evidence that it is the
+official code: all 18 record #0 equal the official KAT.
+
+### MAYO-R3
+
+Round-3 MAYO (NIST additional signatures), ported from the Round-3 package
+`DS-add/MAYO/MAYO/Reference_Implementation` (= MAYO-C commit `fef05b5` "NIST Round 3",
+github.com/PQCMayo/MAYO-C). Not the same as the older `MAYO/` family (Round 2): pk/sig sizes
+and KATs differ (MAYO_1 pk 1420 -> 1456 B, sig 454 -> 464 B). The old family is untouched.
+
+Layout: `MAYO-R3/common/{src,include}` (mayo.c, params.c, arithmetic.c, aes_c.c, fips202.c, mem.c,
+randombytes_ctrdrbg.c = NIST AES-256 CTR-DRBG; src/generic arithmetic headers) + per variant
+`MAYO_{1,2,3,5}/{src/api.c, include/{api.h,mayo_variant.h}}`. Variants: MAYO_1 (cat 1), MAYO_2 (cat 1),
+MAYO_3 (cat 3), MAYO_5 (cat 5). Make targets `test-MAYO_<N>-R3`, `gen-MAYO_<N>-R3`, `test-mayo-r3`,
+`gen-mayo-r3`; rsp in `kat/rsp/Additional-DS/MAYO-R3/`.
+
+Patches vs upstream (portable-build only, no algorithmic change):
+- The package ships several files as 0-byte placeholders (src/common/{aes_c.c,fips202.c/.h,mem.c,
+  randombytes_ctrdrbg.c,aes_ctr.h}, src/generic/*.h, src/mayo_N/api.{c,h}). They were taken from MAYO-C
+  `fef05b5`; every non-empty package file in Reference_Implementation/{src,include} is byte-identical to that
+  commit except `arithmetic.h` (a GFNI feature check, inactive here; the package version is kept).
+- Build type fixed at compile time: `include/mayo_variant.h` defines `MAYO_VARIANT=MAYO_<N>` and
+  `MAYO_BUILD_TYPE_OPT` (fixed parameters, portable `src/generic` backend; the upstream CMake default for the
+  Reference package is `ref`, i.e. dynamic parameters, which yields identical outputs). `mayo.h` got a guarded
+  `#include "mayo_variant.h"` before `mayo_constants.h` (same fix as in MAYO/).
+- Local headers included with `<...>` were changed to `"..."` (needed for flat `gcc *.c` static builds).
+- Omitted (dead code without -DENABLE_AESNI/-DENABLE_AESNEON): aes128ctr.c, aes_neon.c, randombytes_system.c,
+  debug_bench_tools.h, src/AVX2, src/neon.
+- `common/include/rng.h`: shim aliasing randombytes.h (needed by the generic static-test renderer).
+
+KAT: `kat/gen/PQCgenKAT_sign_mayo_r3.c` + `main_mayo_r3.c` follow the official NIST flow (seed/msg drawn from the
+entropy-seeded DRBG, keygen right after `randombytes_init(seed)`), with `size_t` smlen/mlen. Records are
+byte-identical to the official `PQCsignKAT_{24_MAYO_1,24_MAYO_2,32_MAYO_3,40_MAYO_5}.rsp`.
+
+    make test-MAYO_1-R3 KATNUM=10
+
+### UOV-R3 (Round-3 UOV, 12 variants)
+
+Source: `DS-add/UOV-R3/Reference_Implementation` (UOV Round-3 submission, generic reference BLAS only).
+This is a NEW family next to the older `UOV` port: Round 3 changed the OV(256) parameter sets
+(Ip 112/44 -> 119/45, III 184/72 -> 193/72, V 244/96 -> 259/96; Is = OV(16,160,64) keeps its parameters), so
+sizes and KATs differ and the old family cannot represent Round 3.
+
+Layout: `UOV-R3/common/{src,include}` (shared code) + `UOV-R3/<VARIANT>/include/params.h` per variant
+(UOV_{Ip,Is,III,V} x {"", _pkc, _pkc_skc}). Make targets `test-<VARIANT>-R3` / `gen-<VARIANT>-R3`,
+aggregates `test-uov-r3` / `gen-uov-r3`, rsp in `kat/rsp/Additional-DS/UOV-R3/`.
+KAT driver: `kat/gen/PQCgenKAT_sign_uov_r3.c` + `kat/gen/main_uov_r3.c` (official NIST flow: entropy 0..47,
+msg of length 33*(count+1) drawn before the per-record reseed; the older UOV drivers use a different flow).
+
+Patches vs the package (only these 4 files differ; all other .c/.h and every params.h are byte-identical):
+- `rng.c`, `rng.h`: OpenSSL EVP AES-256-ECB replaced by a self-contained software AES-256; `randombytes()` returns void.
+- `config.h`: `_UTILS_OPENSSL_` no longer defined (SHAKE from bundled `fips202.c`), `_NIST_KAT_` defined.
+- `utils_randombytes.h`: `_NIST_KAT_` branch no longer requires `_UTILS_OPENSSL_`.
+
+Caveats: no official R3 KAT is available offline (package ships only a download link); validation is by
+self-consistency and by agreement with the package's own generator (built with OpenSSL in a scratch copy).
+Static tests use the registry shape `ds_drbg_official` (variable `mlen`, see "Round-3 static-test shape" below).
+
+### SNOVA-R3 (Round-3 reference implementation, 18 variants)
+
+Source: `DS-add/SNOVA_Round3/SNOVA_Round3/Reference_Implementation` (levels I/III/V x B/K/S x plain(SHAKE)/`_AES`).
+Layout: `SNOVA-R3/common/{src,include}` holds the 5 `.c` + 5 `.h` files that are byte-identical in all 18 upstream
+dirs (verified with `cmp` against SNOVA_I_B); each variant dir `SNOVA-R3/<VARIANT>/include/snova_params.h` holds only
+the parameters. Variant dir names are the upstream names verbatim. No subdirectories below `src/`/`include/`.
+
+Patches vs upstream (only one): every `snova_params.h` gets `#define SNOVA_REF 1` appended (upstream passes
+`-DSNOVA_REF=1` in its Makefile), so plain `gcc` with zero `-D` flags works. No OpenSSL (the upstream `rng.c` use is
+behind `#if 0`, AES comes from `aes.c`), no AVX2/NEON backend is compiled. No empty files in the package or the port.
+
+KAT: official Round-3 KATs ship in the package (`KAT/<variant>/PQCsignKAT_<variant>.rsp`). The official generator
+draws seed and message from one entropy-seeded DRBG with `mlen = 33*(count+1)` and calls keygen right after the
+per-record reseed, which differs from the Round-2 SNOVA generator, hence the dedicated
+`kat/gen/PQCgenKAT_sign_snova_r3.c` and `kat/gen/main_snova_r3.c`. Static tests use the registry shape
+`ds_drbg_official` (variable `mlen`, see "Round-3 static-test shape" below).
+
+Targets: `make test-<VARIANT>-R3 [KATNUM=n]`, `make gen-<VARIANT>-R3`, aggregates `test-snova-r3` / `gen-snova-r3`.
+Level-V variants may need a bigger stack; the recipes run `ulimit -s 65536`.
+
+Validated (level I / NIST cat 1): all 6 variants with KATNUM=10, keygen/sign/verify 10/10 each; the first 10
+generated records equal the official KAT. Levels III/V were not run.
+
+### QRUOV-R3
+
+Ported from the **NIST Round-3** QR-UOV submission
+(`Reference_Implementation/ref`). The Round-3 code is a rewrite of the Round-2
+code base ported as [QRUOV](#qruov) above (different file set, new parameter
+mechanism, new PRG layout, new `q127L10` level-1/3/5 sets), so it lives in its
+own family `QRUOV-R3/`; the older `QRUOV/` family is untouched.
+
+30 variants = 15 parameter sets (`q7L10`, `q31L3`, `q31L10`, `q127L3`,
+`q127L10` x NIST level 1/3/5) x 2 public-seed-expansion PRG modes (`aes` =
+AES-128-CTR, `shake` = SHAKE128). Variant dirs are named exactly like upstream's
+`make PARAM=<..> PRG=<..>` options: `QRUOV_<cat>q<q>L<L>_<aes|shake>`, e.g.
+`QRUOV_1q127L3_aes`. Level-1 (cat 1) variants: `QRUOV_1q7L10_*`,
+`QRUOV_1q31L3_*`, `QRUOV_1q31L10_*`, `QRUOV_1q127L3_*`, `QRUOV_1q127L10_*`.
+
+Layout: all `.c`/`.h` shared by the 30 variants live once in
+[`QRUOV-R3/common/{src,include}`](QRUOV-R3/common) (flat, no subdirectories);
+each variant dir holds only `include/qruov_build_config.h`, which hardcodes what
+upstream's GNUmakefile passes as `-DQRUOV_PARAM_<..> -DPRG_IS_AES=<0|1>` (it is
+included at the top of `qruov_param.h`). Plain `gcc`, no `-D` flags:
+
+```sh
+gcc -O2 -std=c11 -I QRUOV-R3/common/include -I QRUOV-R3/QRUOV_1q127L3_aes/include \
+    <static test main.c> QRUOV-R3/common/src/*.c -o test
+```
+
+`make test-QRUOV_1q127L3_aes-R3`, `make gen-QRUOV_1q127L3_aes-R3`; aggregates
+`test-qruov-r3` / `gen-qruov-r3`. `.rsp` files: `kat/rsp/Additional-DS/QRUOV-R3/<variant>.rsp`.
+
+**Patches vs upstream Round-3 `ref/`** (everything else is byte-identical):
+
+- `prim.c`/`prim.h` rewritten OpenSSL-free: SHAKE128/SHAKE256 (incremental
+  absorb/squeeze, `reset`) on the portable `fips202.c` and AES-128-CTR on the
+  portable constant-time `aes_c.c` + `qruov_aes.h` (both reused from the older
+  QRUOV port). Same function contract as upstream, so `prg.c`, `qrop.c`,
+  `qruov_common.c` are untouched. AES-CTR: upstream's 8-byte nonce || 64-bit BE
+  counter is realised through `aes128_ctr()` with a 12-byte IV + 32-bit counter
+  (identical keystream below 2^32 blocks per call).
+- `fips202.c/.h`: the copy from the older port renames its `shake128*/shake256*`
+  symbols to `f202_shake128*/f202_shake256*` (the old `ov_fips202_ref_` macro
+  aliasing would collide with upstream's `shake256` type/function names in
+  `prim.h`).
+- `rng.c`: OpenSSL `EVP` AES-256-ECB replaced by the software AES-256 used in the
+  older port (upstream Round-3 `rng.h` contract kept: `void randombytes(.., unsigned long long)`).
+- `qruov_param.h`: `#include "qruov_build_config.h"` added (see above).
+- `util.h`: `secure_zero()` always uses the volatile-memset fallback (the
+  `explicit_bzero` path needs `_GNU_SOURCE`, unavailable under plain `-std=c11`).
+- Not ported: `GNUmakefile`, upstream `PQCgenKAT_sign.c` (replaced by
+  `kat/gen/PQCgenKAT_sign_qruov_r3.c`), the optimized (`opt`/`avx2`) code.
+
+**KAT flow (differs from the older QRUOV family).** `kat/gen/PQCgenKAT_sign_qruov_r3.c`
+/ `main_qruov_r3.c` follow the official `PQCgenKAT_sign.c` exactly: seeds *and*
+messages are drawn from one continuous DRBG stream (entropy 0..47), message
+length is `33*(count+1)`, and after `randombytes_init(seed)` **nothing is
+skipped** before keygen. (The older generator draws the message after the
+reseed, so its records do not equal upstream's.) For static tests this needs the
+registry shape `ds_drbg_official` (variable `mlen`, no skip), see
+`integration/qruov-r3/gen_static_test.patch`.
+
+Official Round-3 KATs are **not** shipped in the local package (only a
+`kat_aes.zip`/`kat_shake.zip` mention in the top-level README); record #0 of
+every variant was therefore checked against the output of upstream's own
+`PQCgenKAT_sign` built with OpenSSL (see REPORT.md).
+
+### SDITH-R3
+
+Ported from the **NIST Round-3** SDitH submission (VOLE-in-the-Head SDitH,
+`v3.0.0`). This is a different scheme code base from the Round-2 Hypercube /
+Threshold variants ported as [SDITH](#sdith) above, so it lives in its own
+family `SDITH-R3/`; the older `SDITH/` family is untouched.
+
+**Provenance.** The local Round-3 package (`sdith3_submission_package`) ships
+only CMake files, docs and (truncated) KATs, no sources. The sources come from
+upstream `github.com/sdith/sdith`, tag `v3.0.0` (commit `ce7adf06476674d4ff990f378f83f9981cd6745b`),
+which is what the package's CMakeLists (generated by upstream
+`utils/make_nist_package.py`) lists, and the package `.rsp` files are byte-prefixes
+of upstream `kat_r3/`. Portable C only (upstream `ONLY_REF_IMPLEMENTATION` file
+set: no `*_avx2.c`, `lib/aes` reference code, `lib/sha3` + opt64 Keccak, NIST `sign.c`).
+
+12 variants, named exactly like upstream: `sdith_cat{1,3,5}_{fast,short}[_cipherpow]`.
+Category-1: `sdith_cat1_fast`, `sdith_cat1_short`, `sdith_cat1_fast_cipherpow`,
+`sdith_cat1_short_cipherpow`.
+
+Layout: everything shared lives once in [`SDITH-R3/common/{src,include}`](SDITH-R3/common)
+(flat, no subdirectories); each variant dir holds only `include/api.h`
+(`CRYPTO_*BYTES`, `CRYPTO_ALGNAME`, `SIGNATURE_PARAMS`; the 12 parameter sets are
+run-time parameter structs in the library). Plain `gcc`, no `-D` flags; the one
+extra requirement is `-lm` (`log2()` in `sdith_signature.c`):
+
+```sh
+gcc -O2 -std=c11 -I SDITH-R3/common/include -I SDITH-R3/sdith_cat1_fast/include \
+    <main.c> SDITH-R3/common/src/*.c -o test -lm
+```
+
+`make test-sdith_cat1_fast-R3`, `make gen-sdith_cat1_fast-R3`; aggregates
+`test-sdith-r3` / `gen-sdith-r3`. `.rsp` files: `kat/rsp/Additional-DS/SDITH-R3/<variant>.rsp`.
+
+**Patches vs upstream v3.0.0** (everything else is byte-identical):
+
+- Flattened `src/`, `lib/aes/`, `lib/sha3/` (+ `opt64`) into `common/{src,include}`; relative
+  includes (`../aes/..`, `../sha3/..`, `../endian_compat.h`) rewritten to plain
+  `"..."` includes (`sdith_prng.c`, `brg_endian.h`). No filename collisions.
+- New `common/include/sdith_build_config.h` (hardcodes `ONLY_REF_IMPLEMENTATION`,
+  `NDEBUG`), included first by every `.c` and by `sdith_prng_private.h`.
+- `brg_endian.h`: x86 intrinsics block now also guarded by `!ONLY_REF_IMPLEMENTATION`.
+- `sdith_prng_private.h`: `typeof` -> `__typeof__` (needed for `-std=c11`).
+- `rng.c`/`rng.h`: the repo's self-contained NIST CTR-DRBG (`kat/gen/rng.c`), no OpenSSL.
+- `sign.c`: NIST wrapper as upstream plus the build-config include.
+- Not ported: AVX2 files, `CMakeLists.txt`, upstream KAT generator, Optimized_Implementation.
+
+**KAT flow.** `kat/gen/PQCgenKAT_sign_sdith_r3.c` / `main_sdith_r3.c` follow the official
+`PQCgenKAT_sign.c`: seeds and messages come from one entropy-seeded DRBG stream
+(entropy 0..47), `mlen = 33*(count+1)`, then `randombytes_init(seed)` with nothing
+skipped before keygen. The first 10 records of the four cat-1 variants are equal
+(seed, mlen, msg, pk, sk, smlen, sm) to the official package KAT (which is
+truncated at 256 KiB, ~20-25 complete records per variant).
+
+**Static tests.** Registry shape `ds_drbg_official` (variable `mlen`, see "Round-3 static-test shape"
+below); folders are built with `gcc -O2 -std=c11 *.c -o test -lm` (registry key `static_gcc_flags: "-lm"`,
+the library must come after the sources).
+
+### SQISIGN-R3
+
+Ported from the **NIST Round-3** SQIsign submission (package `sqisign/SQIsign`,
+`Reference_Implementation`, CMake VERSION 2.0). The package ships only
+`src/sqisign.c`, headers, apps and KATs (every `src/<module>/` dir is empty), so
+the library sources come from the official upstream repository
+`github.com/SQIsign/the-sqisign`, **tag `nist-v3`** (commit
+`6d017708db403bf83977fa70770fc4f7f9e9ff21`). Every file that exists in the
+package is byte-identical to upstream (except README.md) and the package `.rsp`
+files are byte-prefixes of upstream `KAT/*.rsp`. This is a different code base
+than the older [SQISIGN](#sqisign) family (Round-2 era, GMP/mini-gmp based,
+other sizes); that family is untouched.
+
+3 variants = upstream parameter sets `sqisign_p324_3` (NIST level 1, pk 83 B,
+sk 270 B, sig 200 B), `sqisign_p500_27` (level 3, 129/417/306 B) and
+`sqisign_p664_17` (level 5, 169/549/406 B).
+Level 1 is `sqisign_p324_3`.
+
+Layout: all `.c`/`.h` shared by the variants live once in
+[`SQISIGN-R3/common/{src,include}`](SQISIGN-R3/common) (flat, no subdirectories,
+the upstream `src/<module>/` tree flattened without filename collisions); each
+variant dir holds `src/` (`api.c`, `fp_<p>.c` and the five precomputed-constant
+`.c` files) and `include/` (`api.h`, precomp headers, `fp_<p>_{32,64}_inc.h`,
+`sqisign_variant.h`). Only the portable "ref" build type is ported (no
+broadwell/arm64 assembly).
+
+Portability: no GMP, no mini-gmp, no OpenSSL. Round-3 SQIsign replaced GMP by its
+own fixed-size big-integer module (`mp.c`, `integers.c`), the field arithmetic
+is the generic C backend (64-bit limbs when `unsigned __int128` exists, else
+32-bit), randomness is the bundled NIST AES-256-CTR DRBG (`randombytes_ctrdrbg.c`,
+`aes_c.c`) and SHA-3 is the bundled `fips202.c`. The Makefile links `-lm` (not actually required by the static folder).
+
+`make test-sqisign_p324_3-R3`, `make gen-sqisign_p324_3-R3`; aggregates
+`test-sqisign-r3` / `gen-sqisign-r3`. `.rsp` files:
+`kat/rsp/Additional-DS/SQISIGN-R3/<variant>.rsp`. Generator:
+`kat/gen/PQCgenKAT_sign_sqisign_r3.c` + `main_sqisign_r3.c` (official two-phase
+NIST flow, message length `33*(count+1)`), so records equal the official KAT.
+
+**Patches vs upstream `nist-v3`** (everything else byte-identical):
+
+- `common/include/sqisign_build_config.h` (new, included first by every `.c`
+  file) and per-variant `include/sqisign_variant.h` (new) hardcode what upstream
+  CMake passes as `-D` flags (`SQISIGN_VARIANT`, `SQISIGN_BUILD_TYPE_REF`,
+  `SQISIGN_GF_IMPL_REF`, `ENABLE_SIGN`, `RANDOMBYTES_C`, `NDEBUG`, `RADIX_64`/`RADIX_32`).
+- Nested upstream directories flattened into `common/{src,include}` and per-variant `src/`/`include/`.
+
+**Caveats**
+
+- Signing takes about 10-15 s per vector for p324_3 (reference code).
+- The KAT message length varies (33, 66, ...); static tests use the `ds_drbg_official` shape (see
+  "Round-3 static-test shape" below).
+- Project headers are included with angle brackets (`#include <ec.h>`, as in
+  upstream), so the static folder builds with `gcc -I. *.c` (not with bare
+  `gcc *.c`) unless those includes are changed to quotes (see REPORT.md).
+
+### FAEST-R3 (FAEST v3, NIST round 3, lambda = 128: FAEST_128F, FAEST_128S, FAEST_EM_128F, FAEST_EM_128S)
+
+Official FAEST v3.0 reference code (NIST round-3 submission), assembled by `tools/assemble_faest_r3.sh` from
+`sw/original/faest-v3/<variant>/` (verbatim copies of the submission packages, hashes in `sw/original/PROVENANCE.md`).
+NOT the same as the `FAEST/` family (v2-sized signatures 5924/4506/5060/3906 B): v3 sizes are
+sig = 5170 / 4066 / 4170 / 3466 B (smlen = sig + mlen), pk = sk = 32 B. Only the four lambda = 128 sets are
+ported (192/256-bit sets are not in the imported tree, but their tables and AES files are kept because the generic
+`instances.c`/`faest_impl.c` reference them). The existing `FAEST/` family is untouched.
+
+Layout: `FAEST-R3/common/{src,include}` (everything byte-identical across the four packages, flat, XKCP sha3 opt64
+and `tables/` flattened) + `FAEST-R3/<V>/{src/{crypto_sign.c,faest_<v>.c}, include/{api.h,faest_<v>.h}}`.
+Targets: `test-<V>-R3` / `gen-<V>-R3`, aggregates `test-faest-r3` / `gen-faest-r3`, rsp in
+`kat/rsp/Additional-DS/FAEST-R3/<V>.rsp`. Generator/runner: `kat/gen/PQCgenKAT_sign_faest_r3.c`, `main_faest_r3.c`
+(official NIST flow: seed and msg drawn from the entropy-seeded DRBG, mlen = 33*(count+1), keygen right after
+`randombytes_init(seed)`; `unsigned long long` API).
+
+Portable C only: no AES-NI / SSE2 / AVX2 code (compat.h's x86 auto-detection is switched off), no OpenSSL, no
+`-march`, zero `-D`. Builds with plain `gcc *.c` (default flags, and `-O2 -std=c11`); the only diagnostics are
+`-Wpsabi` notes (GCC vector-extension types in fields.h, not AVX code). `-Wno-psabi` is passed by the Makefile only
+to keep the log quiet.
+
+Patches vs the official package (all mechanical, algorithm code untouched; applied by the assembly script):
+1. Sub-directory includes flattened: `sha3/KeccakHash.h` -> `KeccakHash.h` (hash_shake.h), `tables/X.h` -> `X.h`
+   (instances.c), `../endian_compat.h` -> `endian_compat.h` (sha3 brg_endian.h).
+2. `#include <config.h>` -> `#include "config.h"` (plain `gcc *.c` has no `-I.`).
+3. `config.h` name collision resolved by merging: the 4 XKCP `#define`s of `sha3/config.h` + the three
+   `HAVE_ALIGNED_ALLOC/HAVE_EXPLICIT_BZERO/HAVE_MEMPCPY` of the package's portable config (`sw/common/portable/config.h`).
+4. New header `common/include/faest_build_config.h` (first line of every .c): hardcodes `_GNU_SOURCE`,
+   `HAVE_CONFIG_H` (forces config.h, i.e. portable paths), `HAVE_RANDOMBYTES` (rand_bytes -> NIST DRBG randombytes),
+   `NDEBUG` (upstream's own CPPFLAGS). Official Makefile also passes `-DFAEST_EXPORT=` which is already the default.
+5. `rng.c`/`rng.h`: the repo's software AES-256 CTR-DRBG (kat/gen/rng.c). The official KAT tool links OpenSSL AES
+   for the same DRBG; the streams are identical (record equality below).
+6. `crypto_sign.h` (SUPERCOP-only duplicate of api.h) and the package's own tests/NIST-KATs/cpu-feature tests are not copied.
+   `cpu.c` is kept (compiled, unused paths).
+
+Validation: official 100-record KAT (`sw/original/faest-v3/<v>/kat/PQCsignKAT_faest_<v>.rsp`) vs
+`make gen-<V>-R3 KATNUM=100`: 100/100 records byte-identical for all four variants (seed, mlen, msg, pk, sk, smlen, sm).
+Caveat: the portable code is slow (generation of 100 records took 128..1365 s with four generators in parallel;
+the s sets are the slowest); use a small `KATNUM` for routine runs.
+
+### Round-3 static-test shape (`ds_drbg_official`) and consistency across the `*-R3` families
+
+All seven Round-3 families (MAYO-R3, UOV-R3, SNOVA-R3, QRUOV-R3, SDITH-R3, SQISIGN-R3, FAEST-R3) use the registry shape
+`ds_drbg_official` in `tools/algo_registry.json`. It is `ds_drbg_nist` (official NIST `PQCgenKAT_sign` flow, nothing
+skipped after `randombytes_init(seed)`) plus per-record `mlen`/messages, because the official Round-3 KATs use
+`mlen = 33*(count+1)`; with it `--kat-num`/`STATIC_KATNUM` > 1 works. MQOM (constant `mlen`) keeps `ds_drbg_nist`.
+Optional per-variant registry keys: `"size_t_api": true` (MAYO-R3: `smlen`/`mlen1` are `size_t`, an error on gcc >= 14
+with `unsigned long long`) and `"static_gcc_flags"` (extra flags the static folder needs with plain `gcc *.c`,
+printed by the generator: `-lm` for SDITH-R3, `-I.` for SQISIGN-R3).
+Binary names are `build/gen_<VARIANT>_R3` / `build/test_<VARIANT>_R3` for all six families (this is the name
+`gen_static_test.py` deletes before regenerating).
+
+**Open item (SQISIGN-R3):** the static folder needs `-I.` because the upstream project headers use `#include <x.h>`
+(about 255 includes in ~130 files). They were deliberately not bulk-edited to quotes (as was done for MQOM);
+that is a decision for the maintainer.
 
 ## Adding a new Additional-DS variant
 
