@@ -673,7 +673,7 @@ Provenance: in the copy of the package under `DS-add/` the subdirectories of `Re
 `Optimized_Implementation/`). The sources of those directories come from a complete copy of
 `Reference_Implementation/` whose top-level files and `mqom3_parameters_*.h` are byte-identical to the DS-add ones
 (41/41 top-level files of cat1_gf16_fast_ct; the 18 parameter headers). The original archive of that complete copy
-was not found on this machine; it is kept in `.claude/scratch/upstream/mqom-pkg-copy/`. Independent evidence that it is the
+was not found on this machine. Independent evidence that it is the
 official code: all 18 record #0 equal the official KAT.
 
 ### MAYO-R3

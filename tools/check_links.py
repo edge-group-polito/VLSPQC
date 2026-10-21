@@ -16,7 +16,7 @@ import re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_TOP = {"build", "vectors", "bench", ".git", ".claude"}
+SKIP_TOP = {"build", "vectors", "bench", ".git"}
 LINK = re.compile(r"!?\[(?:[^\]\\]|\\.)*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 
 

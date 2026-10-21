@@ -13,4 +13,6 @@
 Figures built from these files are in [`../docs/figures/`](../docs/figures). The raw benchmark JSON, the run logs and the older level-1 on-ramp benchmark live in `bench/`
 (git-ignored); regenerate with `make bench-fips` / `make bench-l1` on an otherwise idle machine.
 
+The raw level-1 on-ramp signature runs behind `benchmark_onramp_l1.csv` (39 variants: `bench/results`, `results_run2`, `results_run3`, `results_median3`, the loaded-machine runs in `old_loaded_run/` and the v2-sized FAEST runs in `old_v2_faest_runs/`, each with `results.md`, charts, `meta.json` and `raw/<variant>.json`) are not in the working tree; they are kept in git history at commit `cf92c80` (restore with `git checkout cf92c80 -- bench`).
+
 What is **not** here: a *new* benchmark of the on-ramp families (the earlier level-1 one, from before the migration and not rerun, is `benchmark_onramp_l1.csv`).
