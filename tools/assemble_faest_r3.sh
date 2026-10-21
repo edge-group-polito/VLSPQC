@@ -8,7 +8,7 @@
 ##                                                                                   ##
 #######################################################################################
 
-# Assembles FAEST-R3 under original/Additional-DS/FAEST-R3/ from the official
+# Assembles FAEST-R3 under algorithms/signatures/onramp/FAEST-R3/ from the official
 # FAEST v3.0 NIST round-3 reference packages (sw/original/faest-v3/<variant>/,
 # verbatim copies of the submission packages, see sw/original/PROVENANCE.md).
 # Only the four lambda=128 variants are assembled (faest_128f, faest_128s,
@@ -19,7 +19,7 @@
 # once in FAEST-R3/common/{src,include} (flat, no subdirectories: the vendored
 # XKCP sha3/ opt64 subtree and tables/ are flattened).
 #
-# Patches (all mechanical, see original/Additional-DS/README.md, "FAEST-R3"):
+# Patches (all mechanical, see algorithms/signatures/onramp/README.md, "FAEST-R3"):
 #   1. `#include "sha3/KeccakHash.h"` -> "KeccakHash.h" (hash_shake.h),
 #      `#include "tables/X.h"` -> "X.h" (instances.c),
 #      `#include "../endian_compat.h"` -> "endian_compat.h" (brg_endian.h).
@@ -34,7 +34,7 @@
 #      -DHAVE_RANDOMBYTES) plus HAVE_CONFIG_H (switches off compat.h's x86
 #      AES-NI/SSE2/AVX2 auto-detection: portable C only) and _GNU_SOURCE
 #      (declares mempcpy/explicit_bzero that config.h announces).
-#   5. rng.c/rng.h: the repo's software AES-256 CTR-DRBG (kat/gen/rng.c, no
+#   5. rng.c/rng.h: the repo's software AES-256 CTR-DRBG (harness/gen/rng.c, no
 #      OpenSSL); randomness.c forwards rand_bytes() to its randombytes().
 #   6. crypto_sign.h (SUPERCOP only, identical to api.h) is not copied.
 #
@@ -44,9 +44,9 @@ set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
 SRC=${1:-"$ROOT/../sw/original/faest-v3"}
-DEST="$ROOT/original/Additional-DS/FAEST-R3"
+DEST="$ROOT/algorithms/signatures/onramp/FAEST-R3"
 COMMON_DIR="$DEST/common"
-GENDIR="$ROOT/kat/gen"
+GENDIR="$ROOT/harness/gen"
 REF="$SRC/faest_128f"   # any variant: the common files are identical
 
 [ -d "$REF" ] || { echo "error: $REF not found" >&2; exit 1; }

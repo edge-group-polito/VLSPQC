@@ -180,7 +180,7 @@ def md(rows, meta, out, other=None):
     L = []
     L.append("# FAEST vs. the other on-going NIST additional-signature candidates (level 1)\n")
     L.append("All numbers are produced by `tools/bench/run_bench.py` + `tools/bench/report.py` from the "
-             "reference implementations in `original/Additional-DS/` (static-test folders, portable C, no SIMD/AES-NI). "
+             "reference implementations in `algorithms/signatures/onramp/` (static-test folders, portable C, no SIMD/AES-NI). "
              "Regenerate with `make bench-l1`.\n")
     L.append("## Setup\n")
     L.append("| | |\n|---|---|")

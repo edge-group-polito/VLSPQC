@@ -8,7 +8,7 @@
 ##                                                                                   ##
 #######################################################################################
 
-# Assembles FAEST under original/Additional-DS/FAEST/ from a faest-ref
+# Assembles FAEST under algorithms/signatures/onramp/FAEST/ from a faest-ref
 # checkout (https://github.com/faest-sign/faest-ref), using the concrete
 # meson-configured sources under its build-test/ dir -- so no template
 # engine (meson) is needed at pqrv build time; every variant here is a
@@ -18,7 +18,7 @@
 # variants (the generic FAEST engine, sha3, the 3 lambda-specific AES/witness
 # files, parameters.h, the NIST DRBG) live once in common/{src,include}
 # instead of being duplicated x12 -- see "FAEST" under
-# original/Additional-DS/README.md. Each variant dir then holds only its own
+# algorithms/signatures/onramp/README.md. Each variant dir then holds only its own
 # paramset engine (faest_<variant>.c/h), its crypto_sign.c/api.h wrapper, and
 # a hand-driveable main.c (see build_faest_main.py, run after this script).
 #
@@ -35,9 +35,9 @@ set -euo pipefail
 REF=${1:?"usage: $0 /path/to/faest-ref (checkout with 'meson setup build-test' already run)"}
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
-DEST="$ROOT/original/Additional-DS/FAEST"
+DEST="$ROOT/algorithms/signatures/onramp/FAEST"
 COMMON_DIR="$DEST/common"
-GENDIR="$ROOT/kat/gen"
+GENDIR="$ROOT/harness/gen"
 
 if [ ! -d "$REF/build-test" ]; then
   echo "error: $REF/build-test not found -- run 'meson setup build-test' in the faest-ref checkout first" >&2

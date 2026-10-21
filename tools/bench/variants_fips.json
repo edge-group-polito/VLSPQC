@@ -1,0 +1,218 @@
+{
+ "variants": [
+  {
+   "label": "ML-KEM-512",
+   "family": "ML-KEM (FIPS 203)",
+   "target": "ml-kem-512",
+   "shape": "kem_derand",
+   "level": 1,
+   "note": "mlkem-native v2.0.0"
+  },
+  {
+   "label": "ML-KEM-768",
+   "family": "ML-KEM (FIPS 203)",
+   "target": "ml-kem-768",
+   "shape": "kem_derand",
+   "level": 3,
+   "note": "mlkem-native v2.0.0"
+  },
+  {
+   "label": "ML-KEM-1024",
+   "family": "ML-KEM (FIPS 203)",
+   "target": "ml-kem-1024",
+   "shape": "kem_derand",
+   "level": 5,
+   "note": "mlkem-native v2.0.0"
+  },
+  {
+   "label": "ML-DSA-44",
+   "family": "ML-DSA (FIPS 204)",
+   "target": "ML-DSA-44",
+   "shape": "ds_derand_ctx",
+   "level": 2,
+   "note": "mldsa-native v2.0.0"
+  },
+  {
+   "label": "ML-DSA-65",
+   "family": "ML-DSA (FIPS 204)",
+   "target": "ML-DSA-65",
+   "shape": "ds_derand_ctx",
+   "level": 3,
+   "note": "mldsa-native v2.0.0"
+  },
+  {
+   "label": "ML-DSA-87",
+   "family": "ML-DSA (FIPS 204)",
+   "target": "ML-DSA-87",
+   "shape": "ds_derand_ctx",
+   "level": 5,
+   "note": "mldsa-native v2.0.0"
+  },
+  {
+   "label": "SLH-DSA-SHA2-128s",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHA2-128s",
+   "shape": "ds_derand_rnd",
+   "level": 1,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHA2-128f",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHA2-128f",
+   "shape": "ds_derand_rnd",
+   "level": 1,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHA2-192s",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHA2-192s",
+   "shape": "ds_derand_rnd",
+   "level": 3,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHA2-192f",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHA2-192f",
+   "shape": "ds_derand_rnd",
+   "level": 3,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHA2-256s",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHA2-256s",
+   "shape": "ds_derand_rnd",
+   "level": 5,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHA2-256f",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHA2-256f",
+   "shape": "ds_derand_rnd",
+   "level": 5,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHAKE-128s",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHAKE-128s",
+   "shape": "ds_derand_rnd",
+   "level": 1,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHAKE-128f",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHAKE-128f",
+   "shape": "ds_derand_rnd",
+   "level": 1,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHAKE-192s",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHAKE-192s",
+   "shape": "ds_derand_rnd",
+   "level": 3,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHAKE-192f",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHAKE-192f",
+   "shape": "ds_derand_rnd",
+   "level": 3,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHAKE-256s",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHAKE-256s",
+   "shape": "ds_derand_rnd",
+   "level": 5,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "SLH-DSA-SHAKE-256f",
+   "family": "SLH-DSA (FIPS 205)",
+   "target": "SLH-DSA-SHAKE-256f",
+   "shape": "ds_derand_rnd",
+   "level": 5,
+   "note": "slhdsa-c 174c02e"
+  },
+  {
+   "label": "Falcon-512",
+   "family": "Falcon (round 3)",
+   "target": "falcon-512",
+   "shape": "ds_derand_rnd_nonce",
+   "level": 1,
+   "note": "round-3 reference, not FN-DSA"
+  },
+  {
+   "label": "Falcon-1024",
+   "family": "Falcon (round 3)",
+   "target": "falcon-1024",
+   "shape": "ds_derand_rnd_nonce",
+   "level": 5,
+   "note": "round-3 reference, not FN-DSA"
+  },
+  {
+   "label": "HQC-1",
+   "family": "HQC (v5.0.0)",
+   "target": "HQC2025_1",
+   "shape": "kem_prng_reseed",
+   "level": 1,
+   "note": "reference v5.0.0, FIPS 207 pending"
+  },
+  {
+   "label": "HQC-3",
+   "family": "HQC (v5.0.0)",
+   "target": "HQC2025_3",
+   "shape": "kem_prng_reseed",
+   "level": 3,
+   "note": "reference v5.0.0, FIPS 207 pending"
+  },
+  {
+   "label": "HQC-5",
+   "family": "HQC (v5.0.0)",
+   "target": "HQC2025_5",
+   "shape": "kem_prng_reseed",
+   "level": 5,
+   "note": "reference v5.0.0, FIPS 207 pending"
+  },
+  {
+   "label": "FN-DSA-exp-512",
+   "family": "FN-DSA (c-fn-dsa, experimental)",
+   "target": "fndsa-exp-512",
+   "shape": "ds_derand_rnd_nonce",
+   "level": 1,
+   "note": "pre-standard, integer-only build",
+   "cflags_extra": [
+    "-D_GNU_SOURCE",
+    "-DFNDSA_AVX2=0",
+    "-DFNDSA_SSE2=0",
+    "-DFNDSA_NEON=0",
+    "-DFNDSA_RV64D=0"
+   ]
+  },
+  {
+   "label": "FN-DSA-exp-1024",
+   "family": "FN-DSA (c-fn-dsa, experimental)",
+   "target": "fndsa-exp-1024",
+   "shape": "ds_derand_rnd_nonce",
+   "level": 5,
+   "note": "pre-standard, integer-only build",
+   "cflags_extra": [
+    "-D_GNU_SOURCE",
+    "-DFNDSA_AVX2=0",
+    "-DFNDSA_SSE2=0",
+    "-DFNDSA_NEON=0",
+    "-DFNDSA_RV64D=0"
+   ]
+  }
+ ]
+}

@@ -15,7 +15,7 @@
 #    make gen-all                  Generate .rsp files for the standardized set
 #    make test-all                 Run KAT tests for the standardized set
 #                                   (ML-KEM, ML-DSA, SLH-DSA x4, FALCON, HQC)
-#    make test-additional-ds       Test CROSS + HAWK + LESS + FAEST + UOV + MAYO + QRUOV + SNOVA + SDITH + SQISIGN + MQOM + the seven *-R3 Round-3 families (not standardized)
+#    make test-onramp-ds       Test CROSS + HAWK + LESS + FAEST + UOV + MAYO + QRUOV + SNOVA + SDITH + SQISIGN + MQOM + the seven *-R3 Round-3 families (not standardized)
 #    make test-stateful-ds         Test XMSS + LMS + HSS (NIST SP 800-208)
 #    make test-ascon               Test ASCON AEAD + hash/XOF (not PQC)
 #    make test-cross               Test all CROSS variants
@@ -37,11 +37,11 @@
 #
 #  FAMILY TARGETS
 #    Standardized (in test-all): test-falcon test-mldsa test-slhdsa
-#      test-slhdsa-haraka test-slhdsa-haraka-aes test-slhdsa-sha2 test-mlkem
+#      test-mlkem
 #      test-hqc  (aggregates: test-ds, test-kem)
 #    Additional-DS (NOT in test-all): test-cross test-hawk test-less test-faest test-uov test-mayo test-qruov test-snova test-sdith test-sqisign test-mqom
 #                   Round-3: test-mayo-r3 test-uov-r3 test-snova-r3 test-qruov-r3 test-sdith-r3 test-sqisign-r3 test-faest-r3
-#      (aggregate: test-additional-ds; per-family gen-<family>-r3 also exist)
+#      (aggregate: test-onramp-ds; per-family gen-<family>-r3 also exist)
 #    Stateful-DS (NOT in test-all): test-xmss test-lms test-hss
 #      (aggregate: test-stateful-ds)
 #    ASCON (NOT in test-all, not PQC): test-ascon-aead test-ascon-hash
@@ -68,9 +68,9 @@ CHECK_KATNUM ?= 1
 MLEN      ?= 33
 
 ROOT    := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-GENDIR  := $(ROOT)/kat/gen
-RSPDIR  := $(ROOT)/kat/rsp
-COMMON  := $(ROOT)/common
+GENDIR  := $(ROOT)/harness/gen
+RSPDIR  := $(ROOT)/vectors/rsp
+COMMON  := $(ROOT)/harness
 BUILD   := $(ROOT)/build
 
 # Flags passed to test binaries
@@ -99,44 +99,44 @@ GEN_FLAGS := -DKATNUM=$(KATNUM) -DMLEN=$(MLEN)
 # =============================================================================
 
 DIRS := $(BUILD) \
-        $(RSPDIR)/DS/FALCON \
-        $(RSPDIR)/DS/ML-DSA \
-        $(RSPDIR)/DS/SLH-DSA \
-        $(RSPDIR)/DS/SLH-DSA-Haraka \
-        $(RSPDIR)/DS/SLH-DSA-Haraka-AES \
-        $(RSPDIR)/DS/SLH-DSA-SHA2 \
-        $(RSPDIR)/Additional-DS/CROSS \
-        $(RSPDIR)/Additional-DS/FAEST \
-        $(RSPDIR)/Additional-DS/FAEST-decoupled \
-        $(RSPDIR)/Additional-DS/HAWK \
-        $(RSPDIR)/Additional-DS/LESS \
-        $(RSPDIR)/Additional-DS/UOV \
-        $(RSPDIR)/Additional-DS/MAYO \
-        $(RSPDIR)/Additional-DS/QRUOV \
-        $(RSPDIR)/Additional-DS/SNOVA \
-        $(RSPDIR)/Additional-DS/SDITH \
-        $(RSPDIR)/Additional-DS/SQISIGN \
-        $(RSPDIR)/Additional-DS/MQOM \
-        $(RSPDIR)/Additional-DS/MAYO-R3 \
-        $(RSPDIR)/Additional-DS/UOV-R3 \
-        $(RSPDIR)/Additional-DS/SNOVA-R3 \
-        $(RSPDIR)/Additional-DS/QRUOV-R3 \
-        $(RSPDIR)/Additional-DS/SDITH-R3 \
-        $(RSPDIR)/Additional-DS/SQISIGN-R3 \
-        $(RSPDIR)/Additional-DS/FAEST-R3 \
-        $(RSPDIR)/Stateful-DS/XMSS \
-        $(RSPDIR)/Stateful-DS/LMS \
-        $(RSPDIR)/Stateful-DS/HSS \
-        $(RSPDIR)/KEM/ML-KEM \
-        $(RSPDIR)/KEM/HQC/HQC-2025 \
-        $(RSPDIR)/Symmetric/ASCON
+        $(RSPDIR)/signatures/standard/FALCON \
+        $(RSPDIR)/signatures/standard/ML-DSA \
+        $(RSPDIR)/signatures/standard/SLH-DSA \
+        $(RSPDIR)/legacy/SLH-DSA-Haraka \
+        $(RSPDIR)/legacy/SLH-DSA-Haraka-AES \
+        $(RSPDIR)/signatures/standard/FNDSA-EXP \
+        $(RSPDIR)/signatures/onramp/round2-only/CROSS \
+        $(RSPDIR)/signatures/onramp/FAEST \
+        $(RSPDIR)/signatures/onramp/FAEST-decoupled \
+        $(RSPDIR)/signatures/onramp/HAWK \
+        $(RSPDIR)/signatures/onramp/round2-only/LESS \
+        $(RSPDIR)/signatures/onramp/UOV \
+        $(RSPDIR)/signatures/onramp/MAYO \
+        $(RSPDIR)/signatures/onramp/QRUOV \
+        $(RSPDIR)/signatures/onramp/SNOVA \
+        $(RSPDIR)/signatures/onramp/SDITH \
+        $(RSPDIR)/signatures/onramp/SQISIGN \
+        $(RSPDIR)/signatures/onramp/MQOM \
+        $(RSPDIR)/signatures/onramp/MAYO-R3 \
+        $(RSPDIR)/signatures/onramp/UOV-R3 \
+        $(RSPDIR)/signatures/onramp/SNOVA-R3 \
+        $(RSPDIR)/signatures/onramp/QRUOV-R3 \
+        $(RSPDIR)/signatures/onramp/SDITH-R3 \
+        $(RSPDIR)/signatures/onramp/SQISIGN-R3 \
+        $(RSPDIR)/signatures/onramp/FAEST-R3 \
+        $(RSPDIR)/signatures/stateful/XMSS \
+        $(RSPDIR)/signatures/stateful/LMS \
+        $(RSPDIR)/signatures/stateful/HSS \
+        $(RSPDIR)/kem/ML-KEM \
+        $(RSPDIR)/kem/HQC/HQC-2025 \
+        $(RSPDIR)/symmetric/ASCON
 
 $(DIRS):
 	mkdir -p $@
 
 # =============================================================================
 #  CROSS  (18 variants – src/ + include/ layout)
-#         No kat/gen/rng.c: CROSS defines its own randombytes().
+#         No harness/gen/rng.c: CROSS defines its own randombytes().
 # =============================================================================
 
 CROSS_VARIANTS := \
@@ -148,17 +148,17 @@ CROSS_VARIANTS := \
     CROSS_5_RSDPG_b CROSS_5_RSDPG_f CROSS_5_RSDPG_s
 
 define CROSS_RULES
-$(1)_SRCS := $$(wildcard $(ROOT)/original/Additional-DS/CROSS/$(1)/src/*.c)
-$(1)_INC  := -I$(ROOT)/original/Additional-DS/CROSS/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/CROSS/$(1).rsp
+$(1)_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/onramp/round2-only/CROSS/$(1)/src/*.c)
+$(1)_INC  := -I$(ROOT)/algorithms/signatures/onramp/round2-only/CROSS/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/round2-only/CROSS/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) $(GENDIR)/PQCgenKAT_sign_cross.c $(COMMON)/kat_parser.c \
-                  | $(BUILD) $(RSPDIR)/Additional-DS/CROSS
+                  | $(BUILD) $(RSPDIR)/signatures/onramp/round2-only/CROSS
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/CROSS
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/round2-only/CROSS
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_cross.c $(COMMON)/kat_parser.c \
@@ -188,18 +188,18 @@ gen-cross:  $(addprefix gen-,$(CROSS_VARIANTS))
 FALCON_VARIANTS := falcon-512 falcon-1024
 
 define FALCON_RULES
-$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/original/DS/FALCON/$(1)/src/*.c)
-$(subst -,_,$(1))_INC  := -I$(ROOT)/original/DS/FALCON/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(subst -,_,$(1))_RSP  := $(RSPDIR)/DS/FALCON/$(1).rsp
+$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/standard/FALCON/$(1)/src/*.c)
+$(subst -,_,$(1))_INC  := -I$(ROOT)/algorithms/signatures/standard/FALCON/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(subst -,_,$(1))_RSP  := $(RSPDIR)/signatures/standard/FALCON/$(1).rsp
 
 $(BUILD)/gen_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_falcon.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/DS/FALCON
+    | $(BUILD) $(RSPDIR)/signatures/standard/FALCON
 	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/DS/FALCON
+$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/signatures/standard/FALCON
 	$$<
 
 $(BUILD)/test_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) \
@@ -218,30 +218,52 @@ endef
 
 $(foreach v,$(FALCON_VARIANTS),$(eval $(call FALCON_RULES,$(v))))
 
-test-falcon: $(addprefix test-,$(FALCON_VARIANTS))
+# Official Falcon round-3 KAT files (algorithms/signatures/standard/FALCON/official-kat/), replayed through the
+# explicit-randomness API by harness/gen/main_falcon_official.c (seeds the NIST DRBG with each record's seed).
+FALCON_OFFICIAL_KAT := $(ROOT)/algorithms/signatures/standard/FALCON/official-kat
+
+define FALCON_OFFICIAL_RULES
+# $(1)=variant, $(2)=official .rsp file name
+$(BUILD)/test_$(subst -,_,$(1))_official: $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
+    $(GENDIR)/main_falcon_official.c $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$(FALCON_OFFICIAL_KAT)/$(2)"' \
+	    $$^ -o $$@
+
+test-$(1)-official: $(BUILD)/test_$(subst -,_,$(1))_official
+	@echo "=== Testing $(1) against the official round-3 KAT ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(subst -,_,$(1))_official
+
+.PHONY: test-$(1)-official
+endef
+
+$(eval $(call FALCON_OFFICIAL_RULES,falcon-512,falcon512-KAT.rsp))
+$(eval $(call FALCON_OFFICIAL_RULES,falcon-1024,falcon1024-KAT.rsp))
+
+test-falcon: $(addprefix test-,$(FALCON_VARIANTS)) test-falcon-512-official test-falcon-1024-official
 gen-falcon:  $(addprefix gen-,$(FALCON_VARIANTS))
 .PHONY: test-falcon gen-falcon
 
 # =============================================================================
 #  HAWK  (3 variants – src/ + include/ layout)
-#        HAWK src/rng.c IS the NIST DRBG – do NOT add kat/gen/rng.c.
+#        HAWK src/rng.c IS the NIST DRBG – do NOT add harness/gen/rng.c.
 # =============================================================================
 
 HAWK_VARIANTS := hawk-256 hawk-512 hawk-1024
 
 define HAWK_RULES
-$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/original/Additional-DS/HAWK/$(1)/src/*.c)
-$(subst -,_,$(1))_INC  := -I$(ROOT)/original/Additional-DS/HAWK/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(subst -,_,$(1))_RSP  := $(RSPDIR)/Additional-DS/HAWK/$(1).rsp
+$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/onramp/HAWK/$(1)/src/*.c)
+$(subst -,_,$(1))_INC  := -I$(ROOT)/algorithms/signatures/onramp/HAWK/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(subst -,_,$(1))_RSP  := $(RSPDIR)/signatures/onramp/HAWK/$(1).rsp
 
 $(BUILD)/gen_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_hawk.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/HAWK
+    | $(BUILD) $(RSPDIR)/signatures/onramp/HAWK
 	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/Additional-DS/HAWK
+$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/signatures/onramp/HAWK
 	$$<
 
 $(BUILD)/test_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) \
@@ -266,7 +288,7 @@ gen-hawk:  $(addprefix gen-,$(HAWK_VARIANTS))
 
 # =============================================================================
 #  LESS  (7 variants – src/ + include/ layout)
-#        LESS randombytes is static-inline; kat/gen/rng.c provides NIST DRBG.
+#        LESS randombytes is static-inline; harness/gen/rng.c provides NIST DRBG.
 # =============================================================================
 
 LESS_VARIANTS := LESS_252_45 LESS_252_68 LESS_252_192 \
@@ -274,18 +296,18 @@ LESS_VARIANTS := LESS_252_45 LESS_252_68 LESS_252_192 \
                  LESS_548_137 LESS_548_345
 
 define LESS_RULES
-$(1)_SRCS := $$(wildcard $(ROOT)/original/Additional-DS/LESS/$(1)/src/*.c)
-$(1)_INC  := -I$(ROOT)/original/Additional-DS/LESS/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/LESS/$(1).rsp
+$(1)_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/onramp/round2-only/LESS/$(1)/src/*.c)
+$(1)_INC  := -I$(ROOT)/algorithms/signatures/onramp/round2-only/LESS/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/round2-only/LESS/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_less.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/LESS
+    | $(BUILD) $(RSPDIR)/signatures/onramp/round2-only/LESS
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/LESS
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/round2-only/LESS
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_less.c $(COMMON)/kat_parser.c \
@@ -333,27 +355,27 @@ gen-less:  $(addprefix gen-,$(LESS_VARIANTS))
 #         other family here.
 # =============================================================================
 
-FAEST_COMMON := $(ROOT)/original/Additional-DS/FAEST/common
+FAEST_COMMON := $(ROOT)/algorithms/signatures/onramp/FAEST/common
 FAEST_VARIANTS := FAEST_128F FAEST_128S FAEST_192F FAEST_192S FAEST_256F FAEST_256S \
                    FAEST_EM_128F FAEST_EM_128S FAEST_EM_192F FAEST_EM_192S \
                    FAEST_EM_256F FAEST_EM_256S
 
 define FAEST_RULES
 $(1)_SRCS := $$(wildcard $(FAEST_COMMON)/src/*.c) \
-             $$(wildcard $(ROOT)/original/Additional-DS/FAEST/$(1)/src/*.c)
-$(1)_INC  := -I$(FAEST_COMMON)/include -I$(ROOT)/original/Additional-DS/FAEST/$(1)/include \
+             $$(wildcard $(ROOT)/algorithms/signatures/onramp/FAEST/$(1)/src/*.c)
+$(1)_INC  := -I$(FAEST_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/FAEST/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/FAEST/$(1).rsp
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/FAEST/$(1).rsp
 $(1)_DEFS := -Wno-psabi
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_faest.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/FAEST
+    | $(BUILD) $(RSPDIR)/signatures/onramp/FAEST
 	$(CC) $(CFLAGS) $$($(1)_DEFS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/FAEST
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/FAEST
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_faest.c \
@@ -381,30 +403,30 @@ gen-faest:  $(addprefix gen-,$(FAEST_VARIANTS))
 #  decoupled from keygen/the DRBG: crypto_sign_with_randomness(sk, msg, rho)
 #  replays deterministically from a captured (sk, rho) pair alone, so
 #  RUN_KEYGEN=0 skips keygen entirely instead of silently calling it just to
-#  advance the DRBG. See original/Additional-DS/FAEST-decoupled/<variant>/
-#  src/crypto_sign.c and kat/gen/{PQCgenKAT_sign_faest_decoupled,
+#  advance the DRBG. See algorithms/signatures/onramp/FAEST-decoupled/<variant>/
+#  src/crypto_sign.c and harness/gen/{PQCgenKAT_sign_faest_decoupled,
 #  main_faest_decoupled}.c. Targets are suffixed "-decoupled" to avoid
 #  colliding with the FAEST_RULES targets above.
 # =============================================================================
 
-FAEST_DECOUPLED_COMMON := $(ROOT)/original/Additional-DS/FAEST-decoupled/common
+FAEST_DECOUPLED_COMMON := $(ROOT)/algorithms/signatures/onramp/FAEST-decoupled/common
 
 define FAEST_DECOUPLED_RULES
 $(1)_DEC_SRCS := $$(wildcard $(FAEST_DECOUPLED_COMMON)/src/*.c) \
-             $$(wildcard $(ROOT)/original/Additional-DS/FAEST-decoupled/$(1)/src/*.c)
-$(1)_DEC_INC  := -I$(FAEST_DECOUPLED_COMMON)/include -I$(ROOT)/original/Additional-DS/FAEST-decoupled/$(1)/include \
+             $$(wildcard $(ROOT)/algorithms/signatures/onramp/FAEST-decoupled/$(1)/src/*.c)
+$(1)_DEC_INC  := -I$(FAEST_DECOUPLED_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/FAEST-decoupled/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_DEC_RSP  := $(RSPDIR)/Additional-DS/FAEST-decoupled/$(1).rsp
+$(1)_DEC_RSP  := $(RSPDIR)/signatures/onramp/FAEST-decoupled/$(1).rsp
 $(1)_DEC_DEFS := -Wno-psabi
 
 $(BUILD)/gen_$(1)_decoupled: $$($(1)_DEC_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_faest_decoupled.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/FAEST-decoupled
+    | $(BUILD) $(RSPDIR)/signatures/onramp/FAEST-decoupled
 	$(CC) $(CFLAGS) $$($(1)_DEC_DEFS) $$($(1)_DEC_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_DEC_RSP)"' -DALGO_NAME='"$(1)-decoupled"' \
 	    $$^ -o $$@
 
-$$($(1)_DEC_RSP): $(BUILD)/gen_$(1)_decoupled | $(RSPDIR)/Additional-DS/FAEST-decoupled
+$$($(1)_DEC_RSP): $(BUILD)/gen_$(1)_decoupled | $(RSPDIR)/signatures/onramp/FAEST-decoupled
 	$$<
 
 $(BUILD)/test_$(1)_decoupled: $$($(1)_DEC_SRCS) $(GENDIR)/main_faest_decoupled.c \
@@ -444,10 +466,10 @@ gen-faest-decoupled:  $(addprefix gen-,$(addsuffix -decoupled,$(FAEST_VARIANTS))
 #       patches (see those files) that make this family fully OpenSSL-free.
 #       Same "reseed global DRBG once per count" shape as HAWK/FAEST: UOV has
 #       its own copy of the NIST DRBG in common/src/rng.c -- do NOT add
-#       kat/gen/rng.c.
+#       harness/gen/rng.c.
 # =============================================================================
 
-UOV_COMMON := $(ROOT)/original/Additional-DS/UOV/common
+UOV_COMMON := $(ROOT)/algorithms/signatures/onramp/UOV/common
 UOV_VARIANTS := UOV_Ip UOV_Ip_pkc UOV_Ip_pkc_skc \
                 UOV_Is UOV_Is_pkc UOV_Is_pkc_skc \
                 UOV_III UOV_III_pkc UOV_III_pkc_skc \
@@ -455,18 +477,18 @@ UOV_VARIANTS := UOV_Ip UOV_Ip_pkc UOV_Ip_pkc_skc \
 
 define UOV_RULES
 $(1)_SRCS := $$(wildcard $(UOV_COMMON)/src/*.c)
-$(1)_INC  := -I$(UOV_COMMON)/include -I$(ROOT)/original/Additional-DS/UOV/$(1)/include \
+$(1)_INC  := -I$(UOV_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/UOV/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/UOV/$(1).rsp
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/UOV/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_uov.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/UOV
+    | $(BUILD) $(RSPDIR)/signatures/onramp/UOV
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/UOV
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/UOV
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_uov.c \
@@ -507,27 +529,27 @@ gen-uov:  $(addprefix gen-,$(UOV_VARIANTS))
 #        Uses the src/generic (portable, no AVX2/NEON/AES-NI) backend. Same
 #        "reseed global DRBG once per count" shape as HAWK/FAEST/UOV: MAYO has
 #        no derand entry point, and common/src/randombytes_ctrdrbg.c IS the
-#        NIST AES-256-CTR DRBG -- do NOT add kat/gen/rng.c.
+#        NIST AES-256-CTR DRBG -- do NOT add harness/gen/rng.c.
 # =============================================================================
 
-MAYO_COMMON := $(ROOT)/original/Additional-DS/MAYO/common
+MAYO_COMMON := $(ROOT)/algorithms/signatures/onramp/MAYO/common
 MAYO_VARIANTS := MAYO_1 MAYO_2 MAYO_3 MAYO_5
 
 define MAYO_RULES
 $(1)_SRCS := $$(wildcard $(MAYO_COMMON)/src/*.c) \
-             $$(wildcard $(ROOT)/original/Additional-DS/MAYO/$(1)/src/*.c)
-$(1)_INC  := -I$(MAYO_COMMON)/include -I$(ROOT)/original/Additional-DS/MAYO/$(1)/include \
+             $$(wildcard $(ROOT)/algorithms/signatures/onramp/MAYO/$(1)/src/*.c)
+$(1)_INC  := -I$(MAYO_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/MAYO/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/MAYO/$(1).rsp
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/MAYO/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_mayo.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/MAYO
+    | $(BUILD) $(RSPDIR)/signatures/onramp/MAYO
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/MAYO
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/MAYO
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_mayo.c \
@@ -595,14 +617,14 @@ gen-mayo:  $(addprefix gen-,$(MAYO_VARIANTS))
 #           - rng.c: same OpenSSL-AES256_ECB-swap treatment as pqov/UOV
 #             (see UOV's section above) -- kept qruov's own rng.h contract
 #             (int-returning randombytes(), unlike HAWK/FAEST/UOV's
-#             void-returning kat/gen/rng.h) since qruov's own sign.c/api.c
+#             void-returning harness/gen/rng.h) since qruov's own sign.c/api.c
 #             already expect that signature.
 #         Same "reseed global DRBG once per count" shape as HAWK/FAEST/UOV/
-#         MAYO -- do NOT add kat/gen/rng.c (QRUOV/common/src/rng.c is its
+#         MAYO -- do NOT add harness/gen/rng.c (QRUOV/common/src/rng.c is its
 #         own copy, patched the same way).
 # =============================================================================
 
-QRUOV_COMMON := $(ROOT)/original/Additional-DS/QRUOV/common
+QRUOV_COMMON := $(ROOT)/algorithms/signatures/onramp/QRUOV/common
 QRUOV_VARIANTS := \
     QRUOV_1_q7L10v740m100_a QRUOV_1_q7L10v740m100_s \
     QRUOV_1_q31L3v165m60_a QRUOV_1_q31L3v165m60_s QRUOV_1_q31L10v600m70_a \
@@ -619,18 +641,18 @@ QRUOV_VARIANTS := \
 
 define QRUOV_RULES
 $(1)_SRCS := $$(wildcard $(QRUOV_COMMON)/src/*.c)
-$(1)_INC  := -I$(QRUOV_COMMON)/include -I$(ROOT)/original/Additional-DS/QRUOV/$(1)/include \
+$(1)_INC  := -I$(QRUOV_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/QRUOV/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/QRUOV/$(1).rsp
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/QRUOV/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_qruov.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/QRUOV
+    | $(BUILD) $(RSPDIR)/signatures/onramp/QRUOV
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/QRUOV
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/QRUOV
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_qruov.c \
@@ -680,7 +702,7 @@ gen-qruov:  $(addprefix gen-,$(QRUOV_VARIANTS))
 #         template exactly (see the family's own README.md for the exact
 #         18-parameter-set list and naming).
 #         Same "reseed global DRBG once per count" shape as HAWK/FAEST/
-#         UOV/MAYO/QRUOV -- do NOT add kat/gen/rng.c (SNOVA/common/src/rng.c
+#         UOV/MAYO/QRUOV -- do NOT add harness/gen/rng.c (SNOVA/common/src/rng.c
 #         is its own copy, already self-contained, no patch needed).
 #
 #         The 4 largest parameter sets (level-5 tier: v=97/96 with l=2, and
@@ -695,7 +717,7 @@ gen-qruov:  $(addprefix gen-,$(QRUOV_VARIANTS))
 #         main.c standalone -- see the family's own README.md.
 # =============================================================================
 
-SNOVA_COMMON := $(ROOT)/original/Additional-DS/SNOVA/common
+SNOVA_COMMON := $(ROOT)/algorithms/signatures/onramp/SNOVA/common
 SNOVA_VARIANTS := \
     SNOVA_28_5_19_4_AES SNOVA_28_5_19_4 SNOVA_24_5_16_4_AES \
     SNOVA_24_5_16_4 SNOVA_48_17_16_2_AES SNOVA_48_17_16_2 \
@@ -712,18 +734,18 @@ SNOVA_VARIANTS := \
 
 define SNOVA_RULES
 $(1)_SRCS := $$(wildcard $(SNOVA_COMMON)/src/*.c)
-$(1)_INC  := -I$(SNOVA_COMMON)/include -I$(ROOT)/original/Additional-DS/SNOVA/$(1)/include \
+$(1)_INC  := -I$(SNOVA_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/SNOVA/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/SNOVA/$(1).rsp
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/SNOVA/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_snova.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/SNOVA
+    | $(BUILD) $(RSPDIR)/signatures/onramp/SNOVA
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/SNOVA
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/SNOVA
 	@ulimit -s 65536 2>/dev/null; $$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_snova.c \
@@ -764,7 +786,7 @@ gen-snova:  $(addprefix gen-,$(SNOVA_VARIANTS))
 #         make it compile-time-fixed:
 #          - generator/rng.c (the NIST KAT DRBG) had its OpenSSL EVP-based
 #            AES256_ECB() replaced with the same self-contained software
-#            AES-256 block cipher used by kat/gen/rng.c (reused verbatim
+#            AES-256 block cipher used by harness/gen/rng.c (reused verbatim
 #            across UOV/QRUOV/SDitH); its `#include <openssl/...>` lines are
 #            commented out, never live.
 #          - Hypercube's param.h originally selects its security level via
@@ -793,7 +815,7 @@ gen-snova:  $(addprefix gen-,$(SNOVA_VARIANTS))
 #         no such collision (its core randomness lives in rnd.c/rnd.h,
 #         a distinct name).
 #         Same "reseed global DRBG once per count" shape as HAWK/FAEST/UOV/
-#         MAYO/QRUOV/SNOVA -- do NOT add kat/gen/rng.c (each variant's own
+#         MAYO/QRUOV/SNOVA -- do NOT add harness/gen/rng.c (each variant's own
 #         src/rng.c is already the patched, self-contained NIST DRBG).
 # =============================================================================
 
@@ -806,18 +828,18 @@ SDITH_VARIANTS := \
     sdith_threshold_cat5_gf256 sdith_threshold_cat5_p251
 
 define SDITH_RULES
-$(1)_SRCS := $$(wildcard $(ROOT)/original/Additional-DS/SDITH/$(1)/src/*.c)
-$(1)_INC  := -I$(ROOT)/original/Additional-DS/SDITH/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/SDITH/$(1).rsp
+$(1)_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/onramp/SDITH/$(1)/src/*.c)
+$(1)_INC  := -I$(ROOT)/algorithms/signatures/onramp/SDITH/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/SDITH/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_sdith.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/SDITH
+    | $(BUILD) $(RSPDIR)/signatures/onramp/SDITH
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/SDITH
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/SDITH
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_sdith.c \
@@ -869,24 +891,24 @@ gen-sdith:  $(addprefix gen-,$(SDITH_VARIANTS))
 #           family here that does, since quaternion/ arithmetic uses libm.
 # =============================================================================
 
-SQISIGN_COMMON := $(ROOT)/original/Additional-DS/SQISIGN/common
+SQISIGN_COMMON := $(ROOT)/algorithms/signatures/onramp/SQISIGN/common
 SQISIGN_VARIANTS := sqisign_lvl1 sqisign_lvl3 sqisign_lvl5
 
 define SQISIGN_RULES
 $(1)_SRCS := $$(wildcard $(SQISIGN_COMMON)/src/*.c) \
-             $$(wildcard $(ROOT)/original/Additional-DS/SQISIGN/$(1)/src/*.c)
-$(1)_INC  := -I$(SQISIGN_COMMON)/include -I$(ROOT)/original/Additional-DS/SQISIGN/$(1)/include \
+             $$(wildcard $(ROOT)/algorithms/signatures/onramp/SQISIGN/$(1)/src/*.c)
+$(1)_INC  := -I$(SQISIGN_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/SQISIGN/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/SQISIGN/$(1).rsp
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/SQISIGN/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_sqisign.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/SQISIGN
+    | $(BUILD) $(RSPDIR)/signatures/onramp/SQISIGN
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@ -lm
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/SQISIGN
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/SQISIGN
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_sqisign.c \
@@ -925,15 +947,15 @@ gen-sqisign:  $(addprefix gen-,$(SQISIGN_VARIANTS))
 #        with common/include/mqom3_build_config.h, which hardcodes the
 #        portable (no AES-NI/AVX/NEON, XKCP opt64) build options, so no -D flag
 #        is needed. No OpenSSL/liboqs: upstream's generator/rng.c (OpenSSL AES)
-#        is replaced by kat/gen/rng.c's software AES-256 DRBG, shipped as
-#        common/src/rng.c -- do NOT add kat/gen/rng.c. See tools/assemble_mqom.sh.
+#        is replaced by harness/gen/rng.c's software AES-256 DRBG, shipped as
+#        common/src/rng.c -- do NOT add harness/gen/rng.c. See tools/assemble_mqom.sh.
 #        No derand entry point, same "reseed global DRBG" shape as HAWK/FAEST/
 #        UOV/MAYO/...; the KAT generator follows the official NIST procedure
 #        (message drawn before reseeding) so seed -> pk/sk matches the official
 #        KAT/<variant>/PQCsignKAT_*.rsp.
 # =============================================================================
 
-MQOM_COMMON := $(ROOT)/original/Additional-DS/MQOM/common
+MQOM_COMMON := $(ROOT)/algorithms/signatures/onramp/MQOM/common
 MQOM_VARIANTS := \
     mqom3_cat1_gf2_shorter_ct mqom3_cat1_gf2_shorter_ot \
     mqom3_cat1_gf16_fast_ct   mqom3_cat1_gf16_fast_ot \
@@ -947,18 +969,18 @@ MQOM_VARIANTS := \
 
 define MQOM_RULES
 $(1)_SRCS := $$(wildcard $(MQOM_COMMON)/src/*.c)
-$(1)_INC  := -I$(MQOM_COMMON)/include -I$(ROOT)/original/Additional-DS/MQOM/$(1)/include \
+$(1)_INC  := -I$(MQOM_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/MQOM/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Additional-DS/MQOM/$(1).rsp
+$(1)_RSP  := $(RSPDIR)/signatures/onramp/MQOM/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_mqom.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/MQOM
+    | $(BUILD) $(RSPDIR)/signatures/onramp/MQOM
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Additional-DS/MQOM
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/signatures/onramp/MQOM
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/main_mqom.c \
@@ -992,29 +1014,29 @@ gen-mqom:  $(addprefix gen-,$(MQOM_VARIANTS))
 #          src/generic backend; no AVX2/GFNI/NEON/AES-NI, no OpenSSL. Targets are
 #          suffixed "-R3" (test-MAYO_1-R3, gen-MAYO_1-R3), binaries
 #          gen_<VARIANT>_R3 / test_<VARIANT>_R3. Uses its own
-#          kat/gen/PQCgenKAT_sign_mayo_r3.c + main_mayo_r3.c (official NIST
+#          harness/gen/PQCgenKAT_sign_mayo_r3.c + main_mayo_r3.c (official NIST
 #          flow: seed/msg drawn from the entropy-seeded DRBG, keygen right after
 #          randombytes_init(seed); size_t smlen/mlen as in MAYO's api.h).
 # =============================================================================
 
-MAYO_R3_COMMON := $(ROOT)/original/Additional-DS/MAYO-R3/common
+MAYO_R3_COMMON := $(ROOT)/algorithms/signatures/onramp/MAYO-R3/common
 MAYO_R3_VARIANTS := MAYO_1 MAYO_2 MAYO_3 MAYO_5
 
 define MAYO_R3_RULES
 $(1)_R3_SRCS := $$(wildcard $(MAYO_R3_COMMON)/src/*.c) \
-             $$(wildcard $(ROOT)/original/Additional-DS/MAYO-R3/$(1)/src/*.c)
-$(1)_R3_INC  := -I$(MAYO_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/MAYO-R3/$(1)/include \
+             $$(wildcard $(ROOT)/algorithms/signatures/onramp/MAYO-R3/$(1)/src/*.c)
+$(1)_R3_INC  := -I$(MAYO_R3_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/MAYO-R3/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/MAYO-R3/$(1).rsp
+$(1)_R3_RSP  := $(RSPDIR)/signatures/onramp/MAYO-R3/$(1).rsp
 
 $(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_mayo_r3.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/MAYO-R3
+    | $(BUILD) $(RSPDIR)/signatures/onramp/MAYO-R3
 	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
 	    $$^ -o $$@
 
-$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/MAYO-R3
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/signatures/onramp/MAYO-R3
 	$$<
 
 $(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_mayo_r3.c \
@@ -1047,10 +1069,10 @@ gen-mayo-r3:  $(addsuffix -R3,$(addprefix gen-,$(MAYO_R3_VARIANTS)))
 #          ref BLAS, no AVX2/GFNI/NEON, no OpenSSL). Targets are suffixed
 #          "-R3" (test-UOV_Ip-R3, gen-UOV_Ip-R3), binaries gen_<VARIANT>_R3 / test_<VARIANT>_R3 (the exact name
 #          tools/gen_static_test.py derives from the gen target, so it can
-#          delete a stale generator before rebuilding). Uses its own kat/gen/PQCgenKAT_sign_uov_r3.c + main_uov_r3.c (official NIST flow).
+#          delete a stale generator before rebuilding). Uses its own harness/gen/PQCgenKAT_sign_uov_r3.c + main_uov_r3.c (official NIST flow).
 # =============================================================================
 
-UOV_R3_COMMON := $(ROOT)/original/Additional-DS/UOV-R3/common
+UOV_R3_COMMON := $(ROOT)/algorithms/signatures/onramp/UOV-R3/common
 UOV_R3_VARIANTS := UOV_Ip UOV_Ip_pkc UOV_Ip_pkc_skc \
                    UOV_Is UOV_Is_pkc UOV_Is_pkc_skc \
                    UOV_III UOV_III_pkc UOV_III_pkc_skc \
@@ -1058,18 +1080,18 @@ UOV_R3_VARIANTS := UOV_Ip UOV_Ip_pkc UOV_Ip_pkc_skc \
 
 define UOV_R3_RULES
 $(1)_R3_SRCS := $$(wildcard $(UOV_R3_COMMON)/src/*.c)
-$(1)_R3_INC  := -I$(UOV_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/UOV-R3/$(1)/include \
+$(1)_R3_INC  := -I$(UOV_R3_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/UOV-R3/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/UOV-R3/$(1).rsp
+$(1)_R3_RSP  := $(RSPDIR)/signatures/onramp/UOV-R3/$(1).rsp
 
 $(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_uov_r3.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/UOV-R3
+    | $(BUILD) $(RSPDIR)/signatures/onramp/UOV-R3
 	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
 	    $$^ -o $$@
 
-$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/UOV-R3
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/signatures/onramp/UOV-R3
 	$$<
 
 $(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_uov_r3.c \
@@ -1106,12 +1128,12 @@ gen-uov-r3:  $(addsuffix -R3,$(addprefix gen-,$(UOV_R3_VARIANTS)))
 #         The official R3 KAT uses the standard NIST flow (one entropy-seeded DRBG draws
 #         seed AND msg, mlen = 33*(count+1), keygen directly after the reseed), which
 #         differs from the older SNOVA generator, so dedicated
-#         kat/gen/PQCgenKAT_sign_snova_r3.c and main_snova_r3.c are used.
+#         harness/gen/PQCgenKAT_sign_snova_r3.c and main_snova_r3.c are used.
 #         Level-5 (V) variants may need a bigger stack: gen/test recipes run
 #         `ulimit -s 65536` first.
 # =============================================================================
 
-SNOVA_R3_COMMON := $(ROOT)/original/Additional-DS/SNOVA-R3/common
+SNOVA_R3_COMMON := $(ROOT)/algorithms/signatures/onramp/SNOVA-R3/common
 SNOVA_R3_VARIANTS := \
     SNOVA_I_B SNOVA_I_B_AES SNOVA_I_K SNOVA_I_K_AES SNOVA_I_S SNOVA_I_S_AES \
     SNOVA_III_B SNOVA_III_B_AES SNOVA_III_K SNOVA_III_K_AES SNOVA_III_S SNOVA_III_S_AES \
@@ -1119,18 +1141,18 @@ SNOVA_R3_VARIANTS := \
 
 define SNOVA_R3_RULES
 $(1)_R3_SRCS := $$(wildcard $(SNOVA_R3_COMMON)/src/*.c)
-$(1)_R3_INC  := -I$(SNOVA_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/SNOVA-R3/$(1)/include \
+$(1)_R3_INC  := -I$(SNOVA_R3_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/SNOVA-R3/$(1)/include \
                 -I$(GENDIR) -I$(COMMON)
-$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/SNOVA-R3/$(1).rsp
+$(1)_R3_RSP  := $(RSPDIR)/signatures/onramp/SNOVA-R3/$(1).rsp
 
 $(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_snova_r3.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/SNOVA-R3
+    | $(BUILD) $(RSPDIR)/signatures/onramp/SNOVA-R3
 	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/SNOVA-R3
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/signatures/onramp/SNOVA-R3
 	@ulimit -s 65536 2>/dev/null; $$<
 
 $(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_snova_r3.c \
@@ -1168,11 +1190,11 @@ gen-snova-r3:  $(addsuffix -R3,$(addprefix gen-,$(SNOVA_R3_VARIANTS)))
 #
 #         OpenSSL replaced by self-contained code (prim.c/prim.h on the
 #         portable fips202.c + aes_c.c; rng.c on a software AES-256) --
-#         do NOT add kat/gen/rng.c (QRUOV-R3/common/src/rng.c IS the NIST
+#         do NOT add harness/gen/rng.c (QRUOV-R3/common/src/rng.c IS the NIST
 #         DRBG). Targets are suffixed "-R3" to avoid colliding with QRUOV.
 # =============================================================================
 
-QRUOV_R3_COMMON := $(ROOT)/original/Additional-DS/QRUOV-R3/common
+QRUOV_R3_COMMON := $(ROOT)/algorithms/signatures/onramp/QRUOV-R3/common
 QRUOV_R3_VARIANTS := \
     QRUOV_1q7L10_aes QRUOV_1q7L10_shake QRUOV_1q31L3_aes QRUOV_1q31L3_shake \
     QRUOV_1q31L10_aes QRUOV_1q31L10_shake QRUOV_1q127L3_aes QRUOV_1q127L3_shake \
@@ -1186,18 +1208,18 @@ QRUOV_R3_VARIANTS := \
 
 define QRUOV_R3_RULES
 $(1)_R3_SRCS := $$(wildcard $(QRUOV_R3_COMMON)/src/*.c)
-$(1)_R3_INC  := -I$(QRUOV_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/QRUOV-R3/$(1)/include \
+$(1)_R3_INC  := -I$(QRUOV_R3_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/QRUOV-R3/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/QRUOV-R3/$(1).rsp
+$(1)_R3_RSP  := $(RSPDIR)/signatures/onramp/QRUOV-R3/$(1).rsp
 
 $(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_qruov_r3.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/QRUOV-R3
+    | $(BUILD) $(RSPDIR)/signatures/onramp/QRUOV-R3
 	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
 	    $$^ -o $$@
 
-$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/QRUOV-R3
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/signatures/onramp/QRUOV-R3
 	$$<
 
 $(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_qruov_r3.c \
@@ -1232,10 +1254,10 @@ gen-qruov-r3:  $(addsuffix -R3,$(addprefix gen-,$(QRUOV_R3_VARIANTS)))
 #         ONLY_REF_IMPLEMENTATION/NDEBUG live in common/include/
 #         sdith_build_config.h. log2() in sdith_signature.c needs -lm at link time
 #         (also for the static-test folders: `gcc *.c -lm`). The DRBG is the repo's self-contained
-#         kat/gen/rng.c (copied into common/src/rng.c; no OpenSSL). The KAT
+#         harness/gen/rng.c (copied into common/src/rng.c; no OpenSSL). The KAT
 #         flow is the OFFICIAL NIST PQCgenKAT_sign.c one (one entropy-seeded
 #         DRBG stream draws seed_i and msg_i, mlen = 33*(i+1); then reseed with
-#         seed_i for keygen+sign), implemented in kat/gen/PQCgenKAT_sign_sdith_r3.c
+#         seed_i for keygen+sign), implemented in harness/gen/PQCgenKAT_sign_sdith_r3.c
 #         and main_sdith_r3.c (same logic as the *_qruov_r3.c pair; the older
 #         *_sdith.c pair reseeds before drawing the message and does NOT
 #         reproduce the official R3 KAT).
@@ -1243,7 +1265,7 @@ gen-qruov-r3:  $(addsuffix -R3,$(addprefix gen-,$(QRUOV_R3_VARIANTS)))
 #         test-sdith-r3 / gen-sdith-r3, binaries gen_<VARIANT>_R3/test_<VARIANT>_R3.
 # =============================================================================
 
-SDITH_R3_DIR := $(ROOT)/original/Additional-DS/SDITH-R3
+SDITH_R3_DIR := $(ROOT)/algorithms/signatures/onramp/SDITH-R3
 SDITH_R3_VARIANTS := \
     sdith_cat1_fast sdith_cat1_short sdith_cat1_fast_cipherpow sdith_cat1_short_cipherpow \
     sdith_cat3_fast sdith_cat3_short sdith_cat3_fast_cipherpow sdith_cat3_short_cipherpow \
@@ -1252,16 +1274,16 @@ SDITH_R3_VARIANTS := \
 define SDITH_R3_RULES
 $(1)_R3_SRCS := $$(wildcard $(SDITH_R3_DIR)/common/src/*.c)
 $(1)_R3_INC  := -I$(SDITH_R3_DIR)/common/include -I$(SDITH_R3_DIR)/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/SDITH-R3/$(1).rsp
+$(1)_R3_RSP  := $(RSPDIR)/signatures/onramp/SDITH-R3/$(1).rsp
 
 $(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_sdith_r3.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/SDITH-R3
+    | $(BUILD) $(RSPDIR)/signatures/onramp/SDITH-R3
 	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@ -lm
 
-$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/SDITH-R3
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/signatures/onramp/SDITH-R3
 	$$<
 
 $(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_sdith_r3.c \
@@ -1298,28 +1320,28 @@ gen-sdith-r3:  $(addsuffix -R3,$(addprefix gen-,$(SDITH_R3_VARIANTS)))
 #           common/include/sqisign_build_config.h (+ per-variant
 #           sqisign_variant.h), included first by every .c file.
 #           Targets are suffixed "-R3" (test-sqisign_p324_3-R3, ...) and
-#           binaries "_R3". Needs -lm. Uses kat/gen/PQCgenKAT_sign_sqisign_r3.c
+#           binaries "_R3". Needs -lm. Uses harness/gen/PQCgenKAT_sign_sqisign_r3.c
 #           and main_sqisign_r3.c (official two-phase NIST KAT procedure).
 # =============================================================================
 
-SQISIGN_R3_COMMON := $(ROOT)/original/Additional-DS/SQISIGN-R3/common
+SQISIGN_R3_COMMON := $(ROOT)/algorithms/signatures/onramp/SQISIGN-R3/common
 SQISIGN_R3_VARIANTS := sqisign_p324_3 sqisign_p500_27 sqisign_p664_17
 
 define SQISIGN_R3_RULES
 $(1)_R3_SRCS := $$(wildcard $(SQISIGN_R3_COMMON)/src/*.c) \
-             $$(wildcard $(ROOT)/original/Additional-DS/SQISIGN-R3/$(1)/src/*.c)
-$(1)_R3_INC  := -I$(SQISIGN_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/SQISIGN-R3/$(1)/include \
+             $$(wildcard $(ROOT)/algorithms/signatures/onramp/SQISIGN-R3/$(1)/src/*.c)
+$(1)_R3_INC  := -I$(SQISIGN_R3_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/SQISIGN-R3/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/SQISIGN-R3/$(1).rsp
+$(1)_R3_RSP  := $(RSPDIR)/signatures/onramp/SQISIGN-R3/$(1).rsp
 
 $(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_sqisign_r3.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/SQISIGN-R3
+    | $(BUILD) $(RSPDIR)/signatures/onramp/SQISIGN-R3
 	$(CC) $(CFLAGS) $$($(1)_R3_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
 	    $$^ -o $$@ -lm
 
-$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/SQISIGN-R3
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/signatures/onramp/SQISIGN-R3
 	$$<
 
 $(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_sqisign_r3.c \
@@ -1355,29 +1377,29 @@ gen-sqisign-r3:  $(addsuffix -R3,$(addprefix gen-,$(SQISIGN_R3_VARIANTS)))
 #          hardcoded in common/include/faest_build_config.h, so zero -D is needed.
 #          Targets are suffixed "-R3" (test-FAEST_128F-R3, gen-FAEST_128F-R3),
 #          binaries gen_<V>_R3 / test_<V>_R3. Uses its own
-#          kat/gen/PQCgenKAT_sign_faest_r3.c + main_faest_r3.c (official NIST flow:
+#          harness/gen/PQCgenKAT_sign_faest_r3.c + main_faest_r3.c (official NIST flow:
 #          seed/msg drawn from the entropy-seeded DRBG, mlen = 33*(count+1)).
 # =============================================================================
 
-FAEST_R3_COMMON := $(ROOT)/original/Additional-DS/FAEST-R3/common
+FAEST_R3_COMMON := $(ROOT)/algorithms/signatures/onramp/FAEST-R3/common
 FAEST_R3_VARIANTS := FAEST_128F FAEST_128S FAEST_EM_128F FAEST_EM_128S
 
 define FAEST_R3_RULES
 $(1)_R3_SRCS := $$(wildcard $(FAEST_R3_COMMON)/src/*.c) \
-             $$(wildcard $(ROOT)/original/Additional-DS/FAEST-R3/$(1)/src/*.c)
-$(1)_R3_INC  := -I$(FAEST_R3_COMMON)/include -I$(ROOT)/original/Additional-DS/FAEST-R3/$(1)/include \
+             $$(wildcard $(ROOT)/algorithms/signatures/onramp/FAEST-R3/$(1)/src/*.c)
+$(1)_R3_INC  := -I$(FAEST_R3_COMMON)/include -I$(ROOT)/algorithms/signatures/onramp/FAEST-R3/$(1)/include \
              -I$(GENDIR) -I$(COMMON)
-$(1)_R3_RSP  := $(RSPDIR)/Additional-DS/FAEST-R3/$(1).rsp
+$(1)_R3_RSP  := $(RSPDIR)/signatures/onramp/FAEST-R3/$(1).rsp
 $(1)_R3_DEFS := -Wno-psabi
 
 $(BUILD)/gen_$(1)_R3: $$($(1)_R3_SRCS) \
     $(GENDIR)/PQCgenKAT_sign_faest_r3.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Additional-DS/FAEST-R3
+    | $(BUILD) $(RSPDIR)/signatures/onramp/FAEST-R3
 	$(CC) $(CFLAGS) $$($(1)_R3_DEFS) $$($(1)_R3_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_R3_RSP)"' -DALGO_NAME='"$(1)-R3"' \
 	    $$^ -o $$@
 
-$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/Additional-DS/FAEST-R3
+$$($(1)_R3_RSP): $(BUILD)/gen_$(1)_R3 | $(RSPDIR)/signatures/onramp/FAEST-R3
 	$$<
 
 $(BUILD)/test_$(1)_R3: $$($(1)_R3_SRCS) $(GENDIR)/main_faest_r3.c \
@@ -1401,28 +1423,38 @@ gen-faest-r3:  $(addsuffix -R3,$(addprefix gen-,$(FAEST_R3_VARIANTS)))
 .PHONY: test-faest-r3 gen-faest-r3
 
 # =============================================================================
-#  ML-DSA  (3 variants – src/ + include/ layout)
-#           Exclude src/randombytes.c (uses /dev/urandom); kat/gen/rng.c provides
-#           the NIST DRBG randombytes() for generators and satisfies the linker
-#           symbol for test binaries (not actually called with derand API).
+#  ML-DSA  (3 variants – mldsa/ + include/ layout)
+#           mldsa-native (FIPS 204) single-compilation-unit build: mldsa/ holds
+#           mldsa_native.c plus the src/ tree it includes. Only the deterministic
+#           API is built, so no randombytes() is needed.
 # =============================================================================
 
-MLDSA_VARIANTS := ML-DSA-2 ML-DSA-3 ML-DSA-5
+MLDSA_VARIANTS := ML-DSA-44 ML-DSA-65 ML-DSA-87
+
+# Deprecated pre-FIPS names (Dilithium 2/3/5), kept as aliases for the FIPS 204 sets.
+define MLDSA_ALIAS
+gen-ML-DSA-$(1) test-ML-DSA-$(1): %-ML-DSA-$(1):
+	@echo "NOTE: ML-DSA-$(1) is a deprecated name, use ML-DSA-$(2)"
+	@$(MAKE) --no-print-directory $$*-ML-DSA-$(2)
+.PHONY: gen-ML-DSA-$(1) test-ML-DSA-$(1)
+endef
+$(eval $(call MLDSA_ALIAS,2,44))
+$(eval $(call MLDSA_ALIAS,3,65))
+$(eval $(call MLDSA_ALIAS,5,87))
 
 define MLDSA_RULES
-$(subst -,_,$(1))_SRCS_ALL := $$(wildcard $(ROOT)/original/DS/ML-DSA/$(1)/src/*.c)
-$(subst -,_,$(1))_SRCS := $$(filter-out %/randombytes.c,$$($(subst -,_,$(1))_SRCS_ALL))
-$(subst -,_,$(1))_INC  := -I$(ROOT)/original/DS/ML-DSA/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(subst -,_,$(1))_RSP  := $(RSPDIR)/DS/ML-DSA/$(1).rsp
+$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/standard/ML-DSA/$(1)/mldsa/*.c)
+$(subst -,_,$(1))_INC  := -I$(ROOT)/algorithms/signatures/standard/ML-DSA/$(1)/include -I$(ROOT)/algorithms/signatures/standard/ML-DSA/$(1)/mldsa -I$(GENDIR) -I$(COMMON)
+$(subst -,_,$(1))_RSP  := $(RSPDIR)/signatures/standard/ML-DSA/$(1).rsp
 
 $(BUILD)/gen_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_mldsa.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/DS/ML-DSA
+    | $(BUILD) $(RSPDIR)/signatures/standard/ML-DSA
 	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/DS/ML-DSA
+$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/signatures/standard/ML-DSA
 	$$<
 
 $(BUILD)/test_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
@@ -1446,26 +1478,57 @@ gen-mldsa:  $(addprefix gen-,$(MLDSA_VARIANTS))
 .PHONY: test-mldsa gen-mldsa
 
 # =============================================================================
-#  SLH-DSA families  (4 families × 6 variants = 24 total)
-#  All use the same pattern: exclude randombytes.c, use kat/gen/rng.c.
-#  Macro: $(1)=safe-name $(2)=variant-dir $(3)=family-subdir $(4)=rsp-family-dir
+#  SLH-DSA (FIPS 205): 12 parameter sets (SHA2/SHAKE x 128/192/256 x s/f), one
+#  shared slhdsa-c source tree (runtime parameter set) + per-variant include/.
+#  The Haraka / Haraka-AES SPHINCS+ families further down are pre-standard
+#  legacy code: they are NOT part of FIPS 205 and not part of test-all.
 # =============================================================================
+
+# FIPS 205 rules. $(1)=variant name (SLH-DSA-<SHA2|SHAKE>-<128|192|256><s|f>)
+define SLHDSA_FIPS_RULES
+$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/standard/SLH-DSA/slhdsa-c/*.c)
+$(subst -,_,$(1))_INC  := -I$(ROOT)/algorithms/signatures/standard/SLH-DSA/$(1)/include -I$(ROOT)/algorithms/signatures/standard/SLH-DSA/slhdsa-c -I$(GENDIR) -I$(COMMON)
+$(subst -,_,$(1))_RSP  := $(RSPDIR)/signatures/standard/SLH-DSA/$(1).rsp
+
+$(BUILD)/gen_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
+    $(GENDIR)/PQCgenKAT_sign_slhdsa.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/signatures/standard/SLH-DSA
+	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' -DALGO_NAME='"$(1)"' \
+	    $$^ -o $$@
+
+$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/signatures/standard/SLH-DSA
+	$$<
+
+$(BUILD)/test_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
+    $(GENDIR)/main_slhdsa.c $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1): $$($(subst -,_,$(1))_RSP)
+test-$(1): $$($(subst -,_,$(1))_RSP) $(BUILD)/test_$(subst -,_,$(1))
+	@echo "=== Testing $(1) (FIPS 205) ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(subst -,_,$(1))
+
+.PHONY: gen-$(1) test-$(1)
+endef
 
 define SLHDSA_RULES
 # $(1)=safe-name $(2)=variant-dir $(3)=family-subdir $(4)=rsp-family-dir $(5)=extra-cflags
-$(1)_SRCS_ALL := $$(wildcard $(ROOT)/original/DS/$(3)/$(2)/src/*.c)
+$(1)_SRCS_ALL := $$(wildcard $(ROOT)/algorithms/legacy/$(3)/$(2)/src/*.c)
 $(1)_SRCS := $$(filter-out %/randombytes.c,$$($(1)_SRCS_ALL))
-$(1)_INC  := -I$(ROOT)/original/DS/$(3)/$(2)/include -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/DS/$(4)/$(2).rsp
+$(1)_INC  := -I$(ROOT)/algorithms/legacy/$(3)/$(2)/include -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/legacy/$(4)/$(2).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_slhdsa.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/DS/$(4)
+    | $(BUILD) $(RSPDIR)/legacy/$(4)
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) $(5) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(2)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/DS/$(4)
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/legacy/$(4)
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/rng.c \
@@ -1482,29 +1545,26 @@ test-$(1): $$($(1)_RSP) $(BUILD)/test_$(1)
 .PHONY: gen-$(1) test-$(1)
 endef
 
-# --- SLH-DSA (SHAKE reference) ---
-$(eval $(call SLHDSA_RULES,SPHINCSp128fsimple,SPHINCS+-128f-simple,SLH-DSA,SLH-DSA))
-$(eval $(call SLHDSA_RULES,SPHINCSp128frobust,SPHINCS+-128f-robust,SLH-DSA,SLH-DSA))
-$(eval $(call SLHDSA_RULES,SPHINCSp192fsimple,SPHINCS+-192f-simple,SLH-DSA,SLH-DSA))
-$(eval $(call SLHDSA_RULES,SPHINCSp192frobust,SPHINCS+-192f-robust,SLH-DSA,SLH-DSA))
-$(eval $(call SLHDSA_RULES,SPHINCSp256fsimple,SPHINCS+-256f-simple,SLH-DSA,SLH-DSA))
-$(eval $(call SLHDSA_RULES,SPHINCSp256frobust,SPHINCS+-256f-robust,SLH-DSA,SLH-DSA))
-# "s" (small) sizes -- from a different (Saarinen, FIPS 205 final) reference that
-# only implements "simple" mode, see original/DS/SLH-DSA/SPHINCS+-*-simple/src/sign.c
-$(eval $(call SLHDSA_RULES,SPHINCSp128ssimple,SPHINCS+-128s-simple,SLH-DSA,SLH-DSA))
-$(eval $(call SLHDSA_RULES,SPHINCSp192ssimple,SPHINCS+-192s-simple,SLH-DSA,SLH-DSA))
-$(eval $(call SLHDSA_RULES,SPHINCSp256ssimple,SPHINCS+-256s-simple,SLH-DSA,SLH-DSA))
+# --- SLH-DSA (FIPS 205) ---
+SLHDSA_SHA2_NAMES  := SLH-DSA-SHA2-128s SLH-DSA-SHA2-128f \
+                      SLH-DSA-SHA2-192s SLH-DSA-SHA2-192f \
+                      SLH-DSA-SHA2-256s SLH-DSA-SHA2-256f
+SLHDSA_SHAKE_NAMES := SLH-DSA-SHAKE-128s SLH-DSA-SHAKE-128f \
+                      SLH-DSA-SHAKE-192s SLH-DSA-SHAKE-192f \
+                      SLH-DSA-SHAKE-256s SLH-DSA-SHAKE-256f
+SLHDSA_SAFE_NAMES  := $(SLHDSA_SHA2_NAMES) $(SLHDSA_SHAKE_NAMES)
 
-SLHDSA_SAFE_NAMES := SPHINCSp128fsimple SPHINCSp128frobust \
-                     SPHINCSp192fsimple SPHINCSp192frobust \
-                     SPHINCSp256fsimple SPHINCSp256frobust \
-                     SPHINCSp128ssimple SPHINCSp192ssimple SPHINCSp256ssimple
+$(foreach v,$(SLHDSA_SAFE_NAMES),$(eval $(call SLHDSA_FIPS_RULES,$(v))))
 
-test-slhdsa: $(addprefix test-,$(SLHDSA_SAFE_NAMES))
-gen-slhdsa:  $(addprefix gen-,$(SLHDSA_SAFE_NAMES))
-.PHONY: test-slhdsa gen-slhdsa
+test-slhdsa:       $(addprefix test-,$(SLHDSA_SAFE_NAMES))
+gen-slhdsa:        $(addprefix gen-,$(SLHDSA_SAFE_NAMES))
+test-slhdsa-sha2:  $(addprefix test-,$(SLHDSA_SHA2_NAMES))
+gen-slhdsa-sha2:   $(addprefix gen-,$(SLHDSA_SHA2_NAMES))
+test-slhdsa-shake: $(addprefix test-,$(SLHDSA_SHAKE_NAMES))
+gen-slhdsa-shake:  $(addprefix gen-,$(SLHDSA_SHAKE_NAMES))
+.PHONY: test-slhdsa gen-slhdsa test-slhdsa-sha2 gen-slhdsa-sha2 test-slhdsa-shake gen-slhdsa-shake
 
-# --- SLH-DSA-Haraka ---
+# --- SLH-DSA-Haraka (legacy pre-standard SPHINCS+, not FIPS 205) ---
 $(eval $(call SLHDSA_RULES,HARAKAp128fsimple,SPHINCS+-128f-simple,SLH-DSA-Haraka,SLH-DSA-Haraka))
 $(eval $(call SLHDSA_RULES,HARAKAp128frobust,SPHINCS+-128f-robust,SLH-DSA-Haraka,SLH-DSA-Haraka))
 $(eval $(call SLHDSA_RULES,HARAKAp192fsimple,SPHINCS+-192f-simple,SLH-DSA-Haraka,SLH-DSA-Haraka))
@@ -1548,32 +1608,57 @@ test-slhdsa-haraka-aes gen-slhdsa-haraka-aes:
 endif
 .PHONY: test-slhdsa-haraka-aes gen-slhdsa-haraka-aes
 
-# --- SLH-DSA-SHA2 ---
-$(eval $(call SLHDSA_RULES,SHA2p128fsimple,SPHINCS+-128f-simple,SLH-DSA-SHA2,SLH-DSA-SHA2))
-$(eval $(call SLHDSA_RULES,SHA2p128frobust,SPHINCS+-128f-robust,SLH-DSA-SHA2,SLH-DSA-SHA2))
-$(eval $(call SLHDSA_RULES,SHA2p192fsimple,SPHINCS+-192f-simple,SLH-DSA-SHA2,SLH-DSA-SHA2))
-$(eval $(call SLHDSA_RULES,SHA2p192frobust,SPHINCS+-192f-robust,SLH-DSA-SHA2,SLH-DSA-SHA2))
-$(eval $(call SLHDSA_RULES,SHA2p256fsimple,SPHINCS+-256f-simple,SLH-DSA-SHA2,SLH-DSA-SHA2))
-$(eval $(call SLHDSA_RULES,SHA2p256frobust,SPHINCS+-256f-robust,SLH-DSA-SHA2,SLH-DSA-SHA2))
-# "s" (small) sizes -- see the SLH-DSA "s" comment above.
-$(eval $(call SLHDSA_RULES,SHA2p128ssimple,SPHINCS+-128s-simple,SLH-DSA-SHA2,SLH-DSA-SHA2))
-$(eval $(call SLHDSA_RULES,SHA2p192ssimple,SPHINCS+-192s-simple,SLH-DSA-SHA2,SLH-DSA-SHA2))
-$(eval $(call SLHDSA_RULES,SHA2p256ssimple,SPHINCS+-256s-simple,SLH-DSA-SHA2,SLH-DSA-SHA2))
+# =============================================================================
+#  FN-DSA experimental (c-fn-dsa, 2 variants) -- PRE-STANDARD, NOT in test-all.
+#  Thomas Pornin's best-guess implementation of the upcoming FN-DSA (FIPS 206,
+#  not yet published as a final standard). Shared c-fn-dsa/ source tree +
+#  per-variant include/. Built integer-only (no SIMD / hardware FP, see
+#  FNDSA_FLAGS); _GNU_SOURCE is needed by upstream's sysrng.c under -std=c11.
+# =============================================================================
 
-SHA2_SAFE_NAMES := SHA2p128fsimple SHA2p128frobust \
-                   SHA2p192fsimple SHA2p192frobust \
-                   SHA2p256fsimple SHA2p256frobust \
-                   SHA2p128ssimple SHA2p192ssimple SHA2p256ssimple
+FNDSA_EXP_VARIANTS := fndsa-exp-512 fndsa-exp-1024
+FNDSA_FLAGS := -D_GNU_SOURCE -DFNDSA_AVX2=0 -DFNDSA_SSE2=0 -DFNDSA_NEON=0 -DFNDSA_RV64D=0
 
-test-slhdsa-sha2: $(addprefix test-,$(SHA2_SAFE_NAMES))
-gen-slhdsa-sha2:  $(addprefix gen-,$(SHA2_SAFE_NAMES))
-.PHONY: test-slhdsa-sha2 gen-slhdsa-sha2
+define FNDSA_EXP_RULES
+$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/algorithms/signatures/standard/FNDSA-EXP/c-fn-dsa/*.c)
+$(subst -,_,$(1))_INC  := -I$(ROOT)/algorithms/signatures/standard/FNDSA-EXP/$(1)/include -I$(ROOT)/algorithms/signatures/standard/FNDSA-EXP/c-fn-dsa -I$(GENDIR) -I$(COMMON)
+$(subst -,_,$(1))_RSP  := $(RSPDIR)/signatures/standard/FNDSA-EXP/$(1).rsp
+
+$(BUILD)/gen_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
+    $(GENDIR)/PQCgenKAT_sign_falcon.c $(COMMON)/kat_parser.c \
+    | $(BUILD) $(RSPDIR)/signatures/standard/FNDSA-EXP
+	$(CC) $(CFLAGS) $(FNDSA_FLAGS) $$($(subst -,_,$(1))_INC) $(GEN_FLAGS) \
+	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' -DALGO_NAME='"$(1)"' \
+	    $$^ -o $$@
+
+$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/signatures/standard/FNDSA-EXP
+	$$<
+
+$(BUILD)/test_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) \
+    $(GENDIR)/main_falcon.c $(COMMON)/kat_parser.c | $(BUILD)
+	$(CC) $(CFLAGS) $(FNDSA_FLAGS) $$($(subst -,_,$(1))_INC) $(SIGN_TFLAGS) \
+	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' \
+	    $$^ -o $$@
+
+gen-$(1): $$($(subst -,_,$(1))_RSP)
+test-$(1): $$($(subst -,_,$(1))_RSP) $(BUILD)/test_$(subst -,_,$(1))
+	@echo "=== Testing $(1) (EXPERIMENTAL, pre-standard FN-DSA) ==="
+	@KATNUM=$(KATNUM) $(BUILD)/test_$(subst -,_,$(1))
+
+.PHONY: gen-$(1) test-$(1)
+endef
+
+$(foreach v,$(FNDSA_EXP_VARIANTS),$(eval $(call FNDSA_EXP_RULES,$(v))))
+
+test-fndsa-exp: $(addprefix test-,$(FNDSA_EXP_VARIANTS))
+gen-fndsa-exp:  $(addprefix gen-,$(FNDSA_EXP_VARIANTS))
+.PHONY: test-fndsa-exp gen-fndsa-exp
 
 # =============================================================================
 #  XMSS / XMSS^MT  (Stateful-DS -- NIST SP 800-208, not part of test-all)
 #  Unlike every other family, pk/sk/sig sizes are runtime-variable (chosen by
 #  parameter-set name, not compile-time constants), and one shared source
-#  tree covers all 77 parameter sets -- see original/Stateful-DS/XMSS/README.md.
+#  tree covers all 77 parameter sets -- see algorithms/signatures/stateful/XMSS/README.md.
 #    test-xmss        default variant only (XMSS-SHA2_10_256) -- in test-stateful-ds
 #    test-xmss-check       49 "fast" variants (7 single-tree h=10 + 42
 #                           XMSS^MT sets with per-layer height <=10) --
@@ -1585,19 +1670,19 @@ gen-slhdsa-sha2:  $(addprefix gen-,$(SHA2_SAFE_NAMES))
 # =============================================================================
 
 XMSS_DEFAULT_VARIANT := XMSS-SHA2_10_256
-XMSS_SRCS := $(wildcard $(ROOT)/original/Stateful-DS/XMSS/src/*.c)
-XMSS_INC  := -I$(ROOT)/original/Stateful-DS/XMSS/include -I$(GENDIR) -I$(COMMON)
-XMSS_RSP  := $(RSPDIR)/Stateful-DS/XMSS/$(XMSS_DEFAULT_VARIANT).rsp
+XMSS_SRCS := $(wildcard $(ROOT)/algorithms/signatures/stateful/XMSS/src/*.c)
+XMSS_INC  := -I$(ROOT)/algorithms/signatures/stateful/XMSS/include -I$(GENDIR) -I$(COMMON)
+XMSS_RSP  := $(RSPDIR)/signatures/stateful/XMSS/$(XMSS_DEFAULT_VARIANT).rsp
 
 $(BUILD)/gen_xmss: $(XMSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_xmss.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Stateful-DS/XMSS
+    | $(BUILD) $(RSPDIR)/signatures/stateful/XMSS
 	$(CC) $(CFLAGS) $(XMSS_INC) $(GEN_FLAGS) \
 	    -DXMSS_VARIANT_STR='"$(XMSS_DEFAULT_VARIANT)"' \
 	    -DRSP_PATH='"$(XMSS_RSP)"' -DALGO_NAME='"$(XMSS_DEFAULT_VARIANT)"' \
 	    $^ -o $@
 
-$(XMSS_RSP): $(BUILD)/gen_xmss | $(RSPDIR)/Stateful-DS/XMSS
+$(XMSS_RSP): $(BUILD)/gen_xmss | $(RSPDIR)/signatures/stateful/XMSS
 	$<
 
 $(BUILD)/test_xmss: $(XMSS_SRCS) $(GENDIR)/rng.c \
@@ -1615,21 +1700,21 @@ test-xmss: $(XMSS_RSP) $(BUILD)/test_xmss
 .PHONY: gen-xmss test-xmss
 
 # --- check sweeps: one binary per tier, each looping internally over its
-#     own variant table (see original/Stateful-DS/XMSS/src/sign.c) ---
+#     own variant table (see algorithms/signatures/stateful/XMSS/src/sign.c) ---
 define XMSS_CHECK_RULES
 # $(1)=tier (check|check-slow) $(2)=extra cflags (empty, or -DXMSS_CHECK_SLOW=1)
 $(BUILD)/gen_xmss_$(subst -,_,$(1)): $$(XMSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_xmss.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $$(XMSS_INC) -DKATNUM=$(CHECK_KATNUM) -DMLEN=$(MLEN) \
 	    -DXMSS_CHECK_ALL=1 $(2) \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/XMSS-$(1)"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/XMSS-$(1)"' \
 	    $$^ -o $$@
 
 $(BUILD)/test_xmss_$(subst -,_,$(1)): $$(XMSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/main_xmss.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $$(XMSS_INC) $(SIGN_TFLAGS) -DKATNUM=$(CHECK_KATNUM) \
 	    -DXMSS_CHECK_ALL=1 $(2) \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/XMSS-$(1)"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/XMSS-$(1)"' \
 	    $$^ -o $$@
 
 gen-xmss-$(1): $(BUILD)/gen_xmss_$(subst -,_,$(1))
@@ -1650,7 +1735,7 @@ $(eval $(call XMSS_CHECK_RULES,check-slow,-DXMSS_CHECK_SLOW=1))
 #  LMS / HSS  (Cisco hash-sigs; LMS = levels=1, HSS = levels 2-3 here)
 #  Stateful-DS -- NIST SP 800-208, not part of test-all. Same
 #  runtime-variable-size situation as XMSS -- see
-#  original/Stateful-DS/HSS/README.md and original/Stateful-DS/LMS/README.md.
+#  algorithms/signatures/stateful/HSS/README.md and algorithms/signatures/stateful/LMS/README.md.
 #    test-lms / test-hss            default variant only -- in test-stateful-ds
 #    test-lms-check / test-hss-check       8/16 "fast" variants (heights
 #                                           5/10) -- NOT in test-all/test-stateful-ds
@@ -1660,18 +1745,18 @@ $(eval $(call XMSS_CHECK_RULES,check-slow,-DXMSS_CHECK_SLOW=1))
 #                                           taller ones) -- NOT in test-all/test-stateful-ds
 # =============================================================================
 
-LMS_SRCS := $(wildcard $(ROOT)/original/Stateful-DS/LMS/src/*.c)
-LMS_INC  := -I$(ROOT)/original/Stateful-DS/LMS/include -I$(GENDIR) -I$(COMMON)
-LMS_RSP  := $(RSPDIR)/Stateful-DS/LMS/lms_default.rsp
+LMS_SRCS := $(wildcard $(ROOT)/algorithms/signatures/stateful/LMS/src/*.c)
+LMS_INC  := -I$(ROOT)/algorithms/signatures/stateful/LMS/include -I$(GENDIR) -I$(COMMON)
+LMS_RSP  := $(RSPDIR)/signatures/stateful/LMS/lms_default.rsp
 
 $(BUILD)/gen_lms: $(LMS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_lms.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Stateful-DS/LMS
+    | $(BUILD) $(RSPDIR)/signatures/stateful/LMS
 	$(CC) $(CFLAGS) $(LMS_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$(LMS_RSP)"' -DALGO_NAME='"lms"' \
 	    $^ -o $@
 
-$(LMS_RSP): $(BUILD)/gen_lms | $(RSPDIR)/Stateful-DS/LMS
+$(LMS_RSP): $(BUILD)/gen_lms | $(RSPDIR)/signatures/stateful/LMS
 	$<
 
 $(BUILD)/test_lms: $(LMS_SRCS) $(GENDIR)/rng.c \
@@ -1691,14 +1776,14 @@ $(BUILD)/gen_lms_check: $(LMS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_lms.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(LMS_INC) -DKATNUM=$(CHECK_KATNUM) -DMLEN=$(MLEN) \
 	    -DLMS_CHECK_ALL=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/LMS-check"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/LMS-check"' \
 	    $^ -o $@
 
 $(BUILD)/test_lms_check: $(LMS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/main_lms.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(LMS_INC) $(SIGN_TFLAGS) -DKATNUM=$(CHECK_KATNUM) \
 	    -DLMS_CHECK_ALL=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/LMS-check"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/LMS-check"' \
 	    $^ -o $@
 
 gen-lms-check: $(BUILD)/gen_lms_check
@@ -1715,14 +1800,14 @@ $(BUILD)/gen_lms_check_slow: $(LMS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_lms.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(LMS_INC) -DKATNUM=$(CHECK_KATNUM) -DMLEN=$(MLEN) \
 	    -DLMS_CHECK_ALL=1 -DLMS_CHECK_SLOW=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/LMS-check-slow"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/LMS-check-slow"' \
 	    $^ -o $@
 
 $(BUILD)/test_lms_check_slow: $(LMS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/main_lms.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(LMS_INC) $(SIGN_TFLAGS) -DKATNUM=$(CHECK_KATNUM) \
 	    -DLMS_CHECK_ALL=1 -DLMS_CHECK_SLOW=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/LMS-check-slow"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/LMS-check-slow"' \
 	    $^ -o $@
 
 gen-lms-check-slow: $(BUILD)/gen_lms_check_slow
@@ -1735,18 +1820,18 @@ test-lms-check-slow: gen-lms-check-slow $(BUILD)/test_lms_check_slow
 
 .PHONY: gen-lms-check-slow test-lms-check-slow
 
-HSS_SRCS := $(wildcard $(ROOT)/original/Stateful-DS/HSS/src/*.c)
-HSS_INC  := -I$(ROOT)/original/Stateful-DS/HSS/include -I$(GENDIR) -I$(COMMON)
-HSS_RSP  := $(RSPDIR)/Stateful-DS/HSS/hss_default.rsp
+HSS_SRCS := $(wildcard $(ROOT)/algorithms/signatures/stateful/HSS/src/*.c)
+HSS_INC  := -I$(ROOT)/algorithms/signatures/stateful/HSS/include -I$(GENDIR) -I$(COMMON)
+HSS_RSP  := $(RSPDIR)/signatures/stateful/HSS/hss_default.rsp
 
 $(BUILD)/gen_hss: $(HSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_hss.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Stateful-DS/HSS
+    | $(BUILD) $(RSPDIR)/signatures/stateful/HSS
 	$(CC) $(CFLAGS) $(HSS_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$(HSS_RSP)"' -DALGO_NAME='"hss"' \
 	    $^ -o $@
 
-$(HSS_RSP): $(BUILD)/gen_hss | $(RSPDIR)/Stateful-DS/HSS
+$(HSS_RSP): $(BUILD)/gen_hss | $(RSPDIR)/signatures/stateful/HSS
 	$<
 
 $(BUILD)/test_hss: $(HSS_SRCS) $(GENDIR)/rng.c \
@@ -1766,14 +1851,14 @@ $(BUILD)/gen_hss_check: $(HSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_hss.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(HSS_INC) -DKATNUM=$(CHECK_KATNUM) -DMLEN=$(MLEN) \
 	    -DHSS_CHECK_ALL=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/HSS-check"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/HSS-check"' \
 	    $^ -o $@
 
 $(BUILD)/test_hss_check: $(HSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/main_hss.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(HSS_INC) $(SIGN_TFLAGS) -DKATNUM=$(CHECK_KATNUM) \
 	    -DHSS_CHECK_ALL=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/HSS-check"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/HSS-check"' \
 	    $^ -o $@
 
 gen-hss-check: $(BUILD)/gen_hss_check
@@ -1790,14 +1875,14 @@ $(BUILD)/gen_hss_check_slow: $(HSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_sign_hss.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(HSS_INC) -DKATNUM=$(CHECK_KATNUM) -DMLEN=$(MLEN) \
 	    -DHSS_CHECK_ALL=1 -DHSS_CHECK_SLOW=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/HSS-check-slow"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/HSS-check-slow"' \
 	    $^ -o $@
 
 $(BUILD)/test_hss_check_slow: $(HSS_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/main_hss.c $(COMMON)/kat_parser.c | $(BUILD)
 	$(CC) $(CFLAGS) $(HSS_INC) $(SIGN_TFLAGS) -DKATNUM=$(CHECK_KATNUM) \
 	    -DHSS_CHECK_ALL=1 -DHSS_CHECK_SLOW=1 \
-	    -DRSP_DIR='"$(RSPDIR)/Stateful-DS/HSS-check-slow"' \
+	    -DRSP_DIR='"$(RSPDIR)/signatures/stateful/HSS-check-slow"' \
 	    $^ -o $@
 
 gen-hss-check-slow: $(BUILD)/gen_hss_check_slow
@@ -1812,26 +1897,26 @@ test-hss-check-slow: gen-hss-check-slow $(BUILD)/test_hss_check_slow
 
 # =============================================================================
 #  ML-KEM  (3 variants)
-#           Exclude src/randombytes.c; kat/gen/rng.c provides randombytes()
-#           (needed by kem.c non-derand wrappers even in test builds).
+#           mlkem-native (FIPS 203) single-compilation-unit build: mlkem/
+#           holds mlkem_native.c plus the src/ tree it includes. Only the
+#           deterministic API is built, so no randombytes() is needed.
 # =============================================================================
 
 MLKEM_VARIANTS := ml-kem-512 ml-kem-768 ml-kem-1024
 
 define MLKEM_RULES
-$(subst -,_,$(1))_SRCS_ALL := $$(wildcard $(ROOT)/original/KEM/ML-KEM/$(1)/src/*.c)
-$(subst -,_,$(1))_SRCS := $$(filter-out %/randombytes.c,$$($(subst -,_,$(1))_SRCS_ALL))
-$(subst -,_,$(1))_INC  := -I$(ROOT)/original/KEM/ML-KEM/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(subst -,_,$(1))_RSP  := $(RSPDIR)/KEM/ML-KEM/$(1).rsp
+$(subst -,_,$(1))_SRCS := $$(wildcard $(ROOT)/algorithms/kem/ML-KEM/$(1)/mlkem/*.c)
+$(subst -,_,$(1))_INC  := -I$(ROOT)/algorithms/kem/ML-KEM/$(1)/include -I$(ROOT)/algorithms/kem/ML-KEM/$(1)/mlkem -I$(GENDIR) -I$(COMMON)
+$(subst -,_,$(1))_RSP  := $(RSPDIR)/kem/ML-KEM/$(1).rsp
 
 $(BUILD)/gen_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_kem_mlkem.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/KEM/ML-KEM
+    | $(BUILD) $(RSPDIR)/kem/ML-KEM
 	$(CC) $(CFLAGS) $$($(subst -,_,$(1))_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(subst -,_,$(1))_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/KEM/ML-KEM
+$$($(subst -,_,$(1))_RSP): $(BUILD)/gen_$(subst -,_,$(1)) | $(RSPDIR)/kem/ML-KEM
 	$$<
 
 $(BUILD)/test_$(subst -,_,$(1)): $$($(subst -,_,$(1))_SRCS) $(GENDIR)/rng.c \
@@ -1863,18 +1948,18 @@ gen-mlkem:  $(addprefix gen-,$(MLKEM_VARIANTS))
 
 define HQC2025_RULES
 # $(1)=safe-name $(2)=variant-dir $(3)=version $(4)=rsp-version-dir
-$(1)_SRCS := $$(wildcard $(ROOT)/original/KEM/HQC/$(3)/$(2)/src/*.c)
-$(1)_INC  := -I$(ROOT)/original/KEM/HQC/$(3)/$(2)/include -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/KEM/HQC/$(4)/$(2).rsp
+$(1)_SRCS := $$(wildcard $(ROOT)/algorithms/kem/HQC/$(3)/$(2)/src/*.c)
+$(1)_INC  := -I$(ROOT)/algorithms/kem/HQC/$(3)/$(2)/include -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/kem/HQC/$(4)/$(2).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_kem_hqc2025.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/KEM/HQC/$(4)
+    | $(BUILD) $(RSPDIR)/kem/HQC/$(4)
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"HQC-$(3)/$(2)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/KEM/HQC/$(4)
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/kem/HQC/$(4)
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) $(GENDIR)/rng.c \
@@ -1905,25 +1990,25 @@ gen-hqc:  $(addprefix gen-,$(HQC_SAFE_NAMES))
 # =============================================================================
 #  ASCON  (Symmetric -- not PQC, not part of test-all/gen-all/static-test-all.
 #          No keygen: AEAD variants are encrypt/decrypt, hash/XOF variants
-#          are a single crypto_hash() call. See original/Symmetric/ASCON/README.md.)
+#          are a single crypto_hash() call. See algorithms/symmetric/ASCON/README.md.)
 # =============================================================================
 
 ASCON_AEAD_VARIANTS := ascon128v12 ascon128av12 ascon80pqv12
 ASCON_HASH_VARIANTS := asconhashv12 asconhashav12 asconxofv12 asconxofav12
 
 define ASCON_AEAD_RULES
-$(1)_SRCS := $$(wildcard $(ROOT)/original/Symmetric/ASCON/$(1)/src/*.c)
-$(1)_INC  := -I$(ROOT)/original/Symmetric/ASCON/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Symmetric/ASCON/$(1).rsp
+$(1)_SRCS := $$(wildcard $(ROOT)/algorithms/symmetric/ASCON/$(1)/src/*.c)
+$(1)_INC  := -I$(ROOT)/algorithms/symmetric/ASCON/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/symmetric/ASCON/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_aead_ascon.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Symmetric/ASCON
+    | $(BUILD) $(RSPDIR)/symmetric/ASCON
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Symmetric/ASCON
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/symmetric/ASCON
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) \
@@ -1947,18 +2032,18 @@ gen-ascon-aead:  $(addprefix gen-,$(ASCON_AEAD_VARIANTS))
 .PHONY: test-ascon-aead gen-ascon-aead
 
 define ASCON_HASH_RULES
-$(1)_SRCS := $$(wildcard $(ROOT)/original/Symmetric/ASCON/$(1)/src/*.c)
-$(1)_INC  := -I$(ROOT)/original/Symmetric/ASCON/$(1)/include -I$(GENDIR) -I$(COMMON)
-$(1)_RSP  := $(RSPDIR)/Symmetric/ASCON/$(1).rsp
+$(1)_SRCS := $$(wildcard $(ROOT)/algorithms/symmetric/ASCON/$(1)/src/*.c)
+$(1)_INC  := -I$(ROOT)/algorithms/symmetric/ASCON/$(1)/include -I$(GENDIR) -I$(COMMON)
+$(1)_RSP  := $(RSPDIR)/symmetric/ASCON/$(1).rsp
 
 $(BUILD)/gen_$(1): $$($(1)_SRCS) $(GENDIR)/rng.c \
     $(GENDIR)/PQCgenKAT_hash_ascon.c $(COMMON)/kat_parser.c \
-    | $(BUILD) $(RSPDIR)/Symmetric/ASCON
+    | $(BUILD) $(RSPDIR)/symmetric/ASCON
 	$(CC) $(CFLAGS) $$($(1)_INC) $(GEN_FLAGS) \
 	    -DRSP_PATH='"$$($(1)_RSP)"' -DALGO_NAME='"$(1)"' \
 	    $$^ -o $$@
 
-$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/Symmetric/ASCON
+$$($(1)_RSP): $(BUILD)/gen_$(1) | $(RSPDIR)/symmetric/ASCON
 	$$<
 
 $(BUILD)/test_$(1): $$($(1)_SRCS) \
@@ -1998,10 +2083,10 @@ gen-ascon:  gen-ascon-aead gen-ascon-hash
 
 DS_GEN_TARGETS := \
     gen-falcon gen-mldsa \
-    gen-slhdsa gen-slhdsa-haraka gen-slhdsa-haraka-aes gen-slhdsa-sha2
+    gen-slhdsa
 DS_TEST_TARGETS := \
     test-falcon test-mldsa \
-    test-slhdsa test-slhdsa-haraka test-slhdsa-haraka-aes test-slhdsa-sha2
+    test-slhdsa
 
 KEM_GEN_TARGETS  := gen-mlkem gen-hqc
 KEM_TEST_TARGETS := test-mlkem test-hqc
@@ -2012,9 +2097,15 @@ gen-kem:  $(KEM_GEN_TARGETS)
 test-kem: $(KEM_TEST_TARGETS)
 .PHONY: gen-ds test-ds gen-kem test-kem
 
-gen-additional-ds:  gen-cross gen-hawk gen-less gen-faest gen-uov gen-mayo gen-qruov gen-snova gen-sdith gen-sqisign gen-mqom gen-mayo-r3 gen-uov-r3 gen-snova-r3 gen-qruov-r3 gen-sdith-r3 gen-sqisign-r3 gen-faest-r3
-test-additional-ds: test-cross test-hawk test-less test-faest test-uov test-mayo test-qruov test-snova test-sdith test-sqisign test-mqom test-mayo-r3 test-uov-r3 test-snova-r3 test-qruov-r3 test-sdith-r3 test-sqisign-r3 test-faest-r3
-.PHONY: gen-additional-ds test-additional-ds
+gen-onramp-ds:  gen-cross gen-hawk gen-less gen-faest gen-uov gen-mayo gen-qruov gen-snova gen-sdith gen-sqisign gen-mqom gen-mayo-r3 gen-uov-r3 gen-snova-r3 gen-qruov-r3 gen-sdith-r3 gen-sqisign-r3 gen-faest-r3
+test-onramp-ds: test-cross test-hawk test-less test-faest test-uov test-mayo test-qruov test-snova test-sdith test-sqisign test-mqom test-mayo-r3 test-uov-r3 test-snova-r3 test-qruov-r3 test-sdith-r3 test-sqisign-r3 test-faest-r3
+.PHONY: gen-onramp-ds test-onramp-ds
+
+# Deprecated names (the category was called Additional-DS before the restructure)
+gen-additional-ds test-additional-ds static-test-additional-ds: %-additional-ds:
+	@echo "NOTE: $*-additional-ds is deprecated, use $*-onramp-ds"
+	@$(MAKE) --no-print-directory $*-onramp-ds
+.PHONY: gen-additional-ds test-additional-ds static-test-additional-ds
 
 gen-stateful-ds:  gen-xmss gen-lms gen-hss
 test-stateful-ds: test-xmss test-lms test-hss
@@ -2033,7 +2124,7 @@ all: test-all
 # =============================================================================
 #  STATIC (no file I/O) KAT TESTS -- for bare-metal / FPGA / RISC-V targets
 #
-#    Generates a self-contained kat/static/<variant>/ folder (main.c +
+#    Generates a self-contained vectors/static/<variant>/ folder (main.c +
 #    test_vectors_*.h with KAT data baked in as C arrays + flattened
 #    src/include) instead of a binary that fopen()s a .rsp at runtime.
 #    See tools/gen_static_test.py and tools/algo_registry.json for details.
@@ -2045,7 +2136,7 @@ all: test-all
 #
 #    static-test-all covers only the standardized set (same scope as
 #    test-all): mlkem, mldsa, falcon, all 4 slhdsa subfamilies, hqc. Use
-#    static-test-additional-ds / static-test-stateful-ds / static-test-ascon
+#    static-test-onramp-ds / static-test-stateful-ds / static-test-ascon
 #    for CROSS/HAWK/LESS, XMSS/LMS/HSS, and ASCON respectively.
 #
 #    HAWK and HQC-2025 have no explicit-randomness API and replay
@@ -2055,7 +2146,7 @@ all: test-all
 #
 #  CONFIGURABLE FLAGS
 #    STATIC_KATNUM = 1              Number of KAT vectors baked into the test
-#    STATICDIR     = kat/static     Output directory
+#    STATICDIR     = vectors/static     Output directory
 #    RUN_KEYGEN/RUN_SIGN/RUN_VERIFY/RUN_ENCAPS/RUN_DECAPS as above, but baked
 #    in as literal #define 0/1 in the generated main.c (not compile flags).
 #    PROFILING     = none           Name of a tools/profiling_commands/<name>.txt
@@ -2070,11 +2161,11 @@ all: test-all
 #    make static-test-mldsa
 #    make static-test-all STATIC_KATNUM=5
 #    make static-test-ml-kem-512 PROFILING=cva6
-#    make clean-static             Remove kat/static/ to force a clean re-gen
+#    make clean-static             Remove vectors/static/ to force a clean re-gen
 # =============================================================================
 
 STATIC_KATNUM ?= 1
-STATICDIR     ?= $(ROOT)/kat/static
+STATICDIR     ?= $(ROOT)/vectors/static
 PROFILING     ?= none
 
 STATIC_GEN := python3 $(ROOT)/tools/gen_static_test.py \
@@ -2097,7 +2188,7 @@ STATIC_ALL_VARIANTS := \
     $(LESS_VARIANTS) $(CROSS_VARIANTS) $(FAEST_VARIANTS) $(UOV_VARIANTS) $(MAYO_VARIANTS) $(QRUOV_VARIANTS) $(SNOVA_VARIANTS) $(SDITH_VARIANTS) $(SQISIGN_VARIANTS) $(MQOM_VARIANTS) \
     $(addsuffix -R3,$(MAYO_R3_VARIANTS) $(UOV_R3_VARIANTS) $(SNOVA_R3_VARIANTS) $(QRUOV_R3_VARIANTS) $(SDITH_R3_VARIANTS) $(SQISIGN_R3_VARIANTS) $(FAEST_R3_VARIANTS)) \
     $(SLHDSA_SAFE_NAMES) \
-    $(HARAKA_SAFE_NAMES) $(HARAKA_AES_SAFE_NAMES) $(SHA2_SAFE_NAMES) $(HQC_SAFE_NAMES) \
+    $(HARAKA_SAFE_NAMES) $(HARAKA_AES_SAFE_NAMES) $(FNDSA_EXP_VARIANTS) $(HQC_SAFE_NAMES) \
     XMSS-SHA2_10_256 LMS_H10_W8 HSS_L2_H5_W8
 
 $(foreach v,$(STATIC_ALL_VARIANTS),$(eval $(call STATIC_TEST_RULE,$(v))))
@@ -2114,7 +2205,7 @@ static-test-$(1):
 .PHONY: static-test-$(1)
 endef
 
-$(foreach f,mlkem mldsa falcon hawk less cross faest uov mayo qruov snova sdith sqisign mqom mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3 slhdsa slhdsa-haraka slhdsa-haraka-aes slhdsa-sha2 hqc2025 xmss lms hss ascon-aead ascon-hash,$(eval $(call STATIC_FAMILY_RULE,$(f))))
+$(foreach f,mlkem mldsa falcon hawk less cross faest uov mayo qruov snova sdith sqisign mqom mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3 slhdsa slhdsa-sha2 slhdsa-shake slhdsa-haraka slhdsa-haraka-aes fndsa-exp hqc2025 xmss lms hss ascon-aead ascon-hash,$(eval $(call STATIC_FAMILY_RULE,$(f))))
 
 static-test-hqc: static-test-hqc2025
 .PHONY: static-test-hqc
@@ -2126,14 +2217,13 @@ static-test-ascon: static-test-ascon-aead static-test-ascon-hash
 # *standardized* algorithms, mirroring test-all/test-ds/test-kem above.
 # Additional-DS, Stateful-DS, and ASCON have their own aggregates and are
 # never part of static-test-all.
-static-test-ds: $(addprefix static-test-,falcon mldsa \
-    slhdsa slhdsa-haraka slhdsa-haraka-aes slhdsa-sha2)
+static-test-ds: $(addprefix static-test-,falcon mldsa slhdsa)
 static-test-kem: $(addprefix static-test-,mlkem hqc2025)
 .PHONY: static-test-ds static-test-kem
 
-static-test-additional-ds: $(addprefix static-test-,hawk less cross faest uov mayo qruov snova sdith sqisign mqom mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3)
+static-test-onramp-ds: $(addprefix static-test-,hawk less cross faest uov mayo qruov snova sdith sqisign mqom mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3)
 static-test-stateful-ds: $(addprefix static-test-,xmss lms hss)
-.PHONY: static-test-additional-ds static-test-stateful-ds
+.PHONY: static-test-onramp-ds static-test-stateful-ds
 
 static-test-all: static-test-ds static-test-kem
 
@@ -2160,6 +2250,21 @@ bench-l1:
 	python3 -I tools/bench/run_bench.py --time $(BENCH_TIME) --out $(BENCH_OUT)
 	python3 -I tools/bench/report.py --results $(BENCH_OUT)
 
+# Host benchmark of the standardized / pending / experimental families (tools/bench/variants_fips.json):
+# ML-KEM, ML-DSA, SLH-DSA, Falcon, HQC, FN-DSA (experimental). Idle machine, see bench/README.md.
+BENCH_FIPS_OUT ?= bench/results_fips_$(shell date +%Y%m%d)
+bench-fips:
+	python3 -I tools/bench/run_bench.py --config tools/bench/variants_fips.json --out $(BENCH_FIPS_OUT) --time $(BENCH_TIME)
+	python3 -I tools/bench/report_fips.py --results $(BENCH_FIPS_OUT)
+
+# Regenerate the tracked tables and figures from measured data: sizes (compiled api.h constants) -> results/sizes.csv and
+# the marked tables in the READMEs; results/benchmark.csv from BENCH_FIPS_OUT; docs/figures/*.png.
+results-update:
+	python3 -I tools/gen_size_table.py --update-readmes
+	python3 -I tools/collect_results.py --bench $(BENCH_FIPS_OUT)
+	python3 -I tools/plot_results.py
+.PHONY: bench-fips results-update
+
 # Remove only the benchmark build products (build/bench), never the results.
 bench-clean:
 	rm -rf build/bench
@@ -2175,11 +2280,11 @@ help:
 	@echo "  make test-all         Run all KAT tests"
 	@echo "  make clean            Remove build binaries"
 	@echo "  make clean-rsp        Remove generated .rsp files"
-	@echo "  make clean-static     Remove kat/static/ (generated static KAT tests)"
-	@echo "  make distclean        Remove build/, kat/rsp/ and kat/static/"
+	@echo "  make clean-static     Remove vectors/static/ (generated static KAT tests)"
+	@echo "  make distclean        Remove build/, vectors/rsp/ and vectors/static/"
 	@echo ""
 	@echo "Non-standardized / separate-category targets (NOT part of test-all):"
-	@echo "  make test-additional-ds   CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDITH, SQISIGN, MQOM (candidate signature schemes)"
+	@echo "  make test-onramp-ds   CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDITH, SQISIGN, MQOM (candidate signature schemes)"
 	@echo "  make test-stateful-ds     XMSS, LMS, HSS (NIST SP 800-208, default variant each)"
 	@echo "  make test-ascon           ASCON AEAD + hash/XOF (not PQC)"
 	@echo "  (each also has gen-* and static-test-* equivalents)"
@@ -2194,9 +2299,9 @@ help:
 	@echo ""
 	@echo "Per-family targets (prefix with gen- or test-):"
 	@echo "  ds kem                                          (standardized aggregates)"
-	@echo "  falcon mldsa slhdsa slhdsa-haraka slhdsa-haraka-aes slhdsa-sha2"
+	@echo "  falcon mldsa slhdsa slhdsa-sha2 slhdsa-shake (legacy: slhdsa-haraka slhdsa-haraka-aes)"
 	@echo "  mlkem hqc"
-	@echo "  additional-ds cross hawk less faest uov mayo qruov snova sdith sqisign mqom (not standardized)"
+	@echo "  onramp-ds cross hawk less faest uov mayo qruov snova sdith sqisign mqom (not standardized)"
 	@echo "  stateful-ds xmss lms hss                         (NIST SP 800-208)"
 	@echo "  ascon ascon-aead ascon-hash                      (not PQC)"
 	@echo ""
@@ -2208,8 +2313,8 @@ help:
 	@echo "  make test-QRUOV_1_q127L3v156m54_a"
 	@echo "  make test-SNOVA_28_5_19_4"
 	@echo "  make test-mqom3_cat1_gf16_fast_ct"
-	@echo "  make test-SPHINCSp128fsimple"
-	@echo "  make test-ML-DSA-2"
+	@echo "  make test-SLH-DSA-SHA2-128s"
+	@echo "  make test-ML-DSA-44"
 	@echo "  make test-HQC2025_1"
 	@echo "  make test-ascon128v12"
 	@echo "  make test-asconhashv12"

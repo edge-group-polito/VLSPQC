@@ -9,7 +9,7 @@
 #######################################################################################
 
 # Assembles MQOM (MQOM3, NIST additional-signatures round 3) under
-# original/Additional-DS/MQOM/ from the Reference_Implementation/ folder of the
+# algorithms/signatures/onramp/MQOM/ from the Reference_Implementation/ folder of the
 # official submission package (submission_package_v3/Reference_Implementation).
 #
 # The 18 upstream variants (mqom3_cat{1,3,5}_{gf2_shorter,gf16_fast,gf16_short}_{ct,ot})
@@ -22,7 +22,7 @@
 # platform is kept; the two include paths that crossed directories are rewritten).
 #
 # Patches applied to the upstream text (all mechanical, see
-# original/Additional-DS/README.md, section "MQOM"):
+# algorithms/signatures/onramp/README.md, section "MQOM"):
 #   1. `#include "sha3/X.h"` -> `#include "X.h"` (xof.h), and sha3's
 #      `#include "../endian_compat.h"` -> `#include "endian_compat.h"`.
 #   2. Every .c file gets `#include "mqom3_build_config.h"` as its first line,
@@ -34,7 +34,7 @@
 #      -> quoted includes, so a plain `gcc *.c` in a flat folder (static test)
 #      builds without -I. .
 #   4. The NIST KAT DRBG (rng.c/rng.h) is the self-contained software
-#      AES-256-CTR one from kat/gen/ (upstream's generator/rng.c needs OpenSSL).
+#      AES-256-CTR one from harness/gen/ (upstream's generator/rng.c needs OpenSSL).
 # Dropped as not needed: benchmark/, generator/, tests, Makefiles, mupq/liboqs
 # glue (enc_mupq.h, enc_liboqs.h), the arm/avx XKCP backends, ARMv7-M assembly,
 # and the x8 Keccak sources (only compiled on AVX-512 upstream).
@@ -42,7 +42,7 @@
 # NOTE: in the copy of the package under DS-add/ the subdirectories of
 # Reference_Implementation/<variant>/ (blc, piop, ggm_tree, sha3, rijndael,
 # fields, fields_bitsliced) are EMPTY (0-byte files). Pass a COMPLETE copy of
-# Reference_Implementation/ (see original/Additional-DS/README.md, "MQOM",
+# Reference_Implementation/ (see algorithms/signatures/onramp/README.md, "MQOM",
 # provenance); the script aborts on the empty-file check below otherwise.
 #
 # Usage (from VLSPQC/):
@@ -53,9 +53,9 @@ set -euo pipefail
 REF=${1:?"usage: $0 /path/to/submission_package_v3/Reference_Implementation"}
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
-DEST="$ROOT/original/Additional-DS/MQOM"
+DEST="$ROOT/algorithms/signatures/onramp/MQOM"
 COMMON_DIR="$DEST/common"
-GENDIR="$ROOT/kat/gen"
+GENDIR="$ROOT/harness/gen"
 BASE="$REF/mqom3_cat1_gf16_fast_ct"
 
 VARIANTS=(

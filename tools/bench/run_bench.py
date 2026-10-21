@@ -2,7 +2,7 @@
 """
 run_bench.py -- build and run the single-operation benchmark (tools/bench/bench.c)
 for a list of variants, using the flattened static-test folders produced by
-tools/gen_static_test.py (kat/static-style, plain `gcc`, no external libs).
+tools/gen_static_test.py (vectors/static-style, plain `gcc`, no external libs).
 
 For every variant it
   1. (re)generates the static-test folder (1 KAT vector) under build/bench/static/<target>,
@@ -46,21 +46,22 @@ def gen_static(target, outdir, regen):
     return d
 
 
-def detect(d):
-    """Find the header declaring randombytes_init and the smlen type used by the variant's main.c."""
+def detect(d, shape=None):
+    """Find the header declaring randombytes_init and the smlen type used by the variant's main.c.
+    Variants with a 'shape' (tools/bench/shapes/<shape>.h) do not need the NIST DRBG header."""
     main = (d / "main.c").read_text(errors="replace")
     hdr = None
-    for m in re.finditer(r'#include\s+"([^"]+\.h)"', main):
+    for m in ([] if shape else re.finditer(r'#include\s+"([^"]+\.h)"', main)):
         h = d / m.group(1)
         if h.exists() and "randombytes_init" in h.read_text(errors="replace"):
             hdr = m.group(1)
             break
-    if hdr is None:
+    if hdr is None and not shape:
         for h in sorted(d.glob("*.h")):
             if "randombytes_init" in h.read_text(errors="replace"):
                 hdr = h.name
                 break
-    if hdr is None:
+    if hdr is None and not shape:
         raise RuntimeError("no header with randombytes_init in %s" % d)
     t = "unsigned long long"
     m = re.search(r'\b(unsigned long long|size_t)\s+smlen\b', main)
@@ -71,7 +72,8 @@ def detect(d):
 
 def build(v, d, bdir, cflags, extra):
     bdir.mkdir(parents=True, exist_ok=True)
-    hdr, lent = detect(d)
+    shape = v.get("shape")
+    hdr, lent = detect(d, shape)
     srcs = sorted(p for p in d.glob("*.c") if p.name != "main.c")
     objs = []
     base = shlex.split(cflags) + ["-std=gnu11", "-Wno-psabi", "-w", "-I" + str(d)] + extra
@@ -81,7 +83,11 @@ def build(v, d, bdir, cflags, extra):
         if r.returncode != 0:
             raise RuntimeError("compile %s failed:\n%s" % (s.name, r.stderr[-2000:]))
         objs.append(o)
-    defs = ["-DBENCH_RNG_HDR=\"%s\"" % hdr, "-DBENCH_LEN_T=%s" % lent, "-DBENCH_NAME=\"%s\"" % v["label"]]
+    defs = ["-DBENCH_LEN_T=%s" % lent, "-DBENCH_NAME=\"%s\"" % v["label"]]
+    if shape:
+        defs += ["-DBENCH_SHAPE_HDR=\"shapes/%s.h\"" % shape, "-I" + str(HERE)]
+    else:
+        defs.append("-DBENCH_RNG_HDR=\"%s\"" % hdr)
     hobjs = []
     for s in (HERE / "bench.c", HERE / "memtrack.c"):
         o = bdir / ("_h_" + s.stem + ".o")

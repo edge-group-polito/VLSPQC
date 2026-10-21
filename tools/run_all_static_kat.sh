@@ -23,8 +23,8 @@
 # For every resulting variant, this:
 #   1. runs `make static-test-<variant>` (PROFILING is never passed, so it
 #      always uses the Makefile's own default: PROFILING=none / PERF_CNT_CYCLES=0)
-#   2. compiles the generated kat/static/<variant>/ folder with a plain host
-#      compiler:  gcc -O2 -std=c11 *.c -o test
+#   2. compiles the generated vectors/static/<variant>/ folder with a plain host
+#      compiler:  gcc -O2 -std=c11 -I. *.c -o test
 #   3. runs ./test
 #   4. records PASS / FAIL / SKIP / GEN_FAIL / COMPILE_FAIL for each variant,
 #      plus a final summary, into one timestamped log file.
@@ -47,12 +47,14 @@
 #                                                                 (default: off)
 #   -l, --log FILE       log file path            (default: tools/../kat_golden_model_<timestamp>.log)
 #   -c, --cc CC          compiler                                (default: gcc)
-#       --cflags FLAGS   compiler flags                          (default: "-O2 -std=c11")
+#       --cflags FLAGS   compiler flags                          (default: "-O2 -std=c11 -I.")
+#       --stack-kb N     stack limit (ulimit -s, KiB) for each test (default: 65536; some SNOVA level-5
+#                        ports overflow the usual 8 MiB; if the limit cannot be raised the test still runs)
 #       --list           list all known variant/family names and exit
 #   -h, --help           show this help and exit
 #
 # Env var equivalents (a flag on the command line always wins):
-#   KAT_NUM  RUN_MODE  TARGETS  BENCHMARK_ALL  LOGFILE  CC  CFLAGS
+#   KAT_NUM  RUN_MODE  TARGETS  BENCHMARK_ALL  LOGFILE  CC  CFLAGS  STACK_KB
 #
 # Examples:
 #   tools/run_all_static_kat.sh
@@ -89,12 +91,14 @@ cd "$ROOT"
 
 declare -A FAMILIES=(
     [mlkem]="ml-kem-512 ml-kem-768 ml-kem-1024"
-    [mldsa]="ML-DSA-2 ML-DSA-3 ML-DSA-5"
+    [mldsa]="ML-DSA-44 ML-DSA-65 ML-DSA-87"
     [falcon]="falcon-512 falcon-1024"
-    [slhdsa]="SPHINCSp128fsimple SPHINCSp128frobust SPHINCSp192fsimple SPHINCSp192frobust SPHINCSp256fsimple SPHINCSp256frobust SPHINCSp128ssimple SPHINCSp192ssimple SPHINCSp256ssimple"
+    [slhdsa]="SLH-DSA-SHA2-128s SLH-DSA-SHA2-128f SLH-DSA-SHA2-192s SLH-DSA-SHA2-192f SLH-DSA-SHA2-256s SLH-DSA-SHA2-256f SLH-DSA-SHAKE-128s SLH-DSA-SHAKE-128f SLH-DSA-SHAKE-192s SLH-DSA-SHAKE-192f SLH-DSA-SHAKE-256s SLH-DSA-SHAKE-256f"
+    [fndsa-exp]="fndsa-exp-512 fndsa-exp-1024"
     [slhdsa-haraka]="HARAKAp128fsimple HARAKAp128frobust HARAKAp192fsimple HARAKAp192frobust HARAKAp256fsimple HARAKAp256frobust"
     [slhdsa-haraka-aes]="HARAKAAESp128fsimple HARAKAAESp128frobust HARAKAAESp192fsimple HARAKAAESp192frobust HARAKAAESp256fsimple HARAKAAESp256frobust"
-    [slhdsa-sha2]="SHA2p128fsimple SHA2p128frobust SHA2p192fsimple SHA2p192frobust SHA2p256fsimple SHA2p256frobust SHA2p128ssimple SHA2p192ssimple SHA2p256ssimple"
+    [slhdsa-sha2]="SLH-DSA-SHA2-128s SLH-DSA-SHA2-128f SLH-DSA-SHA2-192s SLH-DSA-SHA2-192f SLH-DSA-SHA2-256s SLH-DSA-SHA2-256f"
+    [slhdsa-shake]="SLH-DSA-SHAKE-128s SLH-DSA-SHAKE-128f SLH-DSA-SHAKE-192s SLH-DSA-SHAKE-192f SLH-DSA-SHAKE-256s SLH-DSA-SHAKE-256f"
     [hqc2025]="HQC2025_1 HQC2025_3 HQC2025_5"
     # --- Non-standardized / separate-category families -- NOT part of the
     # default "all" expansion; see --benchmark-all above. ---
@@ -102,24 +106,38 @@ declare -A FAMILIES=(
     [less]="LESS_252_45 LESS_252_68 LESS_252_192 LESS_400_102 LESS_400_220 LESS_548_137 LESS_548_345"
     [cross]="CROSS_1_RSDP_b CROSS_1_RSDP_f CROSS_1_RSDP_s CROSS_1_RSDPG_b CROSS_1_RSDPG_f CROSS_1_RSDPG_s CROSS_3_RSDP_b CROSS_3_RSDP_f CROSS_3_RSDP_s CROSS_3_RSDPG_b CROSS_3_RSDPG_f CROSS_3_RSDPG_s CROSS_5_RSDP_b CROSS_5_RSDP_f CROSS_5_RSDP_s CROSS_5_RSDPG_b CROSS_5_RSDPG_f CROSS_5_RSDPG_s"
     [faest]="FAEST_128F FAEST_128S FAEST_192F FAEST_192S FAEST_256F FAEST_256S FAEST_EM_128F FAEST_EM_128S FAEST_EM_192F FAEST_EM_192S FAEST_EM_256F FAEST_EM_256S"
-    # XMSS/LMS/HSS are runtime-parametrized (see original/Stateful-DS/README.md)
+    # XMSS/LMS/HSS are runtime-parametrized (see algorithms/signatures/stateful/README.md)
     # -- only their single default variant is wired into the static-test flow
     # so far, matching the dynamic flow's test-stateful-ds (not its much larger
     # -check/-check-slow sweeps, which have no static-test equivalent yet).
     [xmss]="XMSS-SHA2_10_256"
     [lms]="LMS_H10_W8"
     [hss]="HSS_L2_H5_W8"
+    [uov]="UOV_Ip UOV_Ip_pkc UOV_Ip_pkc_skc UOV_Is UOV_Is_pkc UOV_Is_pkc_skc UOV_III UOV_III_pkc UOV_III_pkc_skc UOV_V UOV_V_pkc UOV_V_pkc_skc"
+    [mayo]="MAYO_1 MAYO_2 MAYO_3 MAYO_5"
+    [qruov]="QRUOV_1_q7L10v740m100_a QRUOV_1_q7L10v740m100_s QRUOV_1_q31L3v165m60_a QRUOV_1_q31L3v165m60_s QRUOV_1_q31L10v600m70_a QRUOV_1_q31L10v600m70_s QRUOV_1_q127L3v156m54_a QRUOV_1_q127L3v156m54_s QRUOV_3_q7L10v1100m140_a QRUOV_3_q7L10v1100m140_s QRUOV_3_q31L3v246m87_a QRUOV_3_q31L3v246m87_s QRUOV_3_q31L10v890m100_a QRUOV_3_q31L10v890m100_s QRUOV_3_q127L3v228m78_a QRUOV_3_q127L3v228m78_s QRUOV_5_q7L10v1490m190_a QRUOV_5_q7L10v1490m190_s QRUOV_5_q31L3v324m114_a QRUOV_5_q31L3v324m114_s QRUOV_5_q31L10v1120m120_a QRUOV_5_q31L10v1120m120_s QRUOV_5_q127L3v306m105_a QRUOV_5_q127L3v306m105_s"
+    [snova]="SNOVA_28_5_19_4_AES SNOVA_28_5_19_4 SNOVA_24_5_16_4_AES SNOVA_24_5_16_4 SNOVA_48_17_16_2_AES SNOVA_48_17_16_2 SNOVA_48_16_19_2_AES SNOVA_48_16_19_2 SNOVA_28_4_16_4x5_AES SNOVA_28_4_16_4x5 SNOVA_28_4_19_4x5_AES SNOVA_28_4_19_4x5 SNOVA_40_7_19_4_AES SNOVA_40_7_19_4 SNOVA_37_8_16_4_AES SNOVA_37_8_16_4 SNOVA_72_25_16_2_AES SNOVA_72_25_16_2 SNOVA_72_24_19_2_AES SNOVA_72_24_19_2 SNOVA_38_5_16_4x5_AES SNOVA_38_5_16_4x5 SNOVA_38_5_19_4x5_AES SNOVA_38_5_19_4x5 SNOVA_50_9_19_4_AES SNOVA_50_9_19_4 SNOVA_60_10_16_4_AES SNOVA_60_10_16_4 SNOVA_97_33_16_2_AES SNOVA_97_33_16_2 SNOVA_96_32_19_2_AES SNOVA_96_32_19_2 SNOVA_52_6_16_4x6_AES SNOVA_52_6_16_4x6 SNOVA_52_6_19_4x6_AES SNOVA_52_6_19_4x6"
+    [sdith]="sdith_hypercube_cat1_gf256 sdith_hypercube_cat1_p251 sdith_hypercube_cat3_gf256 sdith_hypercube_cat3_p251 sdith_hypercube_cat5_gf256 sdith_hypercube_cat5_p251 sdith_threshold_cat1_gf256 sdith_threshold_cat1_p251 sdith_threshold_cat3_gf256 sdith_threshold_cat3_p251 sdith_threshold_cat5_gf256 sdith_threshold_cat5_p251"
+    [sqisign]="sqisign_lvl1 sqisign_lvl3 sqisign_lvl5"
+    [mqom]="mqom3_cat1_gf2_shorter_ct mqom3_cat1_gf2_shorter_ot mqom3_cat1_gf16_fast_ct mqom3_cat1_gf16_fast_ot mqom3_cat1_gf16_short_ct mqom3_cat1_gf16_short_ot mqom3_cat3_gf2_shorter_ct mqom3_cat3_gf2_shorter_ot mqom3_cat3_gf16_fast_ct mqom3_cat3_gf16_fast_ot mqom3_cat3_gf16_short_ct mqom3_cat3_gf16_short_ot mqom3_cat5_gf2_shorter_ct mqom3_cat5_gf2_shorter_ot mqom3_cat5_gf16_fast_ct mqom3_cat5_gf16_fast_ot mqom3_cat5_gf16_short_ct mqom3_cat5_gf16_short_ot"
+    [mayo-r3]="MAYO_1-R3 MAYO_2-R3 MAYO_3-R3 MAYO_5-R3"
+    [uov-r3]="UOV_Ip-R3 UOV_Ip_pkc-R3 UOV_Ip_pkc_skc-R3 UOV_Is-R3 UOV_Is_pkc-R3 UOV_Is_pkc_skc-R3 UOV_III-R3 UOV_III_pkc-R3 UOV_III_pkc_skc-R3 UOV_V-R3 UOV_V_pkc-R3 UOV_V_pkc_skc-R3"
+    [snova-r3]="SNOVA_I_B-R3 SNOVA_I_B_AES-R3 SNOVA_I_K-R3 SNOVA_I_K_AES-R3 SNOVA_I_S-R3 SNOVA_I_S_AES-R3 SNOVA_III_B-R3 SNOVA_III_B_AES-R3 SNOVA_III_K-R3 SNOVA_III_K_AES-R3 SNOVA_III_S-R3 SNOVA_III_S_AES-R3 SNOVA_V_B-R3 SNOVA_V_B_AES-R3 SNOVA_V_K-R3 SNOVA_V_K_AES-R3 SNOVA_V_S-R3 SNOVA_V_S_AES-R3"
+    [qruov-r3]="QRUOV_1q7L10_aes-R3 QRUOV_1q7L10_shake-R3 QRUOV_1q31L3_aes-R3 QRUOV_1q31L3_shake-R3 QRUOV_1q31L10_aes-R3 QRUOV_1q31L10_shake-R3 QRUOV_1q127L3_aes-R3 QRUOV_1q127L3_shake-R3 QRUOV_1q127L10_aes-R3 QRUOV_1q127L10_shake-R3 QRUOV_3q7L10_aes-R3 QRUOV_3q7L10_shake-R3 QRUOV_3q31L3_aes-R3 QRUOV_3q31L3_shake-R3 QRUOV_3q31L10_aes-R3 QRUOV_3q31L10_shake-R3 QRUOV_3q127L3_aes-R3 QRUOV_3q127L3_shake-R3 QRUOV_3q127L10_aes-R3 QRUOV_3q127L10_shake-R3 QRUOV_5q7L10_aes-R3 QRUOV_5q7L10_shake-R3 QRUOV_5q31L3_aes-R3 QRUOV_5q31L3_shake-R3 QRUOV_5q31L10_aes-R3 QRUOV_5q31L10_shake-R3 QRUOV_5q127L3_aes-R3 QRUOV_5q127L3_shake-R3 QRUOV_5q127L10_aes-R3 QRUOV_5q127L10_shake-R3"
+    [sdith-r3]="sdith_cat1_fast-R3 sdith_cat1_short-R3 sdith_cat1_fast_cipherpow-R3 sdith_cat1_short_cipherpow-R3 sdith_cat3_fast-R3 sdith_cat3_short-R3 sdith_cat3_fast_cipherpow-R3 sdith_cat3_short_cipherpow-R3 sdith_cat5_fast-R3 sdith_cat5_short-R3 sdith_cat5_fast_cipherpow-R3 sdith_cat5_short_cipherpow-R3"
+    [sqisign-r3]="sqisign_p324_3-R3 sqisign_p500_27-R3 sqisign_p664_17-R3"
+    [faest-r3]="FAEST_128F-R3 FAEST_128S-R3 FAEST_EM_128F-R3 FAEST_EM_128S-R3"
     [ascon-aead]="ascon128v12 ascon128av12 ascon80pqv12"
     [ascon-hash]="asconhashv12 asconhashav12 asconxofv12 asconxofav12"
 )
 
 # Standardized families -- always covered by the default "all" expansion
 # (same scope as `make test-all`/`make static-test-all`).
-STANDARD_FAMILIES=(mlkem mldsa falcon slhdsa slhdsa-haraka slhdsa-haraka-aes slhdsa-sha2 hqc2025)
+STANDARD_FAMILIES=(mlkem mldsa falcon slhdsa hqc2025)
 
 # Non-standardized / separate-category families -- only added to the "all"
 # expansion when --benchmark-all is set (one representative variant each).
-EXTRA_FAMILIES=(cross hawk less faest xmss lms hss ascon-aead ascon-hash)
+EXTRA_FAMILIES=(cross hawk less faest xmss lms hss ascon-aead ascon-hash slhdsa-sha2 slhdsa-shake slhdsa-haraka slhdsa-haraka-aes fndsa-exp uov mayo qruov snova sdith sqisign mqom mayo-r3 uov-r3 snova-r3 qruov-r3 sdith-r3 sqisign-r3 faest-r3)
 
 # One representative variant per EXTRA_FAMILIES entry, used by --benchmark-all.
 declare -A REPRESENTATIVE=(
@@ -132,6 +150,32 @@ declare -A REPRESENTATIVE=(
     [hss]="HSS_L2_H5_W8"
     [ascon-aead]="ascon128v12"
     [ascon-hash]="asconhashv12"
+    [uov]="UOV_Ip"
+    [mayo]="MAYO_1"
+    [qruov]="QRUOV_1_q7L10v740m100_a"
+    [snova]="SNOVA_28_5_19_4_AES"
+    [sdith]="sdith_hypercube_cat1_gf256"
+    [sqisign]="sqisign_lvl1"
+    [mqom]="mqom3_cat1_gf2_shorter_ct"
+    [mayo-r3]="MAYO_1-R3"
+    [uov-r3]="UOV_Ip-R3"
+    [snova-r3]="SNOVA_I_B-R3"
+    [qruov-r3]="QRUOV_1q7L10_aes-R3"
+    [sdith-r3]="sdith_cat1_fast-R3"
+    [sqisign-r3]="sqisign_p324_3-R3"
+    [faest-r3]="FAEST_128F-R3"
+    [slhdsa-sha2]="SLH-DSA-SHA2-128s"
+    [slhdsa-shake]="SLH-DSA-SHAKE-128s"
+    [fndsa-exp]="fndsa-exp-512"
+    [slhdsa-haraka]="HARAKAp128fsimple"
+    [slhdsa-haraka-aes]="HARAKAAESp128fsimple"
+)
+
+# Extra compile flags a family's static folder needs with plain gcc (libraries after the sources); same values as
+# the `static_gcc_flags` keys of tools/algo_registry.json. (sqisign-r3 only needs -I., which is already in the default CFLAGS.)
+declare -A FAMILY_FLAGS=(
+    [sdith-r3]="-lm"
+    [fndsa-exp]="-D_GNU_SOURCE -DFNDSA_AVX2=0 -DFNDSA_SSE2=0 -DFNDSA_NEON=0 -DFNDSA_RV64D=0"
 )
 
 # Full family list, standardized + extra -- used for --list and for
@@ -179,10 +223,11 @@ TARGETS="${TARGETS:-all}"
 BENCHMARK_ALL="${BENCHMARK_ALL:-0}"
 LOGFILE="${LOGFILE:-}"
 CC="${CC:-gcc}"
-CFLAGS="${CFLAGS:--O2 -std=c11}"
+CFLAGS="${CFLAGS:--O2 -std=c11 -I.}"
+STACK_KB="${STACK_KB:-65536}"
 
 print_help() {
-    sed -n '2,53p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,55p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [[ $# -gt 0 ]]; do
@@ -194,6 +239,7 @@ while [[ $# -gt 0 ]]; do
         -l|--log) LOGFILE="$2"; shift 2 ;;
         -c|--cc) CC="$2"; shift 2 ;;
         --cflags) CFLAGS="$2"; shift 2 ;;
+        --stack-kb) STACK_KB="$2"; shift 2 ;;
         --list) list_targets; ((IS_SOURCED)) && return 0 || exit 0 ;;
         -h|--help) print_help; ((IS_SOURCED)) && return 0 || exit 0 ;;
         *) echo "error: unknown option '$1' (see --help)" >&2
@@ -299,7 +345,7 @@ START_TS=$(date +%s)
 
 for variant in "${TARGET_LIST[@]}"; do
     family="$(variant_family "$variant")"
-    vdir="$ROOT/kat/static/$variant"
+    vdir="$ROOT/vectors/static/$variant"
     variant_t0=$(date +%s.%N)
     t0="$variant_t0"
 
@@ -319,16 +365,16 @@ for variant in "${TARGET_LIST[@]}"; do
 
     if [[ ! -f "$vdir/main.c" ]]; then
         # e.g. slhdsa-haraka-aes on non-RISC-V hosts: make exits 0 (prints its
-        # own SKIP line) but never produces kat/static/<variant>/.
+        # own SKIP line) but never produces vectors/static/<variant>/.
         reason=$(grep -m1 "SKIP:" <<<"$gen_out")
-        [[ -z "$reason" ]] && reason="no kat/static/$variant/main.c produced (unknown reason)"
+        [[ -z "$reason" ]] && reason="no vectors/static/$variant/main.c produced (unknown reason)"
         COUNT[SKIP]=$((COUNT[SKIP]+1))
         log_block "$variant" "$family" "SKIP" "$elapsed" "$reason" "$gen_out"
         continue
     fi
 
     t0=$(date +%s.%N)
-    compile_out=$(cd "$vdir" && "$CC" $CFLAGS *.c -o test 2>&1)
+    compile_out=$(cd "$vdir" && "$CC" $CFLAGS *.c -o test ${FAMILY_FLAGS[$family]:-} 2>&1)
     compile_rc=$?
     elapsed=$(awk -v a="$t0" -v b="$(date +%s.%N)" 'BEGIN{d=b-a; if (d<0) d=0; printf "%.2f", d}')
     if [[ $compile_rc -ne 0 ]]; then
@@ -339,7 +385,7 @@ for variant in "${TARGET_LIST[@]}"; do
     fi
 
     t0=$(date +%s.%N)
-    run_out=$(cd "$vdir" && ./test 2>&1)
+    run_out=$(cd "$vdir" && { ulimit -s "$STACK_KB" 2>/dev/null; ./test 2>&1; })
     run_rc=$?
     now=$(date +%s.%N)
     run_elapsed=$(awk -v a="$t0" -v b="$now" 'BEGIN{d=b-a; if (d<0) d=0; printf "%.2f", d}')

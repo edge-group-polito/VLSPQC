@@ -131,7 +131,7 @@ def apply_profiling(main_c: str, profiling) -> str:
 
 
 # --------------------------------------------------------------------------
-# .rsp parsing (pure Python equivalent of common/kat_parser.c)
+# .rsp parsing (pure Python equivalent of harness/kat_parser.c)
 # --------------------------------------------------------------------------
 
 def parse_rsp(path: Path):
@@ -885,7 +885,7 @@ def _render_ds_drbg_common(variant, info, entries, kat_num, flags, *, guard, suf
 // NOTE: this family has no explicit-randomness ("derand") entry point --
 // determinism comes from reseeding its internal CSPRNG/DRBG with the
 // captured `seed` before each keygen+sign pair, exactly like
-// kat/gen/main_{{cross,less,hawk,faest}}.c does for the dynamic KAT test.
+// harness/gen/main_{{cross,less,hawk,faest}}.c does for the dynamic KAT test.
 // crypto_sign_keypair() is always called (even with RUN_KEYGEN=0) purely to
 // advance that stream to the position sign() expects.
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -979,7 +979,7 @@ def render_ds_drbg_less(variant: str, info: dict, entries: list, kat_num: int, f
     sm = [e["sm"] for e in entries]
 
     reseed_code = (
-        "        /* LESS doesn't expose these in a public header (see kat/gen/main_less.c) */\n"
+        "        /* LESS doesn't expose these in a public header (see harness/gen/main_less.c) */\n"
         "        extern SHAKE_STATE_STRUCT platform_csprng_state;\n"
         "        extern void initialize_csprng(SHAKE_STATE_STRUCT *shake_state, const unsigned char *seed, "
         "const uint32_t seed_len_bytes);\n"
@@ -1218,7 +1218,7 @@ def render_kem_prng_reseed(variant: str, info: dict, entries: list, kat_num: int
 // NOTE: HQC-2025's keypair()/enc() have no explicit-randomness entry point --
 // determinism comes from reseeding its internal SHAKE-256 PRNG (prng_init)
 // with the captured `seed` before each keygen+encaps pair, exactly like
-// kat/gen/main_hqc2025.c. With RUN_KEYGEN=0 the PRNG position used by
+// harness/gen/main_hqc2025.c. With RUN_KEYGEN=0 the PRNG position used by
 // encaps won't match generation time (same caveat as ds_drbg_hawk) --
 // see tools/README.md.
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -1576,11 +1576,16 @@ def process_variant(registry, variant: str, kat_num: int, flags: dict, outdir: P
     # duplicating ~30 identical files x12 variants) -- flattened in here
     # alongside src_dir/include_dir so the static-test output stays fully
     # self-contained, same as every other family.
+    # copy_subdirs: for families whose sources use nested relative includes
+    # (currently just ML-KEM / ML-DSA from the PQ Code Package single-
+    # compilation-unit builds), sub-directories of src_dir are copied too.
     for d in (info["src_dir"], info["include_dir"], *info.get("extra_dirs", [])):
         src_dir = ROOT / d
         for f in sorted(src_dir.iterdir()):
             if f.is_file() and f.name not in exclude_files:
                 shutil.copy2(f, out_variant / f.name)
+            elif f.is_dir() and info.get("copy_subdirs"):
+                shutil.copytree(f, out_variant / f.name, dirs_exist_ok=True)
 
     (out_variant / f"test_vectors_{info['vec_suffix']}.h").write_text(header)
     (out_variant / "main.c").write_text(main_c)
@@ -1600,8 +1605,8 @@ def main():
     ap.add_argument("--run-verify", type=int, choices=(0, 1), default=1, help="DS families only")
     ap.add_argument("--run-encaps", type=int, choices=(0, 1), default=1, help="KEM families only")
     ap.add_argument("--run-decaps", type=int, choices=(0, 1), default=1, help="KEM families only")
-    ap.add_argument("--outdir", type=Path, default=ROOT / "kat" / "static",
-                     help="Output root directory (default: kat/static/ under this repo)")
+    ap.add_argument("--outdir", type=Path, default=ROOT / "vectors" / "static",
+                     help="Output root directory (default: vectors/static/ under this repo)")
     ap.add_argument("--profiling", default="none",
                      help="Name of a tools/profiling_commands/<name>.txt file to bake in as PERF_CNT_CYCLES=1 "
                           "cycle-counter hooks around keygen/sign-or-encaps/verify-or-decaps. "

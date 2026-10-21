@@ -1,0 +1,11 @@
+#ifndef API_H
+#define API_H
+
+#include "mldsa_native.h"
+
+#define CRYPTO_ALGNAME         "ML-DSA-44"
+#define CRYPTO_PUBLICKEYBYTES  MLDSA44_PUBLICKEYBYTES
+#define CRYPTO_SECRETKEYBYTES  MLDSA44_SECRETKEYBYTES
+#define CRYPTO_BYTES           MLDSA44_BYTES
+
+#endif

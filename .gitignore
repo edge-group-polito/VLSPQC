@@ -1,15 +1,17 @@
 # Build output (compiled gen_*/test_* binaries -- see Makefile's $(BUILD))
 /build/
 
-# Generated KAT .rsp files -- both our own kat/rsp/ tree and any bundled
-# reference example .rsp files shipped inside original/<...>/<variant>/.
+# Generated KAT .rsp files -- both our own vectors/rsp/ tree and any bundled
+# reference example .rsp files shipped inside algorithms/<...>/<variant>/.
 # Large and fully reproducible via `make gen-*`.
 *.rsp
-/kat/rsp/
+# official KAT files kept as test data (Falcon round-3 package)
+!algorithms/signatures/standard/FALCON/official-kat/*.rsp
+/vectors/rsp/
 
 # Generated static (no file-I/O) test folders -- see `make static-test-*`
 # and tools/gen_static_test.py. Fully reproducible.
-/kat/static/
+/vectors/static/
 
 # Object files, archives, and compiled binaries
 *.o

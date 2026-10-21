@@ -3,7 +3,7 @@
  *
  * Single-operation benchmark harness for the NIST-style signature API
  *   crypto_sign_keypair / crypto_sign / crypto_sign_open
- * Built against a flattened static-test folder (kat/static/<variant>/, see
+ * Built against a flattened static-test folder (vectors/static/<variant>/, see
  * tools/gen_static_test.py) with that folder's main.c left out; driven by
  * tools/bench/run_bench.py. One process measures ONE operation
  * (keygen | sign | verify) so the memory figures are not polluted by the
@@ -20,7 +20,12 @@
  *   - pk/sk/sig sizes (CRYPTO_*BYTES and the measured signature length)
  *
  * Compile-time macros (set by run_bench.py):
- *   BENCH_RNG_HDR   header declaring randombytes_init() (e.g. "rng.h")
+ *   BENCH_RNG_HDR   header declaring randombytes_init() (e.g. "rng.h");
+ *                   not needed when BENCH_SHAPE_HDR is used
+ *   BENCH_SHAPE_HDR optional header (tools/bench/shapes/*.h) that replaces the
+ *                   plain NIST signature API calls (keygen / sign / verify) by
+ *                   the API of another registry shape, e.g. KEMs (sign = encaps,
+ *                   verify = decaps) or the explicit-randomness signature APIs
  *   BENCH_LEN_T     type of smlen/mlen in this variant's API
  *                   (unsigned long long or size_t)
  *   BENCH_NAME      variant name for the report
@@ -46,7 +51,9 @@
 #define BENCH_CYCLES() ((uint64_t)0)
 #endif
 
+#ifdef BENCH_RNG_HDR
 #include BENCH_RNG_HDR
+#endif
 #include "api.h"
 
 #ifndef BENCH_NAME
@@ -86,30 +93,46 @@ static uint64_t now_ns(void)
     return (uint64_t)t.tv_sec * 1000000000ull + (uint64_t)t.tv_nsec;
 }
 
+#ifndef BENCH_SHAPE_HDR
 static void seed_drbg(uint8_t tag)
 {
     uint8_t seed[48];
     for (int i = 0; i < 48; i++) seed[i] = (uint8_t)(i + tag);
     randombytes_init(seed, NULL, 256);
 }
+#define BENCH_SEED(tag)   seed_drbg(tag)
+#define BENCH_SIG_BYTES   CRYPTO_BYTES
+static int bench_keygen(void) { return crypto_sign_keypair(g_pk, g_sk); }
+static int bench_sign(BENCH_LEN_T *n) { return crypto_sign(g_sm, n, g_msg, MSG_LEN, g_sk); }
+static int bench_verify(void)
+{
+    BENCH_LEN_T mlen2 = 0;
+    int r = crypto_sign_open(g_m2, &mlen2, g_sm, g_smlen, g_pk);
+    if (r == 0 && (mlen2 != MSG_LEN || memcmp(g_m2, g_msg, MSG_LEN))) r = -2;
+    return r;
+}
+#else
+/* Cheap xorshift filler for the explicit randomness inputs of the derand APIs
+ * (new bytes for every call; the exact distribution does not matter for timing). */
+static uint64_t bs_state = 0x9e3779b97f4a7c15ull;
+static void bs_fill(uint8_t *p, size_t n)
+{
+    for (size_t i = 0; i < n; i++) {
+        bs_state ^= bs_state << 13; bs_state ^= bs_state >> 7; bs_state ^= bs_state << 17;
+        p[i] = (uint8_t)(bs_state >> 24);
+    }
+}
+#include BENCH_SHAPE_HDR
+#endif
 
 static void do_op(op_t op)
 {
     BENCH_LEN_T n = 0;
     int r = 0;
     switch (op) {
-    case OP_KEYGEN:
-        r = crypto_sign_keypair(g_pk, g_sk);
-        break;
-    case OP_SIGN:
-        r = crypto_sign(g_sm, &n, g_msg, MSG_LEN, g_sk);
-        break;
-    case OP_VERIFY: {
-        BENCH_LEN_T mlen2 = 0;
-        r = crypto_sign_open(g_m2, &mlen2, g_sm, g_smlen, g_pk);
-        if (r == 0 && (mlen2 != MSG_LEN || memcmp(g_m2, g_msg, MSG_LEN))) r = -2;
-        break;
-    }
+    case OP_KEYGEN: r = bench_keygen(); break;
+    case OP_SIGN:   r = bench_sign(&n); break;
+    case OP_VERIFY: r = bench_verify(); break;
     }
     if (r != 0) g_fail = r;
 }
@@ -189,13 +212,13 @@ static void *prep_thread(void *arg)
     (void)arg;
     g_pk = malloc(CRYPTO_PUBLICKEYBYTES);
     g_sk = malloc(CRYPTO_SECRETKEYBYTES);
-    g_sm = malloc(MSG_LEN + CRYPTO_BYTES + 64);
-    g_m2 = malloc(MSG_LEN + CRYPTO_BYTES + 64);
-    seed_drbg(0);
-    if (crypto_sign_keypair(g_pk, g_sk)) { g_fail = -10; return NULL; }
+    g_sm = malloc(MSG_LEN + BENCH_SIG_BYTES + 64);
+    g_m2 = malloc(MSG_LEN + BENCH_SIG_BYTES + 64);
+    BENCH_SEED(0);
+    if (bench_keygen()) { g_fail = -10; return NULL; }
     if (g_op != OP_KEYGEN) {
         BENCH_LEN_T n = 0;
-        if (crypto_sign(g_sm, &n, g_msg, MSG_LEN, g_sk)) { g_fail = -11; return NULL; }
+        if (bench_sign(&n)) { g_fail = -11; return NULL; }
         g_smlen = n;
     }
     return NULL;
@@ -242,7 +265,7 @@ int main(int argc, char **argv)
     if (g_fail) { fprintf(stderr, "prep failed (%d)\n", g_fail); return 1; }
 
     /* Fresh DRBG state for the measured loop (sign/keygen consume randomness). */
-    seed_drbg(1);
+    BENCH_SEED(1);
     reset_vmhwm();
     long rss_before = read_vmhwm_kb();
 
@@ -271,7 +294,7 @@ int main(int argc, char **argv)
            (unsigned long long)g_cyc[g_n / 2],
            mt_peak_bytes(), mt_alloc_calls(), stack_peak,
            vmhwm, rss_before,
-           (long)CRYPTO_PUBLICKEYBYTES, (long)CRYPTO_SECRETKEYBYTES, (long)CRYPTO_BYTES,
+           (long)CRYPTO_PUBLICKEYBYTES, (long)CRYPTO_SECRETKEYBYTES, (long)BENCH_SIG_BYTES,
            g_op == OP_KEYGEN ? -1LL : (long long)g_smlen - (long long)MSG_LEN);
     return 0;
 }

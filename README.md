@@ -1,251 +1,178 @@
-# PQC KAT Test Suite
+# VLSPQC — post-quantum KAT golden model and bare-metal test suite
 
-A structured, configurable Known Answer Test (KAT) framework for post-quantum
-cryptography algorithms. Covers digital signature (DS) and key encapsulation
-mechanism (KEM) families, with `.rsp` file-based testing, a static
-(no-file-I/O) test generator for bare-metal targets, and a single top-level
-Makefile driving all of it.
+VLSPQC is the software side of a hardware/software co-design effort on post-quantum cryptography: a collection of reference implementations
+(portable C, no external libraries), one KAT (Known Answer Test) framework around all of them, and a generator that turns every test into a
+self-contained, no-file-I/O program, which prepares the code for later bare-metal programs. This repository is software-only: nothing here depends on or measures hardware. A single top-level `Makefile` generates deterministic `.rsp` vectors,
+replays them byte for byte, builds the static tests, and runs the host benchmark.
 
-## Supported algorithms
+> **Status wording.** Only ML-KEM (FIPS 203), ML-DSA (FIPS 204) and SLH-DSA (FIPS 205) are final standards here. Falcon (→ FN-DSA, FIPS 206) and HQC are
+> *selected, standard pending*; the NIST additional-signature schemes are *candidates*. The code is labelled accordingly everywhere. Status checked on
+> NIST's CSRC pages on 2026-10-20; see [`algorithms/README.md`](algorithms/README.md).
 
-This repository currently supports:
+## What is covered
 
-- **ML-KEM**    [Kyber](https://github.com/pq-crystals/kyber)  
-This repository contains the official reference implementation of the [Kyber](https://www.pq-crystals.org/kyber/) key encapsulation mechanism.
-Kyber has been selected for standardization in [round 3](https://csrc.nist.gov/Projects/post-quantum-cryptography/round-3-submissions)
-of the [NIST PQC](https://csrc.nist.gov/projects/post-quantum-cryptography) standardization project. It is standardized as [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final).
+| Family | Category | Spec and status | Variants | Upstream (pinned) | In `test-all`? |
+|---|---|---|---:|---|---|
+| ML-KEM | [KEM](algorithms/kem/README.md) | FIPS 203, **final** | 3 | [mlkem-native](https://github.com/pq-code-package/mlkem-native) `v2.0.0` (`d1b2fe78`) | yes |
+| ML-DSA | [standard signatures](algorithms/signatures/standard/README.md) | FIPS 204, **final** | 3 | [mldsa-native](https://github.com/pq-code-package/mldsa-native) `v2.0.0` (`834a90d5`) | yes |
+| SLH-DSA | standard signatures | FIPS 205, **final** | 12 | [slhdsa-c](https://github.com/pq-code-package/slhdsa-c) `174c02e4` | yes |
+| HQC | KEM | selected 2025, **standard pending** (no draft number confirmed) | 3 | [pqc-hqc/hqc](https://gitlab.com/pqc-hqc/hqc) `v5.0.0` (`f46e542`) | yes (labelled pending) |
+| Falcon | standard signatures | round 3, **basis of FN-DSA (FIPS 206, not final)** | 2 | [falcon-round3](https://falcon-sign.info/falcon-round3.zip) (package SHA-256 `d625407d`) | yes (labelled pending) |
+| FN-DSA (experimental) | standard signatures | pre-standard best guess, **not FIPS 206** | 2 | [c-fn-dsa](https://github.com/pornin/c-fn-dsa) `1b858880` | no |
+| FAEST, MAYO, MQOM, QR-UOV, SDitH, SNOVA, SQIsign, UOV | [on-ramp](algorithms/signatures/onramp/README.md) | NIST additional signatures: **round-3 candidates** | 232 across all on-ramp rows (+ 12 FAEST-decoupled) | per family, see the on-ramp README | no |
+| HAWK | on-ramp | round-3 candidate, **withdrawn by its team** (NIST page) | 3 | [hawk-sign/dev](https://github.com/hawk-sign/dev) (closest match `1b9fef52`) | no |
+| CROSS, LESS | on-ramp, `round2-only/` | round 2 only (not among the nine round-3 candidates) | 18 + 7 | [CROSS](https://github.com/CROSS-signature/CROSS-implementation) (closest match `v2.0`), [LESS](https://github.com/less-sig/LESS) (closest match `v2.0.0`) | no |
+| XMSS, LMS, HSS | [stateful](algorithms/signatures/stateful/README.md) | NIST SP 800-208, final | 3 defaults (+134 via sweeps) | [xmss-reference](https://github.com/XMSS/xmss-reference), Cisco [hash-sigs](https://github.com/cisco/hash-sigs) (closest matches, not verified pins) | no |
+| ASCON | [symmetric](algorithms/symmetric/README.md) | Ascon **v1.2** code; SP 800-232 (final) defines different functions | 7 | [ascon-c](https://github.com/ascon/ascon-c) (closest match `v1.2.5`) | no |
+| Kyber, Dilithium, SPHINCS+ round 3; SPHINCS+ Haraka | [legacy](algorithms/legacy/README.md) | pre-standard, kept for comparison | — | tag `pre-fips-migration` | no |
 
-- **ML-DSA**    [Dilithium](https://github.com/pq-crystals/dilithium)  
-This repository contains the official reference implementation of the [Dilithium](https://www.pq-crystals.org/dilithium/) signature scheme.
-Dilithium is standardized as [FIPS 204](https://csrc.nist.gov/pubs/fips/204/final).
+`make test-all` covers exactly 23 variants: ML-KEM 3, ML-DSA 3, SLH-DSA 12, Falcon 2, HQC 3 (plus the two replays of the official Falcon round-3 KAT files).
+Everything else has its own aggregate target (`test-onramp-ds`, `test-stateful-ds`, `test-ascon`, `test-fndsa-exp`; see [`docs/makefile-flags.md`](docs/makefile-flags.md)).
 
-- **HQC**    [HQC](https://pqc-hqc.org)  
-This repository provides the official implementation of [HQC-2025](https://pqc-hqc.org) (levels 1, 3, 5), a code-based Key Encapsulation Mechanism (KEM) whose security is based on the hardness of solving the Quasi-Cyclic Syndrome Decoding (QCSD) problem. HQC is one of the algorithms selected by [NIST's Post-Quantum Cryptography Standardization Project](https://csrc.nist.gov/projects/post-quantum-cryptography) to be standardized alongside ML-KEM.
+## Sizes
 
-- **Falcon**    [Falcon](https://falcon-sign.info/)  
-This repository contains the software that accompanies the [FN-DSA submission](https://falcon-sign.info/) to [NIST's Post-Quantum Cryptography](https://csrc.nist.gov/Projects/Post-Quantum-Cryptography) project.
+Generated from the compiled `api.h` constants of every variant (`tools/gen_size_table.py`, [`results/sizes.csv`](results/sizes.csv)); bytes. The last column is the ciphertext
+(KEM) or `CRYPTO_BYTES` (signature; for Falcon the maximum).
 
-- **SPHINCS+**  
-This repository contains the software that accompanies the [SPHINCS+ submission](https://sphincs.org/) to [NIST's Post-Quantum Cryptography](https://csrc.nist.gov/Projects/Post-Quantum-Cryptography) project.
-It includes SLH-DSA/SPHINCS+ SHAKE, SHA2, Haraka, and Haraka-AES variants. Some SHA2 and Haraka-AES variants include RISC-V instruction accelerated paths and require a compatible RISC-V toolchain to build those accelerated versions. SLH-DSA is standardized as [FIPS 205](https://csrc.nist.gov/pubs/fips/205/final).
+<!-- BEGIN sizes:root -->
+| Variant | pk (B) | sk (B) | ct / sig (B) |
+|---|---:|---:|---:|
+| ml-kem-512 | 800 | 1632 | 768 |
+| ml-kem-768 | 1184 | 2400 | 1088 |
+| ml-kem-1024 | 1568 | 3168 | 1568 |
+| ML-DSA-44 | 1312 | 2560 | 2420 |
+| ML-DSA-65 | 1952 | 4032 | 3309 |
+| ML-DSA-87 | 2592 | 4896 | 4627 |
+| falcon-512 | 897 | 1281 | 690 |
+| falcon-1024 | 1793 | 2305 | 1330 |
+| SLH-DSA-SHA2-128s | 32 | 64 | 7856 |
+| SLH-DSA-SHA2-128f | 32 | 64 | 17088 |
+| SLH-DSA-SHA2-192s | 48 | 96 | 16224 |
+| SLH-DSA-SHA2-192f | 48 | 96 | 35664 |
+| SLH-DSA-SHA2-256s | 64 | 128 | 29792 |
+| SLH-DSA-SHA2-256f | 64 | 128 | 49856 |
+| SLH-DSA-SHAKE-128s | 32 | 64 | 7856 |
+| SLH-DSA-SHAKE-128f | 32 | 64 | 17088 |
+| SLH-DSA-SHAKE-192s | 48 | 96 | 16224 |
+| SLH-DSA-SHAKE-192f | 48 | 96 | 35664 |
+| SLH-DSA-SHAKE-256s | 64 | 128 | 29792 |
+| SLH-DSA-SHAKE-256f | 64 | 128 | 49856 |
+| HQC2025_1 | 2241 | 2321 | 4433 |
+| HQC2025_3 | 4514 | 4602 | 8978 |
+| HQC2025_5 | 7237 | 7333 | 14421 |
+| fndsa-exp-512 | 897 | 1345 | 666 |
+| fndsa-exp-1024 | 1793 | 2369 | 1280 |
+<!-- END sizes:root -->
 
-- **CROSS**    [CROSS](https://www.cross-crypto.com/)  
-This repository contains the reference implementation of [CROSS](https://www.cross-crypto.com/) (Codes and Restricted Objects Signature Scheme), a code-based signature scheme whose security relies on the hardness of the Restricted Syndrome Decoding Problem. CROSS advanced to [round 2](https://csrc.nist.gov/projects/pqc-dig-sig/round-2-additional-signatures) of [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+## Results
 
-- **HAWK**    [Hawk](https://hawk-sign.info/)  
-This repository contains the reference implementation of [HAWK](https://hawk-sign.info/), a lattice-based, hash-then-sign signature scheme based on the Lattice Isomorphism Problem. HAWK was selected by NIST to move forward to the [third round](https://csrc.nist.gov/projects/pqc-dig-sig) of the Additional Digital Signature Schemes standardization process.
+Host benchmark of the portable reference C (no SIMD, no assembly): Intel Core Ultra 7 155H under WSL2, gcc 13.3 `-O2`, one CPU pinned, 2026-10-20, machine about 94 % idle,
+median of up to 1000 calls within 3 s per operation, **single run** (run-to-run variation not quantified for these families). Raw data and method:
+[`results/benchmark.csv`](results/benchmark.csv), [`results/benchmark_meta.json`](results/benchmark_meta.json), [`bench/README.md`](bench/README.md); every command that was run is in
+[`results/validation.md`](results/validation.md). These numbers are for the reference code and are not comparable with optimized (AVX2) packages. The earlier level-1 benchmark of the Round-3 on-ramp families (39 variants, median of 3 runs, 2026-10-14, not rerun after the migration) is
+in [`algorithms/signatures/onramp/README.md`](algorithms/signatures/onramp/README.md#benchmark-of-the-round-3-families-level-1) and [`results/benchmark_onramp_l1.csv`](results/benchmark_onramp_l1.csv).
 
-- **LESS**    [LESS](https://www.less-project.com/)  
-This repository contains the reference implementation of [LESS](https://www.less-project.com/) (Linear Equivalence Signature Scheme), a code-based signature scheme whose security relies on the hardness of the Linear Code Equivalence problem. LESS was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+![Median time per operation and variant, log scale](docs/figures/time_per_operation.png)
 
-- **FAEST**    [FAEST](https://faest.info/)  
-This repository contains a port of the [FAEST](https://faest.info/) reference implementation, a signature scheme built on the VOLE-in-the-head zero-knowledge proof paradigm with security based on AES and SHA-3. FAEST was selected by NIST to move forward to the [third round](https://csrc.nist.gov/projects/pqc-dig-sig) of the Additional Digital Signature Schemes standardization process.
+![Public key, secret key and ciphertext / signature sizes per variant](docs/figures/sizes.png)
 
-- **UOV**    [pqov](https://github.com/pqov/pqov)  
-This repository contains a port of the [pqov](https://github.com/pqov/pqov) reference implementation of Unbalanced Oil and Vinegar (UOV), a multivariate signature scheme whose security relies on the hardness of solving systems of quadratic equations. UOV was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
+<!-- BEGIN results:root -->
+| Variant | NIST cat. | keygen (ms) | sign / encaps (ms) | verify / decaps (ms) | peak stack (B) | peak heap (B) | code (B) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| ML-KEM-512 | 1 | 0.019 | 0.021 | 0.027 | 12288 | 0 | 22921 |
+| ML-KEM-768 | 3 | 0.030 | 0.031 | 0.040 | 16384 | 0 | 22665 |
+| ML-KEM-1024 | 5 | 0.047 | 0.044 | 0.055 | 24576 | 0 | 24017 |
+| HQC-1 | 1 | 1.232 | 2.647 | 3.625 | 65536 | 0 | 30854 |
+| HQC-3 | 3 | 3.364 | 10.1 | 11.8 | 131072 | 0 | 32945 |
+| HQC-5 | 5 | 8.678 | 19.0 | 26.4 | 208896 | 0 | 39274 |
+| ML-DSA-44 | 2 | 0.050 | 0.166 | 0.057 | 49152 | 0 | 32601 |
+| ML-DSA-65 | 3 | 0.098 | 0.277 | 0.097 | 73728 | 0 | 33041 |
+| ML-DSA-87 | 5 | 0.146 | 0.377 | 0.146 | 110592 | 0 | 33505 |
+| SLH-DSA-SHA2-128f | 1 | 0.838 | 22.9 | 1.427 | 4096 | 0 | 35448 |
+| SLH-DSA-SHA2-128s | 1 | 57.7 | 461.0 | 0.441 | 4096 | 0 | 35448 |
+| SLH-DSA-SHAKE-128f | 1 | 2.608 | 34.6 | 1.828 | 4096 | 0 | 35448 |
+| SLH-DSA-SHAKE-128s | 1 | 105.5 | 702.1 | 0.791 | 4096 | 0 | 35448 |
+| SLH-DSA-SHA2-192f | 3 | 1.249 | 42.0 | 2.049 | 4096 | 0 | 35448 |
+| SLH-DSA-SHA2-192s | 3 | 105.1 | 976.3 | 0.628 | 4096 | 0 | 35448 |
+| SLH-DSA-SHAKE-192f | 3 | 2.037 | 71.2 | 3.232 | 4096 | 0 | 35448 |
+| SLH-DSA-SHAKE-192s | 3 | 180.8 | 1585.6 | 0.923 | 4096 | 0 | 35448 |
+| SLH-DSA-SHA2-256f | 5 | 3.778 | 76.3 | 1.763 | 4096 | 0 | 35448 |
+| SLH-DSA-SHA2-256s | 5 | 55.2 | 989.5 | 0.922 | 4096 | 0 | 35448 |
+| SLH-DSA-SHAKE-256f | 5 | 6.401 | 132.3 | 3.192 | 4096 | 0 | 35448 |
+| SLH-DSA-SHAKE-256s | 5 | 91.8 | 1160.9 | 2.544 | 4096 | 0 | 35448 |
+| Falcon-512 | 1 | 10.7 | 3.583 | 0.025 | 45056 | 0 | 90938 |
+| Falcon-1024 | 5 | 40.7 | 9.257 | 0.062 | 86016 | 0 | 90946 |
+| FN-DSA-exp-512 | 1 | 3.212 | 3.060 | 0.029 | 32768 | 0 | 107405 |
+| FN-DSA-exp-1024 | 5 | 14.8 | 5.523 | 0.048 | 61440 | 0 | 107405 |
+<!-- END results:root -->
 
-- **MAYO**    [MAYO-C](https://github.com/PQCMayo/MAYO-C)  
-This repository contains a port of the [MAYO-C](https://github.com/PQCMayo/MAYO-C) reference implementation of MAYO, a multivariate signature scheme built as a variant of UOV whose security likewise relies on the hardness of solving systems of quadratic equations. MAYO was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
-
-- **QR-UOV**    [QR-UOV round 2](https://github.com/qruov/round2)  
-This repository contains a port of the QR-UOV round-2 reference implementation, a multivariate signature scheme built as a structured (quotient-ring) variant of UOV, trading a larger public key for a smaller secret key relative to plain UOV. QR-UOV was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
-
-- **SNOVA**    [SNOVA reference implementation](https://github.com/SNOVA-project/SNOVA)  
-This repository contains a port of the SNOVA reference implementation, a multivariate signature scheme built over a noncommutative ring, trading a larger signature for smaller keys relative to plain UOV. SNOVA was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
-
-- **SDitH**    [SDitH reference implementation](https://github.com/sdith/sdith)  
-This repository contains a port of the SDitH (Syndrome Decoding in the Head) reference implementation, an MPC-in-the-Head code-based signature scheme with two sharing strategies (Hypercube and Threshold). SDitH was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
-
-- **SQIsign**    [the-sqisign](https://github.com/SQIsign/the-sqisign)  
-This repository contains a port of the-sqisign reference implementation, an isogeny-based signature scheme over quaternion algebras (Short Quaternion and Isogeny Signature). SQIsign was submitted to [NIST's Additional Digital Signature Schemes](https://csrc.nist.gov/projects/pqc-dig-sig) standardization process.
-
-- **MQOM and the Round-3 families (`*-R3`)**  
-`original/Additional-DS/` also contains MQOM (NIST Round-3 package, 18 variants) and Round-3 ports of MAYO, UOV, SNOVA, QR-UOV, SDitH, SQIsign and FAEST (v3) in separate `*-R3` families (the older ports of the same schemes are kept unchanged). They are built with plain `gcc`, portable C only, and their record #0 matches the official Round-3 KAT where the package ships one; see [`original/Additional-DS/README.md`](original/Additional-DS/README.md).
-
-- **XMSS / LMS / HSS**  
-This repository contains implementations of the stateful hash-based signature schemes [XMSS](https://datatracker.ietf.org/doc/html/rfc8391) (RFC 8391) and [LMS/HSS](https://datatracker.ietf.org/doc/html/rfc8554) (RFC 8554), both approved by NIST in [SP 800-208](https://csrc.nist.gov/projects/stateful-hash-based-signatures) for stateful hash-based signatures.
-
-- **ASCON**    [Ascon](https://ascon.isec.tugraz.at/)  
-This repository contains an implementation of [Ascon](https://ascon.isec.tugraz.at/), NIST's selected algorithm family for lightweight cryptography, covering authenticated encryption, hashing, and extendable-output functions. Ascon is standardized as [NIST SP 800-232](https://csrc.nist.gov/pubs/sp/800/232/final). It is not a post-quantum algorithm, but is included here alongside the PQC families.
-
-Algorithms are organized by standardization status:
-
-| Category | What's there | Part of `test-all`? |
-|----------|--------------|----------------------|
-| `original/DS/` | Standardized digital signatures: ML-DSA, SLH-DSA ×4, FALCON | Yes |
-| `original/KEM/` | Standardized KEMs: ML-KEM, HQC (HQC-2025 only) | Yes |
-| `original/Additional-DS/` | Non-standardized candidate signatures: CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign, MQOM, plus the Round-3 `*-R3` ports of MAYO, UOV, SNOVA, QRUOV, SDitH, SQIsign, FAEST | No — `test-additional-ds` |
-| `original/Stateful-DS/` | NIST SP 800-208 stateful hash-based signatures: XMSS, LMS, HSS | No — `test-stateful-ds` |
-| `original/Symmetric/` | ASCON (lightweight AEAD + hash/XOF) — not PQC at all | No — `test-ascon` |
-
-**`test-all`/`gen-all`/`static-test-all` cover only the standardized set: 41
-variants** across ML-KEM, ML-DSA, SLH-DSA ×4 sub-families (including "s"
-sizes for 2 of those), FALCON, and HQC-2025. Everything else has its
-own aggregate `make` targets (`test-additional-ds`, `test-stateful-ds`,
-`test-ascon`) and is excluded from `test-all` by design — see the category
-READMEs linked below. XMSS, LMS, and HSS are additionally
-runtime-parametrized — their full parameter spaces (77 + 20 + 40 = 137 more
-sets) are exercised via dedicated `-check`/`-check-slow` sweep targets
-instead, since a lot of that space is either huge (LMS/HSS'
-`(height, w, levels)` combinations) or individually slow (tall single-tree
-tree heights) — see [`original/Stateful-DS/README.md`](original/Stateful-DS/README.md).
-
----
-
-## Documentation map
-
-This README covers the top-level build (Quick Start, Makefile flags, adding a
-variant/family). Everything algorithm- or tool-specific lives in the relevant
-subfolder's own README:
-
-| Where | What's there |
-|-------|--------------|
-| [`original/DS/README.md`](original/DS/README.md) | Standardized DS families/variants, per-family `make` targets, `.rsp` fields, algorithm notes (FALCON/ML-DSA/SLH-DSA) |
-| [`original/Additional-DS/README.md`](original/Additional-DS/README.md) | Non-standardized DS families (CROSS/HAWK/LESS/FAEST/UOV/MAYO/QRUOV/SNOVA/SDitH/SQIsign/MQOM and the Round-3 `*-R3` families) |
-| [`original/Stateful-DS/README.md`](original/Stateful-DS/README.md) | Stateful hash-based signatures (XMSS/LMS/HSS, NIST SP 800-208) |
-| [`original/KEM/README.md`](original/KEM/README.md) | KEM families/variants, per-family `make` targets, KEM-specific `.rsp` fields, algorithm notes (ML-KEM/HQC) |
-| [`original/Symmetric/ASCON/README.md`](original/Symmetric/ASCON/README.md) | ASCON AEAD + hash/XOF variants, `.rsp` fields, `make` targets |
-| [`kat/README.md`](kat/README.md) | The generate/test two-phase model, `.rsp` file format, `kat/gen`/`kat/rsp`/`kat/static` layout |
-| [`common/README.md`](common/README.md) | The shared `.rsp` parser (`kat_parser.h/.c`) used by every test runner |
-| [`tools/README.md`](tools/README.md) | The static-test generator (`gen_static_test.py`) for bare-metal/FPGA/RISC-V targets, cycle-counter profiling, and the batch runner (`run_all_static_kat.sh`, with its `--benchmark-all` flag) |
-
-## Repository layout
-
-```
-pqrv/
-├── Makefile              ← top-level build system
-├── common/                see common/README.md
-├── kat/                    see kat/README.md
-│   ├── gen/                generators + test runners
-│   ├── rsp/                generated .rsp files
-│   └── static/              generated static-test folders
-├── original/               reference-implementation sources
-│   ├── DS/                 standardized -- see original/DS/README.md
-│   │   └── <FAMILY>/<VARIANT>/
-│   ├── Additional-DS/      not standardized -- see original/Additional-DS/README.md
-│   │   └── <FAMILY>/<VARIANT>/
-│   ├── Stateful-DS/        NIST SP 800-208 -- see original/Stateful-DS/README.md
-│   │   └── XMSS, LMS, HSS/  (one shared source tree each — no
-│   │                          per-variant split, see their READMEs)
-│   ├── KEM/                see original/KEM/README.md
-│   │   └── <FAMILY>/<VARIANT>/
-│   └── Symmetric/          not PQC -- see original/Symmetric/README.md
-│       └── ASCON/<VARIANT>/
-└── tools/                  see tools/README.md
-    ├── gen_static_test.py + algo_registry.json
-    ├── run_all_static_kat.sh
-    └── profiling_commands/
-```
-
----
+Peak stack is measured in 4 KiB pages (so 4096 means "at most 4 KiB"); heap is peak `malloc` use (0 means none of these implementations allocates). Code size is the
+algorithm objects only. Regenerate with `make bench-fips` (idle machine) and `make results-update`.
 
 ## Quick start
 
 ```bash
-# Build and run the standardized set (41 variants, 100 vectors each)
-make test-all
-
-# Just generate all .rsp files
-make gen-all
-
-# Test a single family or variant (see the category READMEs above for names)
-make test-mlkem
-make test-ml-kem-512
-
-# Non-standardized / separate-category algorithms -- NOT part of test-all
-make test-additional-ds   # CROSS, HAWK, LESS, FAEST, UOV, MAYO, QRUOV, SNOVA, SDitH, SQIsign, MQOM + *-R3 families
-make test-mayo-r3 KATNUM=10   # one Round-3 family (also uov-r3, snova-r3, qruov-r3, sdith-r3, sqisign-r3, faest-r3); variant: make test-MAYO_1-R3
-make test-stateful-ds     # XMSS, LMS, HSS (default variant each)
-make test-ascon           # ASCON AEAD + hash/XOF (not PQC)
-
-# XMSS/LMS/HSS: sweep their full (runtime-selected) parameter spaces —
-# not part of test-all/test-stateful-ds, since these can take minutes to
-# hours; see original/Stateful-DS/README.md and each family's own README.
-make test-xmss-check
-make test-lms-check-slow
-
-# Static (no file-I/O) test for bare-metal targets — see tools/README.md
-make static-test-all              # standardized set only
-make static-test-additional-ds
-make static-test-stateful-ds
-make static-test-ascon
-
-# Batch-run + log every static test's pass/fail — see tools/README.md
-tools/run_all_static_kat.sh                  # standardized set only
-tools/run_all_static_kat.sh --benchmark-all  # + one representative of each extra family
-
-# Level-1 benchmark of the additional signatures (idle machine!) — see bench/README.md
-make bench-l1       # tools/bench/run_bench.py + report.py -> bench/results/
-make bench-clean    # removes build/bench only
-
-# Clean up
-make clean          # build/ only
-make clean-rsp       # kat/rsp/ only
-make clean-static    # kat/static/ only
-make distclean       # all of the above
+make test-all                # the 23 standardized / standard-pending variants, 100 vectors each
+make test-ml-kem-512         # one variant (names: see the category READMEs)
+make gen-all                 # only (re)generate the .rsp files into vectors/rsp/
+make static-test-all         # bare-metal style static tests into vectors/static/
+tools/run_all_static_kat.sh  # build + run + log every static test (add --benchmark-all for the extra families)
+make test-onramp-ds          # on-ramp candidates (very long: the pre-migration baseline run was stopped after 90 min unfinished; try KATNUM=10)
+make bench-fips && make results-update   # host benchmark and tables / figures (idle machine)
+make distclean               # remove build/, vectors/rsp/, vectors/static/
 ```
 
-## Makefile flags
+## Documentation map
 
-All flags can be set on the command line and override the defaults.
+| Where | What |
+|---|---|
+| [`algorithms/README.md`](algorithms/README.md) | category map, status groups and the provenance table of every family |
+| [`algorithms/kem/`](algorithms/kem/README.md), [`signatures/standard/`](algorithms/signatures/standard/README.md), [`signatures/onramp/`](algorithms/signatures/onramp/README.md), [`signatures/stateful/`](algorithms/signatures/stateful/README.md), [`symmetric/`](algorithms/symmetric/README.md), [`legacy/`](algorithms/legacy/README.md) | per category: scope, spec references, per-family details, `make` targets, `.rsp` fields, limitations |
+| each family's `UPSTREAM.md` | upstream URL, tag, commit, import date, removals, local patches, verification |
+| [`harness/README.md`](harness/README.md) | the `.rsp` parser, generators and test runners |
+| [`docs/kat-format.md`](docs/kat-format.md) | the two-phase generate / test model and the `.rsp` format |
+| [`docs/static-tests.md`](docs/static-tests.md) | the static-test generator, the batch runner, cycle-counter profiling |
+| [`docs/makefile-flags.md`](docs/makefile-flags.md) | Makefile flags and aggregate targets |
+| [`docs/adding-an-algorithm.md`](docs/adding-an-algorithm.md) | checklist for new variants and families |
+| [`tools/README.md`](tools/README.md) | the scripts (registry, generators, benchmark, table / figure / link-check tools) |
+| [`results/README.md`](results/README.md), [`results/validation.md`](results/validation.md) | measured data and the record of every validation command |
 
-| Flag | Default | Description |
-|------|---------|--------------|
-| `KATNUM` | `100` | Number of KAT vectors to generate/test (dynamic tests) |
-| `CHECK_KATNUM` | `1` | Vectors per variant for XMSS/LMS/HSS's `-check`/`-check-slow` sweeps |
-| `RUN_KEYGEN` | `1` | Test key generation |
-| `RUN_SIGN` / `RUN_VERIFY` | `1` | Test signing/verification — DS only |
-| `RUN_ENCAPS` / `RUN_DECAPS` | `1` | Test encapsulation/decapsulation — KEM only, and ASCON's encrypt/decrypt |
-| `DEBUG` | `0` | Print hex of inputs/outputs on failure |
-| `MLEN` | `33` | Message length (bytes) used during generation |
-| `CC` / `CFLAGS` | `gcc` / `-O2 -std=c11 ...` | Compiler / flags |
-| `STATIC_KATNUM` | `1` | Vectors baked into a static test (see `tools/README.md`) |
-| `STATICDIR` | `kat/static` | Output dir for static tests |
-| `PROFILING` | `none` | Cycle-counter profile to bake in (see `tools/README.md`) |
-
-```bash
-# Run only 10 vectors, verbose output on failure
-make test-CROSS_1_RSDP_b KATNUM=10 DEBUG=1
-
-# Test sign+verify only, skip keygen (uses stored keys from .rsp)
-make test-hawk-256 RUN_KEYGEN=0 RUN_SIGN=1 RUN_VERIFY=1
-
-# Cross-compile
-make test-all CC=arm-linux-gnueabihf-gcc CFLAGS="-O2 -std=c11"
+```
+VLSPQC/
+├── Makefile
+├── algorithms/        kem/  signatures/{standard,onramp,stateful}/  symmetric/  legacy/
+├── harness/           kat_parser.*  gen/ (PQCgenKAT_*.c generators, main_*.c runners, rng.c)
+├── vectors/           rsp/ and static/  (generated, git-ignored)
+├── tools/             algo_registry.json, static-test generator, benchmark, report scripts
+├── docs/              format and tool documentation, figures/
+├── results/           sizes, benchmark and validation records
+└── bench/             benchmark run outputs (git-ignored)
 ```
 
-> **Note:** `KATNUM` must match between generation and testing — the test
-> binary stops after reading `KATNUM` entries from the `.rsp` file.
+## Changelog — FIPS migration (what changed against the tag `pre-fips-migration`, and why)
 
-`make help` prints a target summary; the category READMEs linked above list
-every per-family and per-variant target name.
+A review pointed out that the repository labelled round-3 Kyber, Dilithium and SPHINCS+ code as ML-KEM, ML-DSA and SLH-DSA. Those are **not** byte-compatible with FIPS 203 / 204 / 205
+(different hashing and domain separation, no context string), so their KATs were not FIPS KATs. What was done:
 
----
+- **Replaced** the pre-standard code by FIPS-final upstream implementations, each pinned to a tag or commit and documented in an `UPSTREAM.md`: ML-KEM (mlkem-native), ML-DSA (mldsa-native, pure
+  ML-DSA with an empty context), SLH-DSA (slhdsa-c, the 12 FIPS 205 sets). Cross-checked against independent references: upstream's published KAT hashes (ML-KEM, ML-DSA) and NIST ACVP vectors
+  (SLH-DSA). SPHINCS+ Haraka / Haraka-AES, which are **not** in FIPS 205, left `test-all`; the old Kyber, Dilithium and SPHINCS+ code is kept in [`algorithms/legacy/`](algorithms/legacy/README.md).
+- **Relabelled** Falcon ("round 3, basis of the upcoming FN-DSA"; now also tested against the package's official KAT files, 100/100 records per size) and HQC ("selected, standard pending", pinned to the released v5.0.0 and checked against its official KATs); corrected the status of
+  the on-ramp schemes (round reached, HAWK withdrawn, CROSS / LESS round 2 only) and of ASCON (the code is Ascon v1.2, not the SP 800-232 functions). Added the experimental pre-standard
+  FN-DSA (c-fn-dsa, integer-only build), outside `test-all`.
+- **Restructured** the repository (`original/` → `algorithms/`, `common/` + `kat/gen` → `harness/`, `kat/rsp` + `kat/static` → `vectors/`), with all old `make` target names still working. The generated
+  `.rsp` files are byte-identical before and after the move (66 of 66 compared).
+- **Added** the generated size tables, the host benchmark of the new families and the figures above, `results/`, and these documents.
+- `make test-all` went from 35 to 23 variants (the dropped ones were the pre-standard trees). All of it passes; the exact commands and outcomes, including what was **not** run (notably the default 100-vector on-ramp run and the stateful sweeps), are in [`results/validation.md`](results/validation.md).
 
-## Adding a new algorithm
+## License
 
-- **New variant of an existing family:** see "Adding a new DS variant" in
-  [`original/DS/README.md`](original/DS/README.md) (or the
-  `Additional-DS`/`Stateful-DS` equivalents), "Adding a new KEM variant" in
-  [`original/KEM/README.md`](original/KEM/README.md), or "Adding a new ASCON
-  variant" in [`original/Symmetric/ASCON/README.md`](original/Symmetric/ASCON/README.md).
-- **New family entirely:**
-  1. Write a `kat/gen/PQCgenKAT_*` generator (see existing ones as templates).
-  2. Write a `kat/gen/main_*.c` test runner.
-  3. Add a `define` macro and variant list in `Makefile` following the
-     existing patterns. Decide which category it belongs in (standardized
-     `DS`/`KEM`, `Additional-DS`, `Stateful-DS`, or `Symmetric`) and whether
-     it should join `test-all`/`gen-all` (standardized only) or get its own
-     aggregate target instead.
-  4. To also support static tests for it, see "Adding a new family" in
-     [`tools/README.md`](tools/README.md).
+This repository follows the licensing terms of the reference implementations it contains; every family folder now carries its upstream license file or states the license in its `UPSTREAM.md`
+(CC0, MIT, Apache-2.0 / ISC / MIT, BSD-style, public domain, depending on the family; see [`algorithms/README.md`](algorithms/README.md)). Two things are **unconfirmed**: the license of the
+early Saarinen FIPS 205 code inside the legacy `*-s-simple` SPHINCS+ folders, and the exact upstream versions of the vendored CROSS, LESS, HAWK, XMSS, LMS, HSS and ASCON code (the
+READMEs give the closest matches found, not verified import points).
 
+## Authors
 
-## 📄 License
-
-This repository follows the licensing terms of the respective reference implementations used as the starting point. Please check individual algorithm directories for specific license details.
-
-## 👥 Authors
-
-- Alessandra Dolmeta    - alessandra.dolmeta@polito.it
-- Valeria Piscopo       - valeria.piscopo@polito.it
+- Alessandra Dolmeta — alessandra.dolmeta@polito.it
+- Valeria Piscopo — valeria.piscopo@polito.it
