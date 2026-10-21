@@ -1,0 +1,74 @@
+{
+ "label": "SDitH-fast-cipherpow",
+ "family": "SDitH",
+ "target": "sdith_cat1_fast_cipherpow-R3",
+ "level": 1,
+ "tradeoff": "fast",
+ "cflags_extra": [
+  "-lm"
+ ],
+ "ops": {
+  "keygen": {
+   "name": "SDitH-fast-cipherpow",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 34513,
+   "ns_median": 36380,
+   "ns_mean": 39829,
+   "ns_std": 10357,
+   "cycles_median": 110082,
+   "heap_peak": 447,
+   "heap_allocs": 2002,
+   "stack_peak": 0,
+   "vmhwm_kb": 2696,
+   "vmhwm_base_kb": 2312,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 4643,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SDitH-fast-cipherpow",
+   "op": "sign",
+   "iters": 72,
+   "ns_min": 26751717,
+   "ns_median": 34019517,
+   "ns_mean": 35436304,
+   "ns_std": 6748228,
+   "cycles_median": 102849827,
+   "heap_peak": 337976,
+   "heap_allocs": 146,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2960,
+   "vmhwm_base_kb": 2576,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 4643,
+   "sig_bytes": 4643
+  },
+  "verify": {
+   "name": "SDitH-fast-cipherpow",
+   "op": "verify",
+   "iters": 120,
+   "ns_min": 22648553,
+   "ns_median": 27864431,
+   "ns_mean": 28450032,
+   "ns_std": 3738385,
+   "cycles_median": 84241465,
+   "heap_peak": 331472,
+   "heap_allocs": 121,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2956,
+   "vmhwm_base_kb": 2572,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 4643,
+   "sig_bytes": 4643
+  }
+ },
+ "objsize": {
+  "text": 195232,
+  "data": 0,
+  "bss": 52
+ }
+}

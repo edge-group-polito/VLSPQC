@@ -1,0 +1,23 @@
+================================================================================
+Golden-model static KAT test run
+Started : 2026-10-20T16:19:50+02:00
+Host    : Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+Root    : /home/aledolme/home/CODE/VLSPQC
+Config  : KAT_NUM=1 RUN_MODE=all BENCHMARK_ALL=0 PROFILING=none (never overridden)
+          RUN_KEYGEN=1 RUN_SIGN=1 RUN_VERIFY=1 RUN_ENCAPS=1 RUN_DECAPS=1
+Compiler: gcc -O2 -std=c11 -I. -D_GNU_SOURCE -DFNDSA_AVX2=0 -DFNDSA_SSE2=0 -DFNDSA_NEON=0 -DFNDSA_RV64D=0 *.c -o test
+Targets : 2 requested (--targets 'fndsa-exp')
+================================================================================
+[PASS        ] fndsa-exp-512            (fndsa-exp         )   3.95s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] fndsa-exp-1024           (fndsa-exp         )   3.85s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.02s)
+================================================================================
+SUMMARY
+  total        : 2
+  pass         : 2
+  fail         : 0
+  skip         : 0
+  gen_fail     : 0
+  compile_fail : 0
+  elapsed      : 8s
+Log file: /tmp/claude-1000/-home-aledolme-home-CODE/661cdb2f-a27c-42d0-9593-5b2698a7c574/scratchpad/logs/p1final_static_fndsa.log
+================================================================================

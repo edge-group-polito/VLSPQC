@@ -1,0 +1,161 @@
+mkdir -p /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -D_GNU_SOURCE -DFNDSA_AVX2=0 -DFNDSA_SSE2=0 -DFNDSA_NEON=0 -DFNDSA_RV64D=0 -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/fndsa-exp-512/include -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=20 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-512.rsp"' -DALGO_NAME='"fndsa-exp-512"' /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/codec.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_fxp.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_gauss.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_mp31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_ntru.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_poly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_zint31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/mq.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sha3.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_core.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpoly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpr.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_sampler.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sysrng.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/util.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/vrfy.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_sign_falcon.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_fndsa_exp_512
+/home/aledolme/home/CODE/VLSPQC/build/gen_fndsa_exp_512
+Generated 20 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-512.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -D_GNU_SOURCE -DFNDSA_AVX2=0 -DFNDSA_SSE2=0 -DFNDSA_NEON=0 -DFNDSA_RV64D=0 -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/fndsa-exp-512/include -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=20 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-512.rsp"' /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/codec.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_fxp.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_gauss.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_mp31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_ntru.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_poly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_zint31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/mq.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sha3.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_core.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpoly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpr.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_sampler.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sysrng.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/util.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/vrfy.c /home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_fndsa_exp_512
+/home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c: In function ‘main’:
+/home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c:159:41: warning: ‘smlen’ may be used uninitialized [-Wmaybe-uninitialized]
+  159 |         m_out = (uint8_t *)malloc(smlen + 1);
+      |                                   ~~~~~~^~~
+/home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c:79:24: note: ‘smlen’ was declared here
+   79 |     unsigned long long smlen, mlen_out;
+      |                        ^~~~~
+=== Testing fndsa-exp-512 (EXPERIMENTAL, pre-standard FN-DSA) ===
+[FN-DSA-512 (c-fn-dsa, experimental)] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-512.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+[10] PASS: keygen
+[10] PASS: sign
+[10] PASS: verify
+[11] PASS: keygen
+[11] PASS: sign
+[11] PASS: verify
+[12] PASS: keygen
+[12] PASS: sign
+[12] PASS: verify
+[13] PASS: keygen
+[13] PASS: sign
+[13] PASS: verify
+[14] PASS: keygen
+[14] PASS: sign
+[14] PASS: verify
+[15] PASS: keygen
+[15] PASS: sign
+[15] PASS: verify
+[16] PASS: keygen
+[16] PASS: sign
+[16] PASS: verify
+[17] PASS: keygen
+[17] PASS: sign
+[17] PASS: verify
+[18] PASS: keygen
+[18] PASS: sign
+[18] PASS: verify
+[19] PASS: keygen
+[19] PASS: sign
+[19] PASS: verify
+
+=== Results for FN-DSA-512 (c-fn-dsa, experimental) ===
+  Keygen : 20 pass, 0 fail
+  Sign   : 20 pass, 0 fail
+  Verify : 20 pass, 0 fail
+  Total  : 20 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -D_GNU_SOURCE -DFNDSA_AVX2=0 -DFNDSA_SSE2=0 -DFNDSA_NEON=0 -DFNDSA_RV64D=0 -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/fndsa-exp-1024/include -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=20 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-1024.rsp"' -DALGO_NAME='"fndsa-exp-1024"' /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/codec.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_fxp.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_gauss.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_mp31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_ntru.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_poly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_zint31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/mq.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sha3.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_core.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpoly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpr.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_sampler.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sysrng.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/util.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/vrfy.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_sign_falcon.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_fndsa_exp_1024
+/home/aledolme/home/CODE/VLSPQC/build/gen_fndsa_exp_1024
+Generated 20 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-1024.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -D_GNU_SOURCE -DFNDSA_AVX2=0 -DFNDSA_SSE2=0 -DFNDSA_NEON=0 -DFNDSA_RV64D=0 -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/fndsa-exp-1024/include -I/home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=20 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-1024.rsp"' /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/codec.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_fxp.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_gauss.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_mp31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_ntru.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_poly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/kgen_zint31.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/mq.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sha3.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_core.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpoly.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_fpr.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sign_sampler.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/sysrng.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/util.c /home/aledolme/home/CODE/VLSPQC/original/DS/FNDSA-EXP/c-fn-dsa/vrfy.c /home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_fndsa_exp_1024
+/home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c: In function ‘main’:
+/home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c:159:41: warning: ‘smlen’ may be used uninitialized [-Wmaybe-uninitialized]
+  159 |         m_out = (uint8_t *)malloc(smlen + 1);
+      |                                   ~~~~~~^~~
+/home/aledolme/home/CODE/VLSPQC/kat/gen/main_falcon.c:79:24: note: ‘smlen’ was declared here
+   79 |     unsigned long long smlen, mlen_out;
+      |                        ^~~~~
+=== Testing fndsa-exp-1024 (EXPERIMENTAL, pre-standard FN-DSA) ===
+[FN-DSA-1024 (c-fn-dsa, experimental)] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/FNDSA-EXP/fndsa-exp-1024.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+[10] PASS: keygen
+[10] PASS: sign
+[10] PASS: verify
+[11] PASS: keygen
+[11] PASS: sign
+[11] PASS: verify
+[12] PASS: keygen
+[12] PASS: sign
+[12] PASS: verify
+[13] PASS: keygen
+[13] PASS: sign
+[13] PASS: verify
+[14] PASS: keygen
+[14] PASS: sign
+[14] PASS: verify
+[15] PASS: keygen
+[15] PASS: sign
+[15] PASS: verify
+[16] PASS: keygen
+[16] PASS: sign
+[16] PASS: verify
+[17] PASS: keygen
+[17] PASS: sign
+[17] PASS: verify
+[18] PASS: keygen
+[18] PASS: sign
+[18] PASS: verify
+[19] PASS: keygen
+[19] PASS: sign
+[19] PASS: verify
+
+=== Results for FN-DSA-1024 (c-fn-dsa, experimental) ===
+  Keygen : 20 pass, 0 fail
+  Sign   : 20 pass, 0 fail
+  Verify : 20 pass, 0 fail
+  Total  : 20 vectors, 0 failures

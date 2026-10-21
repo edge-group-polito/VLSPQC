@@ -1,0 +1,72 @@
+{
+ "label": "Falcon-1024",
+ "family": "Falcon (round 3)",
+ "target": "falcon-1024",
+ "shape": "ds_derand_rnd_nonce",
+ "level": 5,
+ "note": "round-3 reference, not FN-DSA",
+ "ops": {
+  "keygen": {
+   "name": "Falcon-1024",
+   "op": "keygen",
+   "iters": 120,
+   "ns_min": 19097173,
+   "ns_median": 40700527,
+   "ns_mean": 45265778,
+   "ns_std": 21751325,
+   "cycles_median": 121475272,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 32768,
+   "vmhwm_kb": 2340,
+   "vmhwm_base_kb": 2084,
+   "pk_bytes": 1793,
+   "sk_bytes": 2305,
+   "sig_bytes_max": 1330,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "Falcon-1024",
+   "op": "sign",
+   "iters": 439,
+   "ns_min": 6846678,
+   "ns_median": 9256860,
+   "ns_mean": 9407724,
+   "ns_std": 1090631,
+   "cycles_median": 27600008,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 86016,
+   "vmhwm_kb": 2524,
+   "vmhwm_base_kb": 2140,
+   "pk_bytes": 1793,
+   "sk_bytes": 2305,
+   "sig_bytes_max": 1330,
+   "sig_bytes": 1273
+  },
+  "verify": {
+   "name": "Falcon-1024",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 56568,
+   "ns_median": 62049,
+   "ns_mean": 65789,
+   "ns_std": 13692,
+   "cycles_median": 185000,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 8192,
+   "vmhwm_kb": 2392,
+   "vmhwm_base_kb": 2136,
+   "pk_bytes": 1793,
+   "sk_bytes": 2305,
+   "sig_bytes_max": 1330,
+   "sig_bytes": 1273
+  }
+ },
+ "objsize": {
+  "text": 90946,
+  "data": 0,
+  "bss": 0
+ }
+}

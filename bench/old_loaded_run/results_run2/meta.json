@@ -1,0 +1,13 @@
+{
+ "cflags": "-O2",
+ "cpu": 2,
+ "time_budget_s": 3.0,
+ "date": "2026-10-14 12:51:02",
+ "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+ "uname": "Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64",
+ "cpu_model": "Intel(R) Core(TM) Ultra 7 155H",
+ "load_notes": [
+  "run 2, timed phase 12:51:02-12:55:35: NOT idle. Two user-owned CPU-bound simulation processes (Vsim_tb, ~94 % CPU each) were running on other CPUs for the whole run (and a third, obj/t, part of it); vmstat mean user 25.8 %, idle 72.7 %, all 30 samples above 20 % user+system. Their start (about 12:29) postdates run 1; they could not be waited out. Run 2 medians are systematically slower and are NOT a clean repeat."
+ ],
+ "extra_link_flags": "-lm -lpthread for every variant (uniform); SDitH cflags_extra -lm (compile-time no-op), SQIsign cflags_extra -I. (the folder itself is always on the include path via -I<folder>)"
+}

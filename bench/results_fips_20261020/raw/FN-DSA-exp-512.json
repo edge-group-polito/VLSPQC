@@ -1,0 +1,79 @@
+{
+ "label": "FN-DSA-exp-512",
+ "family": "FN-DSA (c-fn-dsa, experimental)",
+ "target": "fndsa-exp-512",
+ "shape": "ds_derand_rnd_nonce",
+ "level": 1,
+ "note": "pre-standard, integer-only build",
+ "cflags_extra": [
+  "-D_GNU_SOURCE",
+  "-DFNDSA_AVX2=0",
+  "-DFNDSA_SSE2=0",
+  "-DFNDSA_NEON=0",
+  "-DFNDSA_RV64D=0"
+ ],
+ "ops": {
+  "keygen": {
+   "name": "FN-DSA-exp-512",
+   "op": "keygen",
+   "iters": 882,
+   "ns_min": 2490392,
+   "ns_median": 3211980,
+   "ns_mean": 3726437,
+   "ns_std": 1341889,
+   "cycles_median": 9581504,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 12288,
+   "vmhwm_kb": 2448,
+   "vmhwm_base_kb": 2064,
+   "pk_bytes": 897,
+   "sk_bytes": 1345,
+   "sig_bytes_max": 666,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "FN-DSA-exp-512",
+   "op": "sign",
+   "iters": 1000,
+   "ns_min": 1760833,
+   "ns_median": 3059751,
+   "ns_mean": 3175556,
+   "ns_std": 1030221,
+   "cycles_median": 9117395,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 32768,
+   "vmhwm_kb": 2472,
+   "vmhwm_base_kb": 2088,
+   "pk_bytes": 897,
+   "sk_bytes": 1345,
+   "sig_bytes_max": 666,
+   "sig_bytes": 666
+  },
+  "verify": {
+   "name": "FN-DSA-exp-512",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 17590,
+   "ns_median": 29001,
+   "ns_mean": 26920,
+   "ns_std": 7671,
+   "cycles_median": 86504,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2340,
+   "vmhwm_base_kb": 2084,
+   "pk_bytes": 897,
+   "sk_bytes": 1345,
+   "sig_bytes_max": 666,
+   "sig_bytes": 666
+  }
+ },
+ "objsize": {
+  "text": 107405,
+  "data": 0,
+  "bss": 0
+ }
+}

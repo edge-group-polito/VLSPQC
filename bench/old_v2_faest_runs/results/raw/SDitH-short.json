@@ -1,0 +1,74 @@
+{
+ "label": "SDitH-short",
+ "family": "SDitH",
+ "target": "sdith_cat1_short-R3",
+ "level": 1,
+ "tradeoff": "short",
+ "cflags_extra": [
+  "-lm"
+ ],
+ "ops": {
+  "keygen": {
+   "name": "SDitH-short",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 31849,
+   "ns_median": 33330,
+   "ns_mean": 36561,
+   "ns_std": 11408,
+   "cycles_median": 99928,
+   "heap_peak": 447,
+   "heap_allocs": 2002,
+   "stack_peak": 0,
+   "vmhwm_kb": 2696,
+   "vmhwm_base_kb": 2312,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 3721,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SDitH-short",
+   "op": "sign",
+   "iters": 59,
+   "ns_min": 40710693,
+   "ns_median": 49394462,
+   "ns_mean": 49546642,
+   "ns_std": 3715564,
+   "cycles_median": 147946897,
+   "heap_peak": 982056,
+   "heap_allocs": 120,
+   "stack_peak": 4096,
+   "vmhwm_kb": 3592,
+   "vmhwm_base_kb": 2568,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 3721,
+   "sig_bytes": 3721
+  },
+  "verify": {
+   "name": "SDitH-short",
+   "op": "verify",
+   "iters": 72,
+   "ns_min": 40124213,
+   "ns_median": 47727660,
+   "ns_mean": 47263462,
+   "ns_std": 3898852,
+   "cycles_median": 142954736,
+   "heap_peak": 975600,
+   "heap_allocs": 73,
+   "stack_peak": 4096,
+   "vmhwm_kb": 3592,
+   "vmhwm_base_kb": 2568,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 3721,
+   "sig_bytes": 3721
+  }
+ },
+ "objsize": {
+  "text": 195232,
+  "data": 0,
+  "bss": 52
+ }
+}

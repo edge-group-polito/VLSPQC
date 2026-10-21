@@ -1,0 +1,71 @@
+{
+ "label": "QR-UOV-1q127L10-aes",
+ "family": "QR-UOV",
+ "target": "QRUOV_1q127L10_aes-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "QR-UOV-1q127L10-aes",
+   "op": "keygen",
+   "iters": 28,
+   "ns_min": 95969676,
+   "ns_median": 104119306,
+   "ns_mean": 103954313,
+   "ns_std": 3101237,
+   "cycles_median": 311857865,
+   "heap_peak": 704,
+   "heap_allocs": 29,
+   "stack_peak": 57344,
+   "vmhwm_kb": 2372,
+   "vmhwm_base_kb": 2116,
+   "pk_bytes": 11041,
+   "sk_bytes": 32,
+   "sig_bytes_max": 541,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "QR-UOV-1q127L10-aes",
+   "op": "sign",
+   "iters": 106,
+   "ns_min": 24441686,
+   "ns_median": 27916063,
+   "ns_mean": 29421606,
+   "ns_std": 4000377,
+   "cycles_median": 83615078,
+   "heap_peak": 704,
+   "heap_allocs": 107,
+   "stack_peak": 61440,
+   "vmhwm_kb": 2376,
+   "vmhwm_base_kb": 2120,
+   "pk_bytes": 11041,
+   "sk_bytes": 32,
+   "sig_bytes_max": 541,
+   "sig_bytes": 541
+  },
+  "verify": {
+   "name": "QR-UOV-1q127L10-aes",
+   "op": "verify",
+   "iters": 105,
+   "ns_min": 24411834,
+   "ns_median": 29380275,
+   "ns_mean": 29500933,
+   "ns_std": 2570469,
+   "cycles_median": 88000616,
+   "heap_peak": 704,
+   "heap_allocs": 106,
+   "stack_peak": 53248,
+   "vmhwm_kb": 2380,
+   "vmhwm_base_kb": 2124,
+   "pk_bytes": 11041,
+   "sk_bytes": 32,
+   "sig_bytes_max": 541,
+   "sig_bytes": 541
+  }
+ },
+ "objsize": {
+  "text": 39188,
+  "data": 40,
+  "bss": 52
+ }
+}

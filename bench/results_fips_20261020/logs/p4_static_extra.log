@@ -1,0 +1,74 @@
+================================================================================
+Golden-model static KAT test run
+Started : 2026-10-21T09:53:53+02:00
+Host    : Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+Root    : /home/aledolme/home/CODE/VLSPQC
+Config  : KAT_NUM=1 RUN_MODE=all BENCHMARK_ALL=0 PROFILING=none (never overridden)
+          RUN_KEYGEN=1 RUN_SIGN=1 RUN_VERIFY=1 RUN_ENCAPS=1 RUN_DECAPS=1
+Compiler: gcc -O2 -std=c11 -I. *.c -o test
+Targets : 53 requested (--targets 'fndsa-exp sdith-r3 sqisign-r3 snova')
+================================================================================
+[PASS        ] fndsa-exp-512            (fndsa-exp         )   6.31s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] fndsa-exp-1024           (fndsa-exp         )   6.17s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] sdith_cat1_fast-R3       (sdith-r3          )  15.96s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.09s)
+[PASS        ] sdith_cat1_short-R3      (sdith-r3          )  14.78s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.13s)
+[PASS        ] sdith_cat1_fast_cipherpow-R3 (sdith-r3          )  11.37s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.06s)
+[PASS        ] sdith_cat1_short_cipherpow-R3 (sdith-r3          )  13.19s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.12s)
+[PASS        ] sdith_cat3_fast-R3       (sdith-r3          )  11.44s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.31s)
+[PASS        ] sdith_cat3_short-R3      (sdith-r3          )  12.83s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.91s)
+[PASS        ] sdith_cat3_fast_cipherpow-R3 (sdith-r3          )  11.78s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.21s)
+[PASS        ] sdith_cat3_short_cipherpow-R3 (sdith-r3          )  10.75s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.82s)
+[PASS        ] sdith_cat5_fast-R3       (sdith-r3          )   9.76s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.42s)
+[PASS        ] sdith_cat5_short-R3      (sdith-r3          )  13.35s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 1.30s)
+[PASS        ] sdith_cat5_fast_cipherpow-R3 (sdith-r3          )   9.58s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.33s)
+[PASS        ] sdith_cat5_short_cipherpow-R3 (sdith-r3          )  11.17s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 1.21s)
+[PASS        ] sqisign_p324_3-R3        (sqisign-r3        )  12.08s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.08s)
+[PASS        ] sqisign_p500_27-R3       (sqisign-r3        )  10.90s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.23s)
+[PASS        ] sqisign_p664_17-R3       (sqisign-r3        )  11.91s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.41s)
+[PASS        ] SNOVA_28_5_19_4_AES      (snova             )   2.24s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] SNOVA_28_5_19_4          (snova             )   3.81s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] SNOVA_24_5_16_4_AES      (snova             )   2.92s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] SNOVA_24_5_16_4          (snova             )   3.24s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.02s)
+[PASS        ] SNOVA_48_17_16_2_AES     (snova             )   2.57s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] SNOVA_48_17_16_2         (snova             )   2.76s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] SNOVA_48_16_19_2_AES     (snova             )   2.59s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.02s)
+[PASS        ] SNOVA_48_16_19_2         (snova             )   2.44s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.02s)
+[PASS        ] SNOVA_28_4_16_4x5_AES    (snova             )   2.86s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] SNOVA_28_4_16_4x5        (snova             )   2.55s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] SNOVA_28_4_19_4x5_AES    (snova             )   2.28s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] SNOVA_28_4_19_4x5        (snova             )   2.24s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] SNOVA_40_7_19_4_AES      (snova             )   2.86s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.04s)
+[PASS        ] SNOVA_40_7_19_4          (snova             )   3.96s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] SNOVA_37_8_16_4_AES      (snova             )   2.22s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] SNOVA_37_8_16_4          (snova             )   2.33s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.04s)
+[PASS        ] SNOVA_72_25_16_2_AES     (snova             )   2.87s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.11s)
+[PASS        ] SNOVA_72_25_16_2         (snova             )   2.39s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.08s)
+[PASS        ] SNOVA_72_24_19_2_AES     (snova             )   2.48s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.08s)
+[PASS        ] SNOVA_72_24_19_2         (snova             )   2.83s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.08s)
+[PASS        ] SNOVA_38_5_16_4x5_AES    (snova             )   2.32s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.02s)
+[PASS        ] SNOVA_38_5_16_4x5        (snova             )   2.12s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.02s)
+[PASS        ] SNOVA_38_5_19_4x5_AES    (snova             )   2.42s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] SNOVA_38_5_19_4x5        (snova             )   2.70s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] SNOVA_50_9_19_4_AES      (snova             )   2.51s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.07s)
+[PASS        ] SNOVA_50_9_19_4          (snova             )   2.38s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.06s)
+[PASS        ] SNOVA_60_10_16_4_AES     (snova             )   4.51s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.16s)
+[PASS        ] SNOVA_60_10_16_4         (snova             )   3.45s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.16s)
+[PASS        ] SNOVA_97_33_16_2_AES     (snova             )   3.29s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.28s)
+[PASS        ] SNOVA_97_33_16_2         (snova             )   3.78s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.33s)
+[PASS        ] SNOVA_96_32_19_2_AES     (snova             )   3.22s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.24s)
+[PASS        ] SNOVA_96_32_19_2         (snova             )   2.80s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.20s)
+[PASS        ] SNOVA_52_6_16_4x6_AES    (snova             )   2.33s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.07s)
+[PASS        ] SNOVA_52_6_16_4x6        (snova             )   2.65s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.07s)
+[PASS        ] SNOVA_52_6_19_4x6_AES    (snova             )   2.15s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.06s)
+[PASS        ] SNOVA_52_6_19_4x6        (snova             )   2.38s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.07s)
+================================================================================
+SUMMARY
+  total        : 53
+  pass         : 53
+  fail         : 0
+  skip         : 0
+  gen_fail     : 0
+  compile_fail : 0
+  elapsed      : 294s
+Log file: /tmp/claude-1000/-home-aledolme-home-CODE/661cdb2f-a27c-42d0-9593-5b2698a7c574/scratchpad/logs/p4_static_extra.log
+================================================================================

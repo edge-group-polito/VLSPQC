@@ -1,0 +1,71 @@
+{
+ "label": "SNOVA-I-S-AES",
+ "family": "SNOVA",
+ "target": "SNOVA_I_S_AES-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "SNOVA-I-S-AES",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 1950944,
+   "ns_median": 2393117,
+   "ns_mean": 2484505,
+   "ns_std": 405066,
+   "cycles_median": 7220692,
+   "heap_peak": 976,
+   "heap_allocs": 7007,
+   "stack_peak": 139264,
+   "vmhwm_kb": 2432,
+   "vmhwm_base_kb": 2048,
+   "pk_bytes": 1016,
+   "sk_bytes": 96,
+   "sig_bytes_max": 272,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SNOVA-I-S-AES",
+   "op": "sign",
+   "iters": 522,
+   "ns_min": 4580800,
+   "ns_median": 6086902,
+   "ns_mean": 6492660,
+   "ns_std": 1359349,
+   "cycles_median": 18036835,
+   "heap_peak": 976,
+   "heap_allocs": 2615,
+   "stack_peak": 360448,
+   "vmhwm_kb": 2556,
+   "vmhwm_base_kb": 2044,
+   "pk_bytes": 1016,
+   "sk_bytes": 96,
+   "sig_bytes_max": 272,
+   "sig_bytes": 272
+  },
+  "verify": {
+   "name": "SNOVA-I-S-AES",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 1890189,
+   "ns_median": 2259747,
+   "ns_mean": 2342896,
+   "ns_std": 304804,
+   "cycles_median": 6644483,
+   "heap_peak": 720,
+   "heap_allocs": 1001,
+   "stack_peak": 294912,
+   "vmhwm_kb": 2560,
+   "vmhwm_base_kb": 2048,
+   "pk_bytes": 1016,
+   "sk_bytes": 96,
+   "sig_bytes_max": 272,
+   "sig_bytes": 272
+  }
+ },
+ "objsize": {
+  "text": 32066,
+  "data": 8,
+  "bss": 5460
+ }
+}

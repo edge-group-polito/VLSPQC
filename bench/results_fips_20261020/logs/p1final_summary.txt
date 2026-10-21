@@ -1,0 +1,7 @@
+distclean exit=0
+test-all exit=0
+test-fndsa-exp exit=0
+test-slhdsa-haraka (legacy) exit=0
+static standard families exit=0
+static fndsa-exp exit=1
+DONE

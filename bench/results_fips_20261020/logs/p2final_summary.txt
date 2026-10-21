@@ -1,0 +1,10 @@
+distclean exit=0
+gen std exit=0
+gen extra exit=0
+test-all exit=0
+test-fndsa-exp exit=0
+test cross/less/hawk/haraka/stateful/ascon (KATNUM=10) exit=0
+static standard exit=0
+static fndsa exit=0
+static moved sample exit=1
+DONE

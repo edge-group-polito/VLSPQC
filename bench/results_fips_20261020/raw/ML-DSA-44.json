@@ -1,0 +1,72 @@
+{
+ "label": "ML-DSA-44",
+ "family": "ML-DSA (FIPS 204)",
+ "target": "ML-DSA-44",
+ "shape": "ds_derand_ctx",
+ "level": 2,
+ "note": "mldsa-native v2.0.0",
+ "ops": {
+  "keygen": {
+   "name": "ML-DSA-44",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 44470,
+   "ns_median": 49621,
+   "ns_mean": 50343,
+   "ns_std": 6787,
+   "cycles_median": 148710,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 32768,
+   "vmhwm_kb": 2340,
+   "vmhwm_base_kb": 2084,
+   "pk_bytes": 1312,
+   "sk_bytes": 2560,
+   "sig_bytes_max": 2420,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "ML-DSA-44",
+   "op": "sign",
+   "iters": 1000,
+   "ns_min": 82806,
+   "ns_median": 165771,
+   "ns_mean": 205507,
+   "ns_std": 134892,
+   "cycles_median": 496612,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 49152,
+   "vmhwm_kb": 2360,
+   "vmhwm_base_kb": 2104,
+   "pk_bytes": 1312,
+   "sk_bytes": 2560,
+   "sig_bytes_max": 2420,
+   "sig_bytes": 2420
+  },
+  "verify": {
+   "name": "ML-DSA-44",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 52458,
+   "ns_median": 56860,
+   "ns_mean": 61517,
+   "ns_std": 26966,
+   "cycles_median": 170232,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 28672,
+   "vmhwm_kb": 2232,
+   "vmhwm_base_kb": 2104,
+   "pk_bytes": 1312,
+   "sk_bytes": 2560,
+   "sig_bytes_max": 2420,
+   "sig_bytes": 2420
+  }
+ },
+ "objsize": {
+  "text": 32601,
+  "data": 0,
+  "bss": 0
+ }
+}

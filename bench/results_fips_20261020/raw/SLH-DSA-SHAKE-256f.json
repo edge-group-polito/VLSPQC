@@ -1,0 +1,72 @@
+{
+ "label": "SLH-DSA-SHAKE-256f",
+ "family": "SLH-DSA (FIPS 205)",
+ "target": "SLH-DSA-SHAKE-256f",
+ "shape": "ds_derand_rnd",
+ "level": 5,
+ "note": "slhdsa-c 174c02e",
+ "ops": {
+  "keygen": {
+   "name": "SLH-DSA-SHAKE-256f",
+   "op": "keygen",
+   "iters": 392,
+   "ns_min": 4576794,
+   "ns_median": 6400508,
+   "ns_mean": 6322228,
+   "ns_std": 1008076,
+   "cycles_median": 19055604,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2316,
+   "vmhwm_base_kb": 2060,
+   "pk_bytes": 64,
+   "sk_bytes": 128,
+   "sig_bytes_max": 49856,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SLH-DSA-SHAKE-256f",
+   "op": "sign",
+   "iters": 28,
+   "ns_min": 109026684,
+   "ns_median": 132323887,
+   "ns_mean": 151406618,
+   "ns_std": 39054233,
+   "cycles_median": 393879564,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2360,
+   "vmhwm_base_kb": 2104,
+   "pk_bytes": 64,
+   "sk_bytes": 128,
+   "sig_bytes_max": 49856,
+   "sig_bytes": 49856
+  },
+  "verify": {
+   "name": "SLH-DSA-SHAKE-256f",
+   "op": "verify",
+   "iters": 611,
+   "ns_min": 2458891,
+   "ns_median": 3192102,
+   "ns_mean": 3453705,
+   "ns_std": 684165,
+   "cycles_median": 9691660,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2360,
+   "vmhwm_base_kb": 2104,
+   "pk_bytes": 64,
+   "sk_bytes": 128,
+   "sig_bytes_max": 49856,
+   "sig_bytes": 49856
+  }
+ },
+ "objsize": {
+  "text": 35448,
+  "data": 1520,
+  "bss": 0
+ }
+}

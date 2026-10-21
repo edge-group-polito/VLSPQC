@@ -1,0 +1,74 @@
+{
+ "label": "SQIsign-p324-3",
+ "family": "SQIsign",
+ "target": "sqisign_p324_3-R3",
+ "level": 1,
+ "tradeoff": "",
+ "cflags_extra": [
+  "-I."
+ ],
+ "ops": {
+  "keygen": {
+   "name": "SQIsign-p324-3",
+   "op": "keygen",
+   "iters": 170,
+   "ns_min": 14554377,
+   "ns_median": 17985862,
+   "ns_mean": 18443957,
+   "ns_std": 2613506,
+   "cycles_median": 50454090,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 57344,
+   "vmhwm_kb": 2616,
+   "vmhwm_base_kb": 2232,
+   "pk_bytes": 83,
+   "sk_bytes": 270,
+   "sig_bytes_max": 200,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SQIsign-p324-3",
+   "op": "sign",
+   "iters": 63,
+   "ns_min": 39492400,
+   "ns_median": 46575461,
+   "ns_mean": 48450448,
+   "ns_std": 6345587,
+   "cycles_median": 132492508,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 106496,
+   "vmhwm_kb": 2664,
+   "vmhwm_base_kb": 2280,
+   "pk_bytes": 83,
+   "sk_bytes": 270,
+   "sig_bytes_max": 200,
+   "sig_bytes": 200
+  },
+  "verify": {
+   "name": "SQIsign-p324-3",
+   "op": "verify",
+   "iters": 408,
+   "ns_min": 5934920,
+   "ns_median": 6611999,
+   "ns_mean": 6974511,
+   "ns_std": 1131224,
+   "cycles_median": 18809540,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 40960,
+   "vmhwm_kb": 2540,
+   "vmhwm_base_kb": 2284,
+   "pk_bytes": 83,
+   "sk_bytes": 270,
+   "sig_bytes_max": 200,
+   "sig_bytes": 200
+  }
+ },
+ "objsize": {
+  "text": 256968,
+  "data": 16,
+  "bss": 356
+ }
+}

@@ -1,0 +1,72 @@
+{
+ "label": "ML-DSA-65",
+ "family": "ML-DSA (FIPS 204)",
+ "target": "ML-DSA-65",
+ "shape": "ds_derand_ctx",
+ "level": 3,
+ "note": "mldsa-native v2.0.0",
+ "ops": {
+  "keygen": {
+   "name": "ML-DSA-65",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 89340,
+   "ns_median": 98020,
+   "ns_mean": 98371,
+   "ns_std": 7387,
+   "cycles_median": 293424,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 49152,
+   "vmhwm_kb": 2364,
+   "vmhwm_base_kb": 2108,
+   "pk_bytes": 1952,
+   "sk_bytes": 4032,
+   "sig_bytes_max": 3309,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "ML-DSA-65",
+   "op": "sign",
+   "iters": 1000,
+   "ns_min": 130599,
+   "ns_median": 276846,
+   "ns_mean": 348270,
+   "ns_std": 237087,
+   "cycles_median": 828838,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 73728,
+   "vmhwm_kb": 2388,
+   "vmhwm_base_kb": 2132,
+   "pk_bytes": 1952,
+   "sk_bytes": 4032,
+   "sig_bytes_max": 3309,
+   "sig_bytes": 3309
+  },
+  "verify": {
+   "name": "ML-DSA-65",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 89163,
+   "ns_median": 96593,
+   "ns_mean": 98769,
+   "ns_std": 15648,
+   "cycles_median": 289138,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 45056,
+   "vmhwm_kb": 2260,
+   "vmhwm_base_kb": 2132,
+   "pk_bytes": 1952,
+   "sk_bytes": 4032,
+   "sig_bytes_max": 3309,
+   "sig_bytes": 3309
+  }
+ },
+ "objsize": {
+  "text": 33041,
+  "data": 0,
+  "bss": 0
+ }
+}

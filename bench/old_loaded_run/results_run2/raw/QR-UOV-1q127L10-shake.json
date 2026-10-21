@@ -1,0 +1,71 @@
+{
+ "label": "QR-UOV-1q127L10-shake",
+ "family": "QR-UOV",
+ "target": "QRUOV_1q127L10_shake-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "QR-UOV-1q127L10-shake",
+   "op": "keygen",
+   "iters": 25,
+   "ns_min": 119396664,
+   "ns_median": 139481033,
+   "ns_mean": 142631060,
+   "ns_std": 13868753,
+   "cycles_median": 390554700,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 57344,
+   "vmhwm_kb": 2368,
+   "vmhwm_base_kb": 2112,
+   "pk_bytes": 11041,
+   "sk_bytes": 32,
+   "sig_bytes_max": 541,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "QR-UOV-1q127L10-shake",
+   "op": "sign",
+   "iters": 114,
+   "ns_min": 24089076,
+   "ns_median": 30244272,
+   "ns_mean": 29747488,
+   "ns_std": 2858117,
+   "cycles_median": 85770919,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 57344,
+   "vmhwm_kb": 2368,
+   "vmhwm_base_kb": 2112,
+   "pk_bytes": 11041,
+   "sk_bytes": 32,
+   "sig_bytes_max": 541,
+   "sig_bytes": 541
+  },
+  "verify": {
+   "name": "QR-UOV-1q127L10-shake",
+   "op": "verify",
+   "iters": 114,
+   "ns_min": 20278691,
+   "ns_median": 24928474,
+   "ns_mean": 24693731,
+   "ns_std": 2508709,
+   "cycles_median": 70696050,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 49152,
+   "vmhwm_kb": 2372,
+   "vmhwm_base_kb": 2116,
+   "pk_bytes": 11041,
+   "sk_bytes": 32,
+   "sig_bytes_max": 541,
+   "sig_bytes": 541
+  }
+ },
+ "objsize": {
+  "text": 39319,
+  "data": 48,
+  "bss": 52
+ }
+}

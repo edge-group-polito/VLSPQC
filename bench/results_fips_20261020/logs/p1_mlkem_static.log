@@ -1,0 +1,25 @@
+python3 /home/aledolme/home/CODE/VLSPQC/tools/gen_static_test.py --kat-num 2 --outdir /home/aledolme/home/CODE/VLSPQC/kat/static --profiling none --run-keygen 1 --run-sign 1 --run-verify 1 --run-encaps 1 --run-decaps 1 --target mlkem
+make[1]: Entering directory '/home/aledolme/home/CODE/VLSPQC'
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-512/include -I/home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-512/mlkem -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=2 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/KEM/ML-KEM/ml-kem-512.rsp"' -DALGO_NAME='"ml-kem-512"' /home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-512/mlkem/mlkem_native.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_kem_mlkem.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ml_kem_512
+/home/aledolme/home/CODE/VLSPQC/build/gen_ml_kem_512
+Generated 2 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/KEM/ML-KEM/ml-kem-512.rsp
+make[1]: Leaving directory '/home/aledolme/home/CODE/VLSPQC'
+make[1]: Entering directory '/home/aledolme/home/CODE/VLSPQC'
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-768/include -I/home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-768/mlkem -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=2 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/KEM/ML-KEM/ml-kem-768.rsp"' -DALGO_NAME='"ml-kem-768"' /home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-768/mlkem/mlkem_native.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_kem_mlkem.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ml_kem_768
+/home/aledolme/home/CODE/VLSPQC/build/gen_ml_kem_768
+Generated 2 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/KEM/ML-KEM/ml-kem-768.rsp
+make[1]: Leaving directory '/home/aledolme/home/CODE/VLSPQC'
+make[1]: Entering directory '/home/aledolme/home/CODE/VLSPQC'
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-1024/include -I/home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-1024/mlkem -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=2 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/KEM/ML-KEM/ml-kem-1024.rsp"' -DALGO_NAME='"ml-kem-1024"' /home/aledolme/home/CODE/VLSPQC/original/KEM/ML-KEM/ml-kem-1024/mlkem/mlkem_native.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_kem_mlkem.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ml_kem_1024
+/home/aledolme/home/CODE/VLSPQC/build/gen_ml_kem_1024
+Generated 2 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/KEM/ML-KEM/ml-kem-1024.rsp
+make[1]: Leaving directory '/home/aledolme/home/CODE/VLSPQC'
+[ml-kem-512] generating 2 KAT vector(s) via `make gen-ml-kem-512`...
+[ml-kem-512] wrote static test to /home/aledolme/home/CODE/VLSPQC/kat/static/ml-kem-512
+[ml-kem-512] NOTE: compile this folder with: gcc *.c -I.
+[ml-kem-768] generating 2 KAT vector(s) via `make gen-ml-kem-768`...
+[ml-kem-768] wrote static test to /home/aledolme/home/CODE/VLSPQC/kat/static/ml-kem-768
+[ml-kem-768] NOTE: compile this folder with: gcc *.c -I.
+[ml-kem-1024] generating 2 KAT vector(s) via `make gen-ml-kem-1024`...
+[ml-kem-1024] wrote static test to /home/aledolme/home/CODE/VLSPQC/kat/static/ml-kem-1024
+[ml-kem-1024] NOTE: compile this folder with: gcc *.c -I.

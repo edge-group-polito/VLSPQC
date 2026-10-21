@@ -1,0 +1,71 @@
+{
+ "label": "MAYO-1",
+ "family": "MAYO",
+ "target": "MAYO_1-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "MAYO-1",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 1150777,
+   "ns_median": 1258456,
+   "ns_mean": 1309800,
+   "ns_std": 175163,
+   "cycles_median": 3576740,
+   "heap_peak": 960,
+   "heap_allocs": 7007,
+   "stack_peak": 159744,
+   "vmhwm_kb": 2428,
+   "vmhwm_base_kb": 2044,
+   "pk_bytes": 1456,
+   "sk_bytes": 24,
+   "sig_bytes_max": 464,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "MAYO-1",
+   "op": "sign",
+   "iters": 1000,
+   "ns_min": 1441611,
+   "ns_median": 1575962,
+   "ns_mean": 1680775,
+   "ns_std": 313442,
+   "cycles_median": 4479094,
+   "heap_peak": 960,
+   "heap_allocs": 15101,
+   "stack_peak": 241664,
+   "vmhwm_kb": 2556,
+   "vmhwm_base_kb": 2044,
+   "pk_bytes": 1456,
+   "sk_bytes": 24,
+   "sig_bytes_max": 464,
+   "sig_bytes": 464
+  },
+  "verify": {
+   "name": "MAYO-1",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 1015202,
+   "ns_median": 1195377,
+   "ns_mean": 1242475,
+   "ns_std": 223927,
+   "cycles_median": 3397448,
+   "heap_peak": 704,
+   "heap_allocs": 7007,
+   "stack_peak": 827392,
+   "vmhwm_kb": 3072,
+   "vmhwm_base_kb": 2048,
+   "pk_bytes": 1456,
+   "sk_bytes": 24,
+   "sig_bytes_max": 464,
+   "sig_bytes": 464
+  }
+ },
+ "objsize": {
+  "text": 41378,
+  "data": 8,
+  "bss": 72
+ }
+}

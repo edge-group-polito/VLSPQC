@@ -1,0 +1,44 @@
+================================================================================
+Golden-model static KAT test run
+Started : 2026-10-21T09:52:10+02:00
+Host    : Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+Root    : /home/aledolme/home/CODE/VLSPQC
+Config  : KAT_NUM=1 RUN_MODE=all BENCHMARK_ALL=0 PROFILING=none (never overridden)
+          RUN_KEYGEN=1 RUN_SIGN=1 RUN_VERIFY=1 RUN_ENCAPS=1 RUN_DECAPS=1
+Compiler: gcc -O2 -std=c11 -I. *.c -o test
+Targets : 23 requested (--targets 'all')
+================================================================================
+[PASS        ] ml-kem-512               (mlkem             )   2.65s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.00s)
+[PASS        ] ml-kem-768               (mlkem             )   2.38s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] ml-kem-1024              (mlkem             )   2.93s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.00s)
+[PASS        ] ML-DSA-44                (mldsa             )   3.93s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] ML-DSA-65                (mldsa             )   3.19s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.01s)
+[PASS        ] ML-DSA-87                (mldsa             )   3.03s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.00s)
+[PASS        ] falcon-512               (falcon            )   5.13s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.03s)
+[PASS        ] falcon-1024              (falcon            )   5.39s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.05s)
+[PASS        ] SLH-DSA-SHA2-128s        (slhdsa            )   5.99s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.85s)
+[PASS        ] SLH-DSA-SHA2-128f        (slhdsa            )   3.14s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.04s)
+[PASS        ] SLH-DSA-SHA2-192s        (slhdsa            )   5.44s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 1.38s)
+[PASS        ] SLH-DSA-SHA2-192f        (slhdsa            )   2.93s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.07s)
+[PASS        ] SLH-DSA-SHA2-256s        (slhdsa            )   5.85s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 1.23s)
+[PASS        ] SLH-DSA-SHA2-256f        (slhdsa            )   3.75s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.17s)
+[PASS        ] SLH-DSA-SHAKE-128s       (slhdsa            )   6.57s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 1.70s)
+[PASS        ] SLH-DSA-SHAKE-128f       (slhdsa            )   5.05s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.08s)
+[PASS        ] SLH-DSA-SHAKE-192s       (slhdsa            )   8.98s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 2.68s)
+[PASS        ] SLH-DSA-SHAKE-192f       (slhdsa            )   3.38s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.11s)
+[PASS        ] SLH-DSA-SHAKE-256s       (slhdsa            )   7.96s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 2.50s)
+[PASS        ] SLH-DSA-SHAKE-256f       (slhdsa            )   3.72s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.23s)
+[PASS        ] HQC2025_1                (hqc2025           )   3.50s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.02s)
+[PASS        ] HQC2025_3                (hqc2025           )   3.50s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.04s)
+[PASS        ] HQC2025_5                (hqc2025           )   4.93s  Test Successful (1 KAT vector(s)) (gen+compile+run, test itself: 0.10s)
+================================================================================
+SUMMARY
+  total        : 23
+  pass         : 23
+  fail         : 0
+  skip         : 0
+  gen_fail     : 0
+  compile_fail : 0
+  elapsed      : 103s
+Log file: /tmp/claude-1000/-home-aledolme-home-CODE/661cdb2f-a27c-42d0-9593-5b2698a7c574/scratchpad/logs/p4_static_standard.log
+================================================================================

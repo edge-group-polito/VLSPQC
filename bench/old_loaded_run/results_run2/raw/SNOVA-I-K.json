@@ -1,0 +1,71 @@
+{
+ "label": "SNOVA-I-K",
+ "family": "SNOVA",
+ "target": "SNOVA_I_K-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "SNOVA-I-K",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 1218733,
+   "ns_median": 1406739,
+   "ns_mean": 1446447,
+   "ns_std": 221062,
+   "cycles_median": 3977806,
+   "heap_peak": 976,
+   "heap_allocs": 6006,
+   "stack_peak": 147456,
+   "vmhwm_kb": 2444,
+   "vmhwm_base_kb": 2060,
+   "pk_bytes": 376,
+   "sk_bytes": 96,
+   "sig_bytes_max": 528,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SNOVA-I-K",
+   "op": "sign",
+   "iters": 343,
+   "ns_min": 7601197,
+   "ns_median": 9931628,
+   "ns_mean": 10474267,
+   "ns_std": 2599966,
+   "cycles_median": 28082346,
+   "heap_peak": 976,
+   "heap_allocs": 1376,
+   "stack_peak": 417792,
+   "vmhwm_kb": 2696,
+   "vmhwm_base_kb": 2056,
+   "pk_bytes": 376,
+   "sk_bytes": 96,
+   "sig_bytes_max": 528,
+   "sig_bytes": 528
+  },
+  "verify": {
+   "name": "SNOVA-I-K",
+   "op": "verify",
+   "iters": 579,
+   "ns_min": 3691974,
+   "ns_median": 4493405,
+   "ns_mean": 4560618,
+   "ns_std": 721989,
+   "cycles_median": 12662061,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 368640,
+   "vmhwm_kb": 2696,
+   "vmhwm_base_kb": 2056,
+   "pk_bytes": 376,
+   "sk_bytes": 96,
+   "sig_bytes_max": 528,
+   "sig_bytes": 528
+  }
+ },
+ "objsize": {
+  "text": 33705,
+  "data": 8,
+  "bss": 15636
+ }
+}

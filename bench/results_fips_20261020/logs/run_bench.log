@@ -1,0 +1,51 @@
+[bench] 25 variants, CFLAGS=-O2
+[build] ML-KEM-512                   ok
+[build] ML-KEM-768                   ok
+[build] ML-KEM-1024                  ok
+[build] ML-DSA-44                    ok
+[build] ML-DSA-65                    ok
+[build] ML-DSA-87                    ok
+[build] SLH-DSA-SHA2-128s            ok
+[build] SLH-DSA-SHA2-128f            ok
+[build] SLH-DSA-SHA2-192s            ok
+[build] SLH-DSA-SHA2-192f            ok
+[build] SLH-DSA-SHA2-256s            ok
+[build] SLH-DSA-SHA2-256f            ok
+[build] SLH-DSA-SHAKE-128s           ok
+[build] SLH-DSA-SHAKE-128f           ok
+[build] SLH-DSA-SHAKE-192s           ok
+[build] SLH-DSA-SHAKE-192f           ok
+[build] SLH-DSA-SHAKE-256s           ok
+[build] SLH-DSA-SHAKE-256f           ok
+[build] Falcon-512                   ok
+[build] Falcon-1024                  ok
+[build] HQC-1                        ok
+[build] HQC-3                        ok
+[build] HQC-5                        ok
+[build] FN-DSA-exp-512               ok
+[build] FN-DSA-exp-1024              ok
+[run]   ML-KEM-512                   0.1s  keygen=0.019 ms sign=0.021 ms verify=0.027 ms
+[run]   ML-KEM-768                   0.1s  keygen=0.030 ms sign=0.031 ms verify=0.040 ms
+[run]   ML-KEM-1024                  0.2s  keygen=0.047 ms sign=0.044 ms verify=0.055 ms
+[run]   ML-DSA-44                    0.3s  keygen=0.050 ms sign=0.166 ms verify=0.057 ms
+[run]   ML-DSA-65                    0.6s  keygen=0.098 ms sign=0.277 ms verify=0.097 ms
+[run]   ML-DSA-87                    0.8s  keygen=0.146 ms sign=0.377 ms verify=0.146 ms
+[run]   SLH-DSA-SHA2-128s            7.9s  keygen=57.663 ms sign=460.989 ms verify=0.441 ms
+[run]   SLH-DSA-SHA2-128f            5.9s  keygen=0.838 ms sign=22.866 ms verify=1.427 ms
+[run]   SLH-DSA-SHA2-192s            11.5s  keygen=105.068 ms sign=976.339 ms verify=0.628 ms
+[run]   SLH-DSA-SHA2-192f            7.5s  keygen=1.249 ms sign=42.018 ms verify=2.049 ms
+[run]   SLH-DSA-SHA2-256s            11.5s  keygen=55.243 ms sign=989.450 ms verify=0.922 ms
+[run]   SLH-DSA-SHA2-256f            8.9s  keygen=3.778 ms sign=76.276 ms verify=1.763 ms
+[run]   SLH-DSA-SHAKE-128s           10.5s  keygen=105.510 ms sign=702.089 ms verify=0.791 ms
+[run]   SLH-DSA-SHAKE-128f           6.7s  keygen=2.608 ms sign=34.563 ms verify=1.828 ms
+[run]   SLH-DSA-SHAKE-192s           16.0s  keygen=180.823 ms sign=1585.607 ms verify=0.923 ms
+[run]   SLH-DSA-SHAKE-192f           8.2s  keygen=2.037 ms sign=71.246 ms verify=3.232 ms
+[run]   SLH-DSA-SHAKE-256s           16.3s  keygen=91.780 ms sign=1160.872 ms verify=2.544 ms
+[run]   SLH-DSA-SHAKE-256f           9.3s  keygen=6.401 ms sign=132.324 ms verify=3.192 ms
+[run]   Falcon-512                   8.2s  keygen=10.720 ms sign=3.583 ms verify=0.025 ms
+[run]   Falcon-1024                  9.8s  keygen=40.701 ms sign=9.257 ms verify=0.062 ms
+[run]   HQC-1                        7.4s  keygen=1.232 ms sign=2.647 ms verify=3.625 ms
+[run]   HQC-3                        10.0s  keygen=3.364 ms sign=10.079 ms verify=11.811 ms
+[run]   HQC-5                        9.8s  keygen=8.678 ms sign=19.037 ms verify=26.440 ms
+[run]   FN-DSA-exp-512               6.5s  keygen=3.212 ms sign=3.060 ms verify=0.029 ms
+[run]   FN-DSA-exp-1024              6.4s  keygen=14.759 ms sign=5.523 ms verify=0.048 ms

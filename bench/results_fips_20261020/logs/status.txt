@@ -1,0 +1,3 @@
+run_bench exit=0
+wrote bench/results_fips_20261020/results.csv and bench/results_fips_20261020/results.md (25 rows)
+DONE

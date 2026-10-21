@@ -1,0 +1,6 @@
+distclean exit=0
+test-all exit=0
+test-fndsa-exp exit=0
+static standard exit=0
+static fndsa/sdith-r3/sqisign-r3/snova exit=0
+DONE

@@ -1,0 +1,72 @@
+{
+ "label": "SLH-DSA-SHA2-128s",
+ "family": "SLH-DSA (FIPS 205)",
+ "target": "SLH-DSA-SHA2-128s",
+ "shape": "ds_derand_rnd",
+ "level": 1,
+ "note": "slhdsa-c 174c02e",
+ "ops": {
+  "keygen": {
+   "name": "SLH-DSA-SHA2-128s",
+   "op": "keygen",
+   "iters": 53,
+   "ns_min": 51555284,
+   "ns_median": 57663328,
+   "ns_mean": 58251024,
+   "ns_std": 4048349,
+   "cycles_median": 172320874,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2216,
+   "vmhwm_base_kb": 2088,
+   "pk_bytes": 32,
+   "sk_bytes": 64,
+   "sig_bytes_max": 7856,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SLH-DSA-SHA2-128s",
+   "op": "sign",
+   "iters": 6,
+   "ns_min": 420489578,
+   "ns_median": 460989157,
+   "ns_mean": 450267334,
+   "ns_std": 19259524,
+   "cycles_median": 1374475931,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2320,
+   "vmhwm_base_kb": 2064,
+   "pk_bytes": 32,
+   "sk_bytes": 64,
+   "sig_bytes_max": 7856,
+   "sig_bytes": 7856
+  },
+  "verify": {
+   "name": "SLH-DSA-SHA2-128s",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 384093,
+   "ns_median": 441135,
+   "ns_mean": 450730,
+   "ns_std": 61452,
+   "cycles_median": 1314450,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2316,
+   "vmhwm_base_kb": 2060,
+   "pk_bytes": 32,
+   "sk_bytes": 64,
+   "sig_bytes_max": 7856,
+   "sig_bytes": 7856
+  }
+ },
+ "objsize": {
+  "text": 35448,
+  "data": 1520,
+  "bss": 0
+ }
+}

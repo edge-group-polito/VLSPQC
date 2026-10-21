@@ -1,0 +1,71 @@
+{
+ "label": "UOV-Is",
+ "family": "UOV",
+ "target": "UOV_Is-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "UOV-Is",
+   "op": "keygen",
+   "iters": 83,
+   "ns_min": 18400531,
+   "ns_median": 21961584,
+   "ns_mean": 22455104,
+   "ns_std": 3284424,
+   "cycles_median": 62272252,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 3052,
+   "vmhwm_base_kb": 2796,
+   "pk_bytes": 412160,
+   "sk_bytes": 348704,
+   "sig_bytes_max": 96,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "UOV-Is",
+   "op": "sign",
+   "iters": 1000,
+   "ns_min": 197159,
+   "ns_median": 203238,
+   "ns_mean": 240987,
+   "ns_std": 94135,
+   "cycles_median": 576336,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 4096,
+   "vmhwm_kb": 3056,
+   "vmhwm_base_kb": 2800,
+   "pk_bytes": 412160,
+   "sk_bytes": 348704,
+   "sig_bytes_max": 96,
+   "sig_bytes": 96
+  },
+  "verify": {
+   "name": "UOV-Is",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 19775,
+   "ns_median": 21041,
+   "ns_mean": 24738,
+   "ns_std": 17577,
+   "cycles_median": 59726,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 0,
+   "vmhwm_kb": 3052,
+   "vmhwm_base_kb": 2796,
+   "pk_bytes": 412160,
+   "sk_bytes": 348704,
+   "sig_bytes_max": 96,
+   "sig_bytes": 96
+  }
+ },
+ "objsize": {
+  "text": 38026,
+  "data": 0,
+  "bss": 52
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "label": "UOV-Ip-pkc-skc",
+ "family": "UOV",
+ "target": "UOV_Ip_pkc_skc-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "UOV-Ip-pkc-skc",
+   "op": "keygen",
+   "iters": 48,
+   "ns_min": 47502513,
+   "ns_median": 62958690,
+   "ns_mean": 64613988,
+   "ns_std": 9979460,
+   "cycles_median": 177980227,
+   "heap_peak": 278087,
+   "heap_allocs": 49,
+   "stack_peak": 20480,
+   "vmhwm_kb": 2628,
+   "vmhwm_base_kb": 2372,
+   "pk_bytes": 46591,
+   "sk_bytes": 32,
+   "sig_bytes_max": 135,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "UOV-Ip-pkc-skc",
+   "op": "sign",
+   "iters": 492,
+   "ns_min": 4470408,
+   "ns_median": 5382640,
+   "ns_mean": 5487889,
+   "ns_std": 709246,
+   "cycles_median": 15216504,
+   "heap_peak": 278087,
+   "heap_allocs": 493,
+   "stack_peak": 20480,
+   "vmhwm_kb": 2628,
+   "vmhwm_base_kb": 2628,
+   "pk_bytes": 46591,
+   "sk_bytes": 32,
+   "sig_bytes_max": 135,
+   "sig_bytes": 135
+  },
+  "verify": {
+   "name": "UOV-Ip-pkc-skc",
+   "op": "verify",
+   "iters": 644,
+   "ns_min": 3395811,
+   "ns_median": 4108680,
+   "ns_mean": 4145638,
+   "ns_std": 503616,
+   "cycles_median": 11595379,
+   "heap_peak": 321300,
+   "heap_allocs": 645,
+   "stack_peak": 4096,
+   "vmhwm_kb": 2876,
+   "vmhwm_base_kb": 2620,
+   "pk_bytes": 46591,
+   "sk_bytes": 32,
+   "sig_bytes_max": 135,
+   "sig_bytes": 135
+  }
+ },
+ "objsize": {
+  "text": 45045,
+  "data": 0,
+  "bss": 52
+ }
+}

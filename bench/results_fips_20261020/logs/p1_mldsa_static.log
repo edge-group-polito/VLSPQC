@@ -1,0 +1,25 @@
+python3 /home/aledolme/home/CODE/VLSPQC/tools/gen_static_test.py --kat-num 2 --outdir /home/aledolme/home/CODE/VLSPQC/kat/static --profiling none --run-keygen 1 --run-sign 1 --run-verify 1 --run-encaps 1 --run-decaps 1 --target mldsa
+make[1]: Entering directory '/home/aledolme/home/CODE/VLSPQC'
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-44/include -I/home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-44/mldsa -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=2 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/ML-DSA/ML-DSA-44.rsp"' -DALGO_NAME='"ML-DSA-44"' /home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-44/mldsa/mldsa_native.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_sign_mldsa.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ML_DSA_44
+/home/aledolme/home/CODE/VLSPQC/build/gen_ML_DSA_44
+Generated 2 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/ML-DSA/ML-DSA-44.rsp
+make[1]: Leaving directory '/home/aledolme/home/CODE/VLSPQC'
+make[1]: Entering directory '/home/aledolme/home/CODE/VLSPQC'
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-65/include -I/home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-65/mldsa -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=2 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/ML-DSA/ML-DSA-65.rsp"' -DALGO_NAME='"ML-DSA-65"' /home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-65/mldsa/mldsa_native.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_sign_mldsa.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ML_DSA_65
+/home/aledolme/home/CODE/VLSPQC/build/gen_ML_DSA_65
+Generated 2 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/ML-DSA/ML-DSA-65.rsp
+make[1]: Leaving directory '/home/aledolme/home/CODE/VLSPQC'
+make[1]: Entering directory '/home/aledolme/home/CODE/VLSPQC'
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-87/include -I/home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-87/mldsa -I/home/aledolme/home/CODE/VLSPQC/kat/gen -I/home/aledolme/home/CODE/VLSPQC/common -DKATNUM=2 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/ML-DSA/ML-DSA-87.rsp"' -DALGO_NAME='"ML-DSA-87"' /home/aledolme/home/CODE/VLSPQC/original/DS/ML-DSA/ML-DSA-87/mldsa/mldsa_native.c /home/aledolme/home/CODE/VLSPQC/kat/gen/rng.c /home/aledolme/home/CODE/VLSPQC/kat/gen/PQCgenKAT_sign_mldsa.c /home/aledolme/home/CODE/VLSPQC/common/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ML_DSA_87
+/home/aledolme/home/CODE/VLSPQC/build/gen_ML_DSA_87
+Generated 2 KAT vectors → /home/aledolme/home/CODE/VLSPQC/kat/rsp/DS/ML-DSA/ML-DSA-87.rsp
+make[1]: Leaving directory '/home/aledolme/home/CODE/VLSPQC'
+[ML-DSA-44] generating 2 KAT vector(s) via `make gen-ML-DSA-44`...
+[ML-DSA-44] wrote static test to /home/aledolme/home/CODE/VLSPQC/kat/static/ML-DSA-44
+[ML-DSA-44] NOTE: compile this folder with: gcc *.c -I.
+[ML-DSA-65] generating 2 KAT vector(s) via `make gen-ML-DSA-65`...
+[ML-DSA-65] wrote static test to /home/aledolme/home/CODE/VLSPQC/kat/static/ML-DSA-65
+[ML-DSA-65] NOTE: compile this folder with: gcc *.c -I.
+[ML-DSA-87] generating 2 KAT vector(s) via `make gen-ML-DSA-87`...
+[ML-DSA-87] wrote static test to /home/aledolme/home/CODE/VLSPQC/kat/static/ML-DSA-87
+[ML-DSA-87] NOTE: compile this folder with: gcc *.c -I.

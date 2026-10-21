@@ -1,0 +1,72 @@
+{
+ "label": "FAEST-EM-128s",
+ "family": "FAEST",
+ "target": "FAEST_EM_128S-R3",
+ "note": "v3 (round 3)",
+ "level": 1,
+ "tradeoff": "short",
+ "ops": {
+  "keygen": {
+   "name": "FAEST-EM-128s",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 24262,
+   "ns_median": 29170,
+   "ns_mean": 29383,
+   "ns_std": 5802,
+   "cycles_median": 87890,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 0,
+   "vmhwm_kb": 2564,
+   "vmhwm_base_kb": 2308,
+   "pk_bytes": 32,
+   "sk_bytes": 32,
+   "sig_bytes_max": 3466,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "FAEST-EM-128s",
+   "op": "sign",
+   "iters": 5,
+   "ns_min": 3825899622,
+   "ns_median": 4154263898,
+   "ns_mean": 4109062053,
+   "ns_std": 157892735,
+   "cycles_median": 12454744843,
+   "heap_peak": 2230346,
+   "heap_allocs": 516,
+   "stack_peak": 4096,
+   "vmhwm_kb": 4780,
+   "vmhwm_base_kb": 2988,
+   "pk_bytes": 32,
+   "sk_bytes": 32,
+   "sig_bytes_max": 3466,
+   "sig_bytes": 3466
+  },
+  "verify": {
+   "name": "FAEST-EM-128s",
+   "op": "verify",
+   "iters": 5,
+   "ns_min": 3699475984,
+   "ns_median": 3943154406,
+   "ns_mean": 4231154377,
+   "ns_std": 758677542,
+   "cycles_median": 11782302077,
+   "heap_peak": 1115440,
+   "heap_allocs": 270,
+   "stack_peak": 4096,
+   "vmhwm_kb": 3624,
+   "vmhwm_base_kb": 2984,
+   "pk_bytes": 32,
+   "sk_bytes": 32,
+   "sig_bytes_max": 3466,
+   "sig_bytes": 3466
+  }
+ },
+ "objsize": {
+  "text": 597630,
+  "data": 1152,
+  "bss": 52
+ }
+}

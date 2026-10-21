@@ -1,0 +1,71 @@
+{
+ "label": "MQOM-gf16-fast-ot",
+ "family": "MQOM",
+ "target": "mqom3_cat1_gf16_fast_ot",
+ "level": 1,
+ "tradeoff": "fast",
+ "ops": {
+  "keygen": {
+   "name": "MQOM-gf16-fast-ot",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 510931,
+   "ns_median": 564945,
+   "ns_mean": 606751,
+   "ns_std": 105969,
+   "cycles_median": 1687160,
+   "heap_peak": 135264,
+   "heap_allocs": 3003,
+   "stack_peak": 0,
+   "vmhwm_kb": 2700,
+   "vmhwm_base_kb": 2316,
+   "pk_bytes": 64,
+   "sk_bytes": 96,
+   "sig_bytes_max": 3316,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "MQOM-gf16-fast-ot",
+   "op": "sign",
+   "iters": 372,
+   "ns_min": 6464426,
+   "ns_median": 7382025,
+   "ns_mean": 7582023,
+   "ns_std": 716467,
+   "cycles_median": 22078077,
+   "heap_peak": 416640,
+   "heap_allocs": 2984,
+   "stack_peak": 12288,
+   "vmhwm_kb": 3096,
+   "vmhwm_base_kb": 2712,
+   "pk_bytes": 64,
+   "sk_bytes": 96,
+   "sig_bytes_max": 3316,
+   "sig_bytes": 3316
+  },
+  "verify": {
+   "name": "MQOM-gf16-fast-ot",
+   "op": "verify",
+   "iters": 612,
+   "ns_min": 3861244,
+   "ns_median": 4174299,
+   "ns_mean": 4350895,
+   "ns_std": 445095,
+   "cycles_median": 12531108,
+   "heap_peak": 255064,
+   "heap_allocs": 4904,
+   "stack_peak": 8192,
+   "vmhwm_kb": 2836,
+   "vmhwm_base_kb": 2708,
+   "pk_bytes": 64,
+   "sk_bytes": 96,
+   "sig_bytes_max": 3316,
+   "sig_bytes": 3316
+  }
+ },
+ "objsize": {
+  "text": 542866,
+  "data": 152,
+  "bss": 212
+ }
+}

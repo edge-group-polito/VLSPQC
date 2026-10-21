@@ -1,0 +1,12 @@
+{
+ "cflags": "-O2",
+ "cpu": 2,
+ "time_budget_s": 3.0,
+ "date": "2026-10-14 14:28:57",
+ "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+ "uname": "Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64",
+ "cpu_model": "Intel(R) Core(TM) Ultra 7 155H",
+ "load_notes": [
+  "Idle rerun 2026-10-14 (T9b), make bench-l1 BENCH_OUT=bench/results_run2, timed phase ~14:29:00-14:33:36, back to back after run 1. No Vsim/verilator/pdflatex. vmstat (28 samples): mean user 7.5 %, sys 1.1 %, idle 92.1 %, max user 12 %; benchmark core (6.25 %) plus ~0.2 core foreign (cpptools bursts). No sample >20 %."
+ ]
+}

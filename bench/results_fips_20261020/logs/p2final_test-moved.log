@@ -1,0 +1,1725 @@
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_1_RSDP_b
+=== Testing CROSS_1_RSDP_b ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_b.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_1_RSDP_f
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_1_RSDP_f ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_f.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_1_RSDP_s
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_1_RSDP_s ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDP_s.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_1_RSDPG_b
+=== Testing CROSS_1_RSDPG_b ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_b.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_1_RSDPG_f
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_1_RSDPG_f ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_f.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_1_RSDPG_s
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_1_RSDPG_s ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_1_RSDPG_s.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_3_RSDP_b
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_3_RSDP_b ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_b.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_3_RSDP_f
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_3_RSDP_f ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_f.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_3_RSDP_s
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_3_RSDP_s ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDP_s.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_3_RSDPG_b
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_3_RSDPG_b ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_b.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_3_RSDPG_f
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_3_RSDPG_f ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_f.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_3_RSDPG_s
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_3_RSDPG_s ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_3_RSDPG_s.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_5_RSDP_b
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_5_RSDP_b ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_b.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_5_RSDP_f
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_5_RSDP_f ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_f.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_5_RSDP_s
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_5_RSDP_s ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDP_s.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_5_RSDPG_b
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_5_RSDPG_b ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_b.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_5_RSDPG_f
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_5_RSDPG_f ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_f.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/CROSS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/csprng_hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/pack_unpack.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/sign.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_cross.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_CROSS_5_RSDPG_s
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/sign.c: In function ‘crypto_sign_keypair’:
+/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s/src/sign.c:55:5: warning: "/*" within comment [-Wcomment]
+   55 |     /* keygen cannot fail */
+      |      
+=== Testing CROSS_5_RSDPG_s ===
+[CROSS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/CROSS/CROSS_5_RSDPG_s.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for CROSS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_252_45.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/LESS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/canonical.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/codes.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/monomial.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/sort.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/transpose.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_45/src/utils.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_less.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_LESS_252_45
+=== Testing LESS_252_45 ===
+[LESS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_252_45.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for LESS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_252_68.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/LESS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/canonical.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/codes.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/monomial.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/sort.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/transpose.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_68/src/utils.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_less.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_LESS_252_68
+=== Testing LESS_252_68 ===
+[LESS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_252_68.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for LESS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_252_192.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/LESS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/canonical.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/codes.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/monomial.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/sort.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/transpose.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_252_192/src/utils.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_less.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_LESS_252_192
+=== Testing LESS_252_192 ===
+[LESS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_252_192.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for LESS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_400_102.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/LESS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/canonical.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/codes.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/monomial.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/sort.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/transpose.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_102/src/utils.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_less.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_LESS_400_102
+=== Testing LESS_400_102 ===
+[LESS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_400_102.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for LESS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_400_220.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/LESS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/canonical.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/codes.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/monomial.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/sort.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/transpose.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_400_220/src/utils.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_less.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_LESS_400_220
+=== Testing LESS_400_220 ===
+[LESS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_400_220.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for LESS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_548_137.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/LESS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/canonical.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/codes.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/monomial.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/sort.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/transpose.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_137/src/utils.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_less.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_LESS_548_137
+=== Testing LESS_548_137 ===
+[LESS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_548_137.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for LESS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_548_345.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/LESS.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/canonical.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/codes.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/keccakf1600.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/monomial.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/seedtree.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/sort.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/transpose.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/round2-only/LESS/LESS_548_345/src/utils.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_less.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_LESS_548_345
+=== Testing LESS_548_345 ===
+[LESS] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/round2-only/LESS/LESS_548_345.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for LESS ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/HAWK/hawk-256.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/api.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/hawk_kgen.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/hawk_sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/hawk_vrfy.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/ng_fxp.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/ng_hawk.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/ng_mp31.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/ng_ntru.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/ng_poly.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/ng_zint31.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-256/src/sha3.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_hawk.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_hawk_256
+=== Testing hawk-256 ===
+[Hawk-256] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/HAWK/hawk-256.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for Hawk-256 ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/HAWK/hawk-512.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/api.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/hawk_kgen.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/hawk_sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/hawk_vrfy.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/ng_fxp.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/ng_hawk.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/ng_mp31.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/ng_ntru.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/ng_poly.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/ng_zint31.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-512/src/sha3.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_hawk.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_hawk_512
+=== Testing hawk-512 ===
+[Hawk-512] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/HAWK/hawk-512.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for Hawk-512 ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/HAWK/hawk-1024.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/api.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/hawk_kgen.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/hawk_sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/hawk_vrfy.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/ng_fxp.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/ng_hawk.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/ng_mp31.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/ng_ntru.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/ng_poly.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/ng_zint31.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/rng.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/onramp/HAWK/hawk-1024/src/sha3.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_hawk.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_hawk_1024
+=== Testing hawk-1024 ===
+[Hawk-1024] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/onramp/HAWK/hawk-1024.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for Hawk-1024 ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1  -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/address.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/fors.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/hash_haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/thash_haraka_simple.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/utils.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/utilsx1.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/wots.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple/src/wotsx1.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_slhdsa.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_HARAKAp128fsimple
+=== Testing SPHINCS+-128f-simple (SLH-DSA-Haraka) ===
+[SPHINCS+] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-128f-simple.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for SPHINCS+ ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1  -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/address.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/fors.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/hash_haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/thash_haraka_robust.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/utils.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/utilsx1.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/wots.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust/src/wotsx1.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_slhdsa.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_HARAKAp128frobust
+=== Testing SPHINCS+-128f-robust (SLH-DSA-Haraka) ===
+[SPHINCS+] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-128f-robust.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for SPHINCS+ ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1  -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/address.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/fors.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/hash_haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/thash_haraka_simple.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/utils.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/utilsx1.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/wots.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple/src/wotsx1.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_slhdsa.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_HARAKAp192fsimple
+=== Testing SPHINCS+-192f-simple (SLH-DSA-Haraka) ===
+[SPHINCS+] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-192f-simple.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for SPHINCS+ ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1  -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/address.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/fors.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/hash_haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/thash_haraka_robust.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/utils.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/utilsx1.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/wots.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust/src/wotsx1.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_slhdsa.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_HARAKAp192frobust
+=== Testing SPHINCS+-192f-robust (SLH-DSA-Haraka) ===
+[SPHINCS+] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-192f-robust.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for SPHINCS+ ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1  -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/address.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/fors.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/hash_haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/thash_haraka_simple.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/utils.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/utilsx1.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/wots.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple/src/wotsx1.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_slhdsa.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_HARAKAp256fsimple
+=== Testing SPHINCS+-256f-simple (SLH-DSA-Haraka) ===
+[SPHINCS+] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-256f-simple.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for SPHINCS+ ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1  -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/address.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/fors.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/hash_haraka.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/merkle.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/thash_haraka_robust.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/utils.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/utilsx1.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/wots.c /home/aledolme/home/CODE/VLSPQC/algorithms/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust/src/wotsx1.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_slhdsa.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_HARAKAp256frobust
+=== Testing SPHINCS+-256f-robust (SLH-DSA-Haraka) ===
+[SPHINCS+] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/legacy/SLH-DSA-Haraka/SPHINCS+-256f-robust.rsp
+Testing: keygen sign verify 
+[0] PASS: keygen
+[0] PASS: sign
+[0] PASS: verify
+[1] PASS: keygen
+[1] PASS: sign
+[1] PASS: verify
+[2] PASS: keygen
+[2] PASS: sign
+[2] PASS: verify
+[3] PASS: keygen
+[3] PASS: sign
+[3] PASS: verify
+[4] PASS: keygen
+[4] PASS: sign
+[4] PASS: verify
+[5] PASS: keygen
+[5] PASS: sign
+[5] PASS: verify
+[6] PASS: keygen
+[6] PASS: sign
+[6] PASS: verify
+[7] PASS: keygen
+[7] PASS: sign
+[7] PASS: verify
+[8] PASS: keygen
+[8] PASS: sign
+[8] PASS: verify
+[9] PASS: keygen
+[9] PASS: sign
+[9] PASS: verify
+
+=== Results for SPHINCS+ ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 \
+    -DXMSS_VARIANT_STR='"XMSS-SHA2_10_256"' \
+    -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/stateful/XMSS/XMSS-SHA2_10_256.rsp"' \
+    /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/fips202.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/hash_address.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/openssl_sha_shim.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/params.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/sha2_256.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/sha2_512.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/utils.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/wots.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/xmss_commons.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/XMSS/src/xmss_core.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_xmss.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_xmss
+=== Testing XMSS (XMSS-SHA2_10_256) ===
+[XMSS-SHA2_10_256] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/stateful/XMSS/XMSS-SHA2_10_256.rsp
+[XMSS-SHA2_10_256][0] PASS: keygen
+[XMSS-SHA2_10_256][0] PASS: sign
+[XMSS-SHA2_10_256][0] PASS: verify
+[XMSS-SHA2_10_256][1] PASS: keygen
+[XMSS-SHA2_10_256][1] PASS: sign
+[XMSS-SHA2_10_256][1] PASS: verify
+[XMSS-SHA2_10_256][2] PASS: keygen
+[XMSS-SHA2_10_256][2] PASS: sign
+[XMSS-SHA2_10_256][2] PASS: verify
+[XMSS-SHA2_10_256][3] PASS: keygen
+[XMSS-SHA2_10_256][3] PASS: sign
+[XMSS-SHA2_10_256][3] PASS: verify
+[XMSS-SHA2_10_256][4] PASS: keygen
+[XMSS-SHA2_10_256][4] PASS: sign
+[XMSS-SHA2_10_256][4] PASS: verify
+[XMSS-SHA2_10_256][5] PASS: keygen
+[XMSS-SHA2_10_256][5] PASS: sign
+[XMSS-SHA2_10_256][5] PASS: verify
+[XMSS-SHA2_10_256][6] PASS: keygen
+[XMSS-SHA2_10_256][6] PASS: sign
+[XMSS-SHA2_10_256][6] PASS: verify
+[XMSS-SHA2_10_256][7] PASS: keygen
+[XMSS-SHA2_10_256][7] PASS: sign
+[XMSS-SHA2_10_256][7] PASS: verify
+[XMSS-SHA2_10_256][8] PASS: keygen
+[XMSS-SHA2_10_256][8] PASS: sign
+[XMSS-SHA2_10_256][8] PASS: verify
+[XMSS-SHA2_10_256][9] PASS: keygen
+[XMSS-SHA2_10_256][9] PASS: sign
+[XMSS-SHA2_10_256][9] PASS: verify
+=== Results for XMSS-SHA2_10_256 ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 \
+    -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/stateful/LMS/lms_default.rsp"' \
+    /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/endian.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_alloc.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_aux.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_common.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_compute.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_derive.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_generate.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_keygen.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_param.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_reserve.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_sign_inc.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_thread_single.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_variant.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_verify.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_verify_inc.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/hss_zeroize.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/lm_common.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/lm_ots_common.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/lm_ots_sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/lm_ots_verify.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/lm_verify.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/LMS/src/sha256.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_lms.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_lms
+=== Testing lms (default variant) ===
+[LMS_H10_W8] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/stateful/LMS/lms_default.rsp
+[LMS_H10_W8][0] PASS: keygen
+[LMS_H10_W8][0] PASS: sign
+[LMS_H10_W8][0] PASS: verify
+[LMS_H10_W8][1] PASS: keygen
+[LMS_H10_W8][1] PASS: sign
+[LMS_H10_W8][1] PASS: verify
+[LMS_H10_W8][2] PASS: keygen
+[LMS_H10_W8][2] PASS: sign
+[LMS_H10_W8][2] PASS: verify
+[LMS_H10_W8][3] PASS: keygen
+[LMS_H10_W8][3] PASS: sign
+[LMS_H10_W8][3] PASS: verify
+[LMS_H10_W8][4] PASS: keygen
+[LMS_H10_W8][4] PASS: sign
+[LMS_H10_W8][4] PASS: verify
+[LMS_H10_W8][5] PASS: keygen
+[LMS_H10_W8][5] PASS: sign
+[LMS_H10_W8][5] PASS: verify
+[LMS_H10_W8][6] PASS: keygen
+[LMS_H10_W8][6] PASS: sign
+[LMS_H10_W8][6] PASS: verify
+[LMS_H10_W8][7] PASS: keygen
+[LMS_H10_W8][7] PASS: sign
+[LMS_H10_W8][7] PASS: verify
+[LMS_H10_W8][8] PASS: keygen
+[LMS_H10_W8][8] PASS: sign
+[LMS_H10_W8][8] PASS: verify
+[LMS_H10_W8][9] PASS: keygen
+[LMS_H10_W8][9] PASS: sign
+[LMS_H10_W8][9] PASS: verify
+=== Results for LMS_H10_W8 ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_KEYGEN=1 -DRUN_SIGN=1 -DRUN_VERIFY=1 \
+    -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/stateful/HSS/hss_default.rsp"' \
+    /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/endian.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_alloc.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_aux.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_common.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_compute.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_derive.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_generate.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_keygen.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_param.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_reserve.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_sign_inc.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_thread_single.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_variant.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_verify.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_verify_inc.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/hss_zeroize.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/lm_common.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/lm_ots_common.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/lm_ots_sign.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/lm_ots_verify.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/lm_verify.c /home/aledolme/home/CODE/VLSPQC/algorithms/signatures/stateful/HSS/src/sha256.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_hss.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_hss
+=== Testing hss (default variant) ===
+[HSS_L2_H5_W8] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/signatures/stateful/HSS/hss_default.rsp
+[HSS_L2_H5_W8][0] PASS: keygen
+[HSS_L2_H5_W8][0] PASS: sign
+[HSS_L2_H5_W8][0] PASS: verify
+[HSS_L2_H5_W8][1] PASS: keygen
+[HSS_L2_H5_W8][1] PASS: sign
+[HSS_L2_H5_W8][1] PASS: verify
+[HSS_L2_H5_W8][2] PASS: keygen
+[HSS_L2_H5_W8][2] PASS: sign
+[HSS_L2_H5_W8][2] PASS: verify
+[HSS_L2_H5_W8][3] PASS: keygen
+[HSS_L2_H5_W8][3] PASS: sign
+[HSS_L2_H5_W8][3] PASS: verify
+[HSS_L2_H5_W8][4] PASS: keygen
+[HSS_L2_H5_W8][4] PASS: sign
+[HSS_L2_H5_W8][4] PASS: verify
+[HSS_L2_H5_W8][5] PASS: keygen
+[HSS_L2_H5_W8][5] PASS: sign
+[HSS_L2_H5_W8][5] PASS: verify
+[HSS_L2_H5_W8][6] PASS: keygen
+[HSS_L2_H5_W8][6] PASS: sign
+[HSS_L2_H5_W8][6] PASS: verify
+[HSS_L2_H5_W8][7] PASS: keygen
+[HSS_L2_H5_W8][7] PASS: sign
+[HSS_L2_H5_W8][7] PASS: verify
+[HSS_L2_H5_W8][8] PASS: keygen
+[HSS_L2_H5_W8][8] PASS: sign
+[HSS_L2_H5_W8][8] PASS: verify
+[HSS_L2_H5_W8][9] PASS: keygen
+[HSS_L2_H5_W8][9] PASS: sign
+[HSS_L2_H5_W8][9] PASS: verify
+=== Results for HSS_L2_H5_W8 ===
+  Keygen : 10 pass, 0 fail
+  Sign   : 10 pass, 0 fail
+  Verify : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128v12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_ENCAPS=1 -DRUN_DECAPS=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon128v12.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128v12/src/decrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128v12/src/encrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128v12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_ascon_aead.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_ascon128v12
+=== Testing ascon128v12 ===
+[ASCON-AEAD] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon128v12.rsp
+Testing: encrypt decrypt 
+[0] PASS: encrypt
+[0] PASS: decrypt
+[1] PASS: encrypt
+[1] PASS: decrypt
+[2] PASS: encrypt
+[2] PASS: decrypt
+[3] PASS: encrypt
+[3] PASS: decrypt
+[4] PASS: encrypt
+[4] PASS: decrypt
+[5] PASS: encrypt
+[5] PASS: decrypt
+[6] PASS: encrypt
+[6] PASS: decrypt
+[7] PASS: encrypt
+[7] PASS: decrypt
+[8] PASS: encrypt
+[8] PASS: decrypt
+[9] PASS: encrypt
+[9] PASS: decrypt
+
+=== Results for ASCON-AEAD ===
+  Encrypt: 10 pass, 0 fail
+  Decrypt: 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon128av12.rsp"' -DALGO_NAME='"ascon128av12"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/src/decrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/src/encrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/PQCgenKAT_aead_ascon.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ascon128av12
+/home/aledolme/home/CODE/VLSPQC/build/gen_ascon128av12
+Generated 10 KAT vectors -> /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon128av12.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_ENCAPS=1 -DRUN_DECAPS=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon128av12.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/src/decrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/src/encrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon128av12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_ascon_aead.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_ascon128av12
+=== Testing ascon128av12 ===
+[ASCON-AEAD] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon128av12.rsp
+Testing: encrypt decrypt 
+[0] PASS: encrypt
+[0] PASS: decrypt
+[1] PASS: encrypt
+[1] PASS: decrypt
+[2] PASS: encrypt
+[2] PASS: decrypt
+[3] PASS: encrypt
+[3] PASS: decrypt
+[4] PASS: encrypt
+[4] PASS: decrypt
+[5] PASS: encrypt
+[5] PASS: decrypt
+[6] PASS: encrypt
+[6] PASS: decrypt
+[7] PASS: encrypt
+[7] PASS: decrypt
+[8] PASS: encrypt
+[8] PASS: decrypt
+[9] PASS: encrypt
+[9] PASS: decrypt
+
+=== Results for ASCON-AEAD ===
+  Encrypt: 10 pass, 0 fail
+  Decrypt: 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon80pqv12.rsp"' -DALGO_NAME='"ascon80pqv12"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/src/decrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/src/encrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/PQCgenKAT_aead_ascon.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_ascon80pqv12
+/home/aledolme/home/CODE/VLSPQC/build/gen_ascon80pqv12
+Generated 10 KAT vectors -> /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon80pqv12.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRUN_ENCAPS=1 -DRUN_DECAPS=1 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon80pqv12.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/src/decrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/src/encrypt.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/ascon80pqv12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_ascon_aead.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_ascon80pqv12
+=== Testing ascon80pqv12 ===
+[ASCON-AEAD] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/ascon80pqv12.rsp
+Testing: encrypt decrypt 
+[0] PASS: encrypt
+[0] PASS: decrypt
+[1] PASS: encrypt
+[1] PASS: decrypt
+[2] PASS: encrypt
+[2] PASS: decrypt
+[3] PASS: encrypt
+[3] PASS: decrypt
+[4] PASS: encrypt
+[4] PASS: decrypt
+[5] PASS: encrypt
+[5] PASS: decrypt
+[6] PASS: encrypt
+[6] PASS: decrypt
+[7] PASS: encrypt
+[7] PASS: decrypt
+[8] PASS: encrypt
+[8] PASS: decrypt
+[9] PASS: encrypt
+[9] PASS: decrypt
+
+=== Results for ASCON-AEAD ===
+  Encrypt: 10 pass, 0 fail
+  Decrypt: 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashv12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashv12.rsp"' -DALGO_NAME='"asconhashv12"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashv12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashv12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/PQCgenKAT_hash_ascon.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_asconhashv12
+/home/aledolme/home/CODE/VLSPQC/build/gen_asconhashv12
+Generated 10 KAT vectors -> /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashv12.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashv12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashv12.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashv12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashv12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_ascon_hash.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_asconhashv12
+=== Testing asconhashv12 ===
+[ASCON-HASH] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashv12.rsp
+Testing: hash
+[0] PASS: hash
+[1] PASS: hash
+[2] PASS: hash
+[3] PASS: hash
+[4] PASS: hash
+[5] PASS: hash
+[6] PASS: hash
+[7] PASS: hash
+[8] PASS: hash
+[9] PASS: hash
+
+=== Results for ASCON-HASH ===
+  Hash   : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashav12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashav12.rsp"' -DALGO_NAME='"asconhashav12"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashav12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashav12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/PQCgenKAT_hash_ascon.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_asconhashav12
+/home/aledolme/home/CODE/VLSPQC/build/gen_asconhashav12
+Generated 10 KAT vectors -> /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashav12.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashav12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashav12.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashav12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconhashav12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_ascon_hash.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_asconhashav12
+=== Testing asconhashav12 ===
+[ASCON-HASH] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconhashav12.rsp
+Testing: hash
+[0] PASS: hash
+[1] PASS: hash
+[2] PASS: hash
+[3] PASS: hash
+[4] PASS: hash
+[5] PASS: hash
+[6] PASS: hash
+[7] PASS: hash
+[8] PASS: hash
+[9] PASS: hash
+
+=== Results for ASCON-HASH ===
+  Hash   : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofv12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofv12.rsp"' -DALGO_NAME='"asconxofv12"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofv12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofv12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/PQCgenKAT_hash_ascon.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_asconxofv12
+/home/aledolme/home/CODE/VLSPQC/build/gen_asconxofv12
+Generated 10 KAT vectors -> /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofv12.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofv12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofv12.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofv12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofv12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_ascon_hash.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_asconxofv12
+=== Testing asconxofv12 ===
+[ASCON-HASH] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofv12.rsp
+Testing: hash
+[0] PASS: hash
+[1] PASS: hash
+[2] PASS: hash
+[3] PASS: hash
+[4] PASS: hash
+[5] PASS: hash
+[6] PASS: hash
+[7] PASS: hash
+[8] PASS: hash
+[9] PASS: hash
+
+=== Results for ASCON-HASH ===
+  Hash   : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofav12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DMLEN=33 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofav12.rsp"' -DALGO_NAME='"asconxofav12"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofav12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofav12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/rng.c /home/aledolme/home/CODE/VLSPQC/harness/gen/PQCgenKAT_hash_ascon.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/gen_asconxofav12
+/home/aledolme/home/CODE/VLSPQC/build/gen_asconxofav12
+Generated 10 KAT vectors -> /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofav12.rsp
+cc -O2 -std=c11 -Wall -Wno-unused-function -Wno-unused-variable -I/home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofav12/include -I/home/aledolme/home/CODE/VLSPQC/harness/gen -I/home/aledolme/home/CODE/VLSPQC/harness -DKATNUM=10 -DDEBUG=0 -DRSP_PATH='"/home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofav12.rsp"' /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofav12/src/hash.c /home/aledolme/home/CODE/VLSPQC/algorithms/symmetric/ASCON/asconxofav12/src/printstate.c /home/aledolme/home/CODE/VLSPQC/harness/gen/main_ascon_hash.c /home/aledolme/home/CODE/VLSPQC/harness/kat_parser.c -o /home/aledolme/home/CODE/VLSPQC/build/test_asconxofav12
+=== Testing asconxofav12 ===
+[ASCON-HASH] Opening .rsp: /home/aledolme/home/CODE/VLSPQC/vectors/rsp/symmetric/ASCON/asconxofav12.rsp
+Testing: hash
+[0] PASS: hash
+[1] PASS: hash
+[2] PASS: hash
+[3] PASS: hash
+[4] PASS: hash
+[5] PASS: hash
+[6] PASS: hash
+[7] PASS: hash
+[8] PASS: hash
+[9] PASS: hash
+
+=== Results for ASCON-HASH ===
+  Hash   : 10 pass, 0 fail
+  Total  : 10 vectors, 0 failures

@@ -1,0 +1,34 @@
+\begin{table*}[t]
+\centering
+\caption{NIST level~1: FAEST versus the other round-3 candidates, reference C (\texttt{-O2}, plain gcc, one pinned core, 1000-byte message). Times are the per-metric median of three runs (median-of-calls within each run); run-to-run spread is 25--28\% (median over variants) and up to 86\%, so differences below $\approx$1.5$\times$ are not claimed. Peak mem is the maximum over the three operations of peak heap plus peak stack. Per scheme the fastest-signing and the smallest-signature variant are shown (UOV: also the variant with the smallest keys); all 39 variants are given in the artefact.}
+\label{tab:l1}
+\small
+\begin{tabular}{llrrrrrrr}
+\toprule
+Scheme & Variant & pk (B) & sk (B) & sig (B) & KeyGen (ms) & Sign (ms) & Verify (ms) & Peak mem (KiB) \\
+\midrule
+FAEST & FAEST-128f & 32 & 32 & 5924 & 0.0019 & 14.6 & 10.8 & 427.8 \\
+ & FAEST-128s & 32 & 32 & 4506 & 0.0018 & 41.2 & 38.5 & 2985.7 \\
+ & FAEST-EM-128f & 32 & 32 & 5060 & 0.0018 & 10.8 & 7.56 & 354.1 \\
+ & FAEST-EM-128s & 32 & 32 & 3906 & 0.0018 & 20.6 & 15.8 & 2468.3 \\
+\midrule
+MAYO & MAYO-2 & 2928 & 24 & 239 & 0.991 & 1.02 & 0.812 & 360.7 \\
+\midrule
+MQOM & MQOM-gf16-fast-ct & 64 & 96 & 3316 & 0.364 & 5.06 & 3.69 & 414.6 \\
+ & MQOM-gf2-shorter-ct & 52 & 72 & 2492 & 1.01 & 41.0 & 18.7 & 3099.8 \\
+\midrule
+QR-UOV & QR-UOV-1q127L3-shake & 24256 & 32 & 200 & 26.1 & 2.99 & 3.07 & 24.0 \\
+ & QR-UOV-1q31L3-shake & 23641 & 32 & 157 & 39.4 & 4.25 & 3.60 & 32.0 \\
+\midrule
+SDitH & SDitH-fast & 70 & 147 & 4914 & 0.030 & 23.0 & 21.6 & 338.8 \\
+ & SDitH-short & 70 & 147 & 3721 & 0.027 & 41.1 & 45.9 & 963.0 \\
+\midrule
+SNOVA & SNOVA-I-S-AES & 1016 & 96 & 272 & 1.59 & 4.21 & 1.50 & 353.0 \\
+\midrule
+SQIsign & SQIsign-p324-3 & 83 & 270 & 200 & 13.4 & 38.4 & 5.14 & 104.0 \\
+\midrule
+UOV & UOV-Is-pkc & 66576 & 348704 & 96 & 22.6 & 0.233 & 3.17 & 402.5 \\
+ & UOV-Ip-pkc-skc & 46591 & 32 & 135 & 29.7 & 3.38 & 2.57 & 317.8 \\
+\bottomrule
+\end{tabular}
+\end{table*}

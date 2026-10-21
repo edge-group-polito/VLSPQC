@@ -1,0 +1,72 @@
+{
+ "label": "HQC-5",
+ "family": "HQC (v5.0.0)",
+ "target": "HQC2025_5",
+ "shape": "kem_prng_reseed",
+ "level": 5,
+ "note": "reference v5.0.0, FIPS 207 pending",
+ "ops": {
+  "keygen": {
+   "name": "HQC-5",
+   "op": "keygen",
+   "iters": 365,
+   "ns_min": 7370812,
+   "ns_median": 8677773,
+   "ns_mean": 8852640,
+   "ns_std": 769875,
+   "cycles_median": 26091778,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 167936,
+   "vmhwm_kb": 2440,
+   "vmhwm_base_kb": 2056,
+   "pk_bytes": 7237,
+   "sk_bytes": 7333,
+   "sig_bytes_max": 14421,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "HQC-5",
+   "op": "sign",
+   "iters": 191,
+   "ns_min": 14456300,
+   "ns_median": 19036832,
+   "ns_mean": 18831161,
+   "ns_std": 1894325,
+   "cycles_median": 56996368,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 188416,
+   "vmhwm_kb": 2456,
+   "vmhwm_base_kb": 2072,
+   "pk_bytes": 7237,
+   "sk_bytes": 7333,
+   "sig_bytes_max": 14421,
+   "sig_bytes": 14421
+  },
+  "verify": {
+   "name": "HQC-5",
+   "op": "verify",
+   "iters": 104,
+   "ns_min": 22933710,
+   "ns_median": 26439784,
+   "ns_mean": 26947935,
+   "ns_std": 2656653,
+   "cycles_median": 79039806,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 208896,
+   "vmhwm_kb": 2456,
+   "vmhwm_base_kb": 2072,
+   "pk_bytes": 7237,
+   "sk_bytes": 7333,
+   "sig_bytes_max": 14421,
+   "sig_bytes": 14421
+  }
+ },
+ "objsize": {
+  "text": 39274,
+  "data": 8,
+  "bss": 208
+ }
+}

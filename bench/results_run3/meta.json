@@ -1,0 +1,10 @@
+{
+ "cflags": "-O2",
+ "cpu": 2,
+ "time_budget_s": 3.0,
+ "date": "2026-10-14 18:19:07",
+ "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+ "uname": "Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64",
+ "cpu_model": "Intel(R) Core(TM) Ultra 7 155H",
+ "load_notes": "vmstat -t 5 over the whole run (18:15:40-18:26:11, 127 samples, builds included): mean user 10.2%, idle 88.3%, max user 14%, no sample >20% user; approximate timed window (first to last raw result file, 95 samples): mean user 11.0%, idle 87.7%. A user-owned VS Code cpptools process (~1 core, IntelliSense) was running and was not killed (ps before the run); no Vsim/verilator/pdflatex. vmstat log: vmstat.log in this directory."
+}

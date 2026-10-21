@@ -1,0 +1,13 @@
+{
+ "cflags": "-O2",
+ "cpu": 2,
+ "time_budget_s": 3.0,
+ "date": "2026-10-14 12:13:34",
+ "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+ "uname": "Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64",
+ "cpu_model": "Intel(R) Core(TM) Ultra 7 155H",
+ "load_notes": [
+  "run 1, timed phase 12:13:34-12:18:09 (vmstat, 10 s samples, 30 in window): mean CPU idle 90.3 % of 16 logical CPUs, mean user 7.6 % (one core of 16 is 6.25 %), 1 sample above 20 % user+system: the sample stamped 12:18:12 (VS Code ripgrep burst, with swap-in), overlapping only the last seconds of UOV-Is-pkc-skc. 3.5 GB of swap was in use. No pdflatex process appeared among the top CPU consumers in `ps` at 12:06-12:07 (it had been running at dispatch time)."
+ ],
+ "extra_link_flags": "-lm -lpthread for every variant (uniform); SDitH cflags_extra -lm (compile-time no-op), SQIsign cflags_extra -I. (the folder itself is always on the include path via -I<folder>)"
+}

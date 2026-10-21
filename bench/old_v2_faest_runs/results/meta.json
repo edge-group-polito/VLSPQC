@@ -1,0 +1,12 @@
+{
+ "cflags": "-O2",
+ "cpu": 2,
+ "time_budget_s": 3.0,
+ "date": "2026-10-14 14:21:23",
+ "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+ "uname": "Linux AlessandraYOGA 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64",
+ "cpu_model": "Intel(R) Core(TM) Ultra 7 155H",
+ "load_notes": [
+  "Idle rerun 2026-10-14 (T9b), make bench-l1, timed phase ~14:21:25-14:26:09. No Vsim/verilator/pdflatex running. vmstat (10 s, 28 samples in timed window): mean user 12.7 %, sys 1.4 %, idle 86.0 %, max user 13 %: i.e. ~2 of 16 CPUs busy = the benchmark core (6.25 %) plus ~1 core of foreign VS Code cpptools IntelliSense (user-owned, not killed). No sample >20 %. Not a perfectly quiet machine."
+ ]
+}

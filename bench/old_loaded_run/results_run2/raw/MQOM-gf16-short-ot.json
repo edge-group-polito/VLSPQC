@@ -1,0 +1,71 @@
+{
+ "label": "MQOM-gf16-short-ot",
+ "family": "MQOM",
+ "target": "mqom3_cat1_gf16_short_ot",
+ "level": 1,
+ "tradeoff": "short",
+ "ops": {
+  "keygen": {
+   "name": "MQOM-gf16-short-ot",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 462594,
+   "ns_median": 539498,
+   "ns_mean": 575604,
+   "ns_std": 106894,
+   "cycles_median": 1512916,
+   "heap_peak": 137408,
+   "heap_allocs": 3003,
+   "stack_peak": 0,
+   "vmhwm_kb": 2828,
+   "vmhwm_base_kb": 2316,
+   "pk_bytes": 64,
+   "sk_bytes": 96,
+   "sig_bytes_max": 2932,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "MQOM-gf16-short-ot",
+   "op": "sign",
+   "iters": 77,
+   "ns_min": 27066764,
+   "ns_median": 32354341,
+   "ns_mean": 32758069,
+   "ns_std": 3520490,
+   "cycles_median": 90721221,
+   "heap_peak": 2001440,
+   "heap_allocs": 624,
+   "stack_peak": 8192,
+   "vmhwm_kb": 4628,
+   "vmhwm_base_kb": 2708,
+   "pk_bytes": 64,
+   "sk_bytes": 96,
+   "sig_bytes_max": 2932,
+   "sig_bytes": 2932
+  },
+  "verify": {
+   "name": "MQOM-gf16-short-ot",
+   "op": "verify",
+   "iters": 196,
+   "ns_min": 13489575,
+   "ns_median": 15696857,
+   "ns_mean": 16120860,
+   "ns_std": 1905732,
+   "cycles_median": 44013787,
+   "heap_peak": 1524312,
+   "heap_allocs": 1576,
+   "stack_peak": 4096,
+   "vmhwm_kb": 4116,
+   "vmhwm_base_kb": 2836,
+   "pk_bytes": 64,
+   "sk_bytes": 96,
+   "sig_bytes_max": 2932,
+   "sig_bytes": 2932
+  }
+ },
+ "objsize": {
+  "text": 559034,
+  "data": 152,
+  "bss": 212
+ }
+}

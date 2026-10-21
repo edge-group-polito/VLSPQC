@@ -1,0 +1,72 @@
+{
+ "label": "ML-KEM-1024",
+ "family": "ML-KEM (FIPS 203)",
+ "target": "ml-kem-1024",
+ "shape": "kem_derand",
+ "level": 5,
+ "note": "mlkem-native v2.0.0",
+ "ops": {
+  "keygen": {
+   "name": "ML-KEM-1024",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 42061,
+   "ns_median": 46634,
+   "ns_mean": 48530,
+   "ns_std": 9228,
+   "cycles_median": 139768,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 16384,
+   "vmhwm_kb": 2328,
+   "vmhwm_base_kb": 2072,
+   "pk_bytes": 1568,
+   "sk_bytes": 3168,
+   "sig_bytes_max": 1568,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "ML-KEM-1024",
+   "op": "sign",
+   "iters": 1000,
+   "ns_min": 40892,
+   "ns_median": 43811,
+   "ns_mean": 44697,
+   "ns_std": 8339,
+   "cycles_median": 131310,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 20480,
+   "vmhwm_kb": 2332,
+   "vmhwm_base_kb": 2076,
+   "pk_bytes": 1568,
+   "sk_bytes": 3168,
+   "sig_bytes_max": 1568,
+   "sig_bytes": 1568
+  },
+  "verify": {
+   "name": "ML-KEM-1024",
+   "op": "verify",
+   "iters": 1000,
+   "ns_min": 51274,
+   "ns_median": 54508,
+   "ns_mean": 58243,
+   "ns_std": 19957,
+   "cycles_median": 163342,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 24576,
+   "vmhwm_kb": 2328,
+   "vmhwm_base_kb": 2072,
+   "pk_bytes": 1568,
+   "sk_bytes": 3168,
+   "sig_bytes_max": 1568,
+   "sig_bytes": 1568
+  }
+ },
+ "objsize": {
+  "text": 24017,
+  "data": 0,
+  "bss": 0
+ }
+}

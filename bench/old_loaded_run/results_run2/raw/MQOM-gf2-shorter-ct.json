@@ -1,0 +1,71 @@
+{
+ "label": "MQOM-gf2-shorter-ct",
+ "family": "MQOM",
+ "target": "mqom3_cat1_gf2_shorter_ct",
+ "level": 1,
+ "tradeoff": "short",
+ "ops": {
+  "keygen": {
+   "name": "MQOM-gf2-shorter-ct",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 1048465,
+   "ns_median": 1205684,
+   "ns_mean": 1215788,
+   "ns_std": 174015,
+   "cycles_median": 3420150,
+   "heap_peak": 541280,
+   "heap_allocs": 3003,
+   "stack_peak": 0,
+   "vmhwm_kb": 3108,
+   "vmhwm_base_kb": 2468,
+   "pk_bytes": 52,
+   "sk_bytes": 72,
+   "sig_bytes_max": 2492,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "MQOM-gf2-shorter-ct",
+   "op": "sign",
+   "iters": 28,
+   "ns_min": 48849800,
+   "ns_median": 62226236,
+   "ns_mean": 63182667,
+   "ns_std": 11714608,
+   "cycles_median": 176506077,
+   "heap_peak": 3166040,
+   "heap_allocs": 203,
+   "stack_peak": 8192,
+   "vmhwm_kb": 5664,
+   "vmhwm_base_kb": 3104,
+   "pk_bytes": 52,
+   "sk_bytes": 72,
+   "sig_bytes_max": 2492,
+   "sig_bytes": 2492
+  },
+  "verify": {
+   "name": "MQOM-gf2-shorter-ct",
+   "op": "verify",
+   "iters": 103,
+   "ns_min": 23774950,
+   "ns_median": 28015282,
+   "ns_mean": 28712365,
+   "ns_std": 3546658,
+   "cycles_median": 79466425,
+   "heap_peak": 721496,
+   "heap_allocs": 1664,
+   "stack_peak": 8192,
+   "vmhwm_kb": 3360,
+   "vmhwm_base_kb": 3104,
+   "pk_bytes": 52,
+   "sk_bytes": 72,
+   "sig_bytes_max": 2492,
+   "sig_bytes": 2492
+  }
+ },
+ "objsize": {
+  "text": 541685,
+  "data": 168,
+  "bss": 196
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "label": "QR-UOV-1q7L10-shake",
+ "family": "QR-UOV",
+ "target": "QRUOV_1q7L10_shake-R3",
+ "level": 1,
+ "tradeoff": "",
+ "ops": {
+  "keygen": {
+   "name": "QR-UOV-1q7L10-shake",
+   "op": "keygen",
+   "iters": 5,
+   "ns_min": 569721023,
+   "ns_median": 591766363,
+   "ns_mean": 590342688,
+   "ns_std": 11684045,
+   "cycles_median": 1784595994,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 114688,
+   "vmhwm_kb": 2432,
+   "vmhwm_base_kb": 2176,
+   "pk_bytes": 20641,
+   "sk_bytes": 32,
+   "sig_bytes_max": 331,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "QR-UOV-1q7L10-shake",
+   "op": "sign",
+   "iters": 39,
+   "ns_min": 74588762,
+   "ns_median": 90769171,
+   "ns_mean": 93942857,
+   "ns_std": 11658802,
+   "cycles_median": 273960942,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 122880,
+   "vmhwm_kb": 2444,
+   "vmhwm_base_kb": 2060,
+   "pk_bytes": 20641,
+   "sk_bytes": 32,
+   "sig_bytes_max": 331,
+   "sig_bytes": 331
+  },
+  "verify": {
+   "name": "QR-UOV-1q7L10-shake",
+   "op": "verify",
+   "iters": 31,
+   "ns_min": 76864740,
+   "ns_median": 88577523,
+   "ns_mean": 88248518,
+   "ns_std": 7468596,
+   "cycles_median": 267447150,
+   "heap_peak": 0,
+   "heap_allocs": 0,
+   "stack_peak": 102400,
+   "vmhwm_kb": 2316,
+   "vmhwm_base_kb": 2060,
+   "pk_bytes": 20641,
+   "sk_bytes": 32,
+   "sig_bytes_max": 331,
+   "sig_bytes": 331
+  }
+ },
+ "objsize": {
+  "text": 39174,
+  "data": 48,
+  "bss": 52
+ }
+}

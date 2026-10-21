@@ -1,0 +1,74 @@
+{
+ "label": "SDitH-short-cipherpow",
+ "family": "SDitH",
+ "target": "sdith_cat1_short_cipherpow-R3",
+ "level": 1,
+ "tradeoff": "short",
+ "cflags_extra": [
+  "-lm"
+ ],
+ "ops": {
+  "keygen": {
+   "name": "SDitH-short-cipherpow",
+   "op": "keygen",
+   "iters": 1000,
+   "ns_min": 34106,
+   "ns_median": 35230,
+   "ns_mean": 36456,
+   "ns_std": 7705,
+   "cycles_median": 104190,
+   "heap_peak": 447,
+   "heap_allocs": 2002,
+   "stack_peak": 0,
+   "vmhwm_kb": 2692,
+   "vmhwm_base_kb": 2308,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 3721,
+   "sig_bytes": -1
+  },
+  "sign": {
+   "name": "SDitH-short-cipherpow",
+   "op": "sign",
+   "iters": 55,
+   "ns_min": 42193306,
+   "ns_median": 46849233,
+   "ns_mean": 47376575,
+   "ns_std": 2748457,
+   "cycles_median": 138763897,
+   "heap_peak": 982472,
+   "heap_allocs": 112,
+   "stack_peak": 4096,
+   "vmhwm_kb": 3592,
+   "vmhwm_base_kb": 2568,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 3721,
+   "sig_bytes": 3721
+  },
+  "verify": {
+   "name": "SDitH-short-cipherpow",
+   "op": "verify",
+   "iters": 65,
+   "ns_min": 39610105,
+   "ns_median": 43590608,
+   "ns_mean": 43859634,
+   "ns_std": 1892322,
+   "cycles_median": 130174186,
+   "heap_peak": 976016,
+   "heap_allocs": 66,
+   "stack_peak": 4096,
+   "vmhwm_kb": 3652,
+   "vmhwm_base_kb": 2628,
+   "pk_bytes": 70,
+   "sk_bytes": 147,
+   "sig_bytes_max": 3721,
+   "sig_bytes": 3721
+  }
+ },
+ "objsize": {
+  "text": 195232,
+  "data": 0,
+  "bss": 52
+ }
+}
