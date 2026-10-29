@@ -1,0 +1,11 @@
+# includes
+#include "pqrv_bench.h"
+
+# init
+/* runtime (mtvec, stack guard, banner) is initialised by pqrv main() */
+
+# before
+pqrv_region_begin();
+
+# after
+pqrv_region_end(); pqrv_report_region();
